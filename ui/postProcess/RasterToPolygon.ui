@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog_raster_to_polygon</class>
+ <widget class="QDialog" name="Dialog_raster_to_polygon">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>207</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Raster to Polygon</string>
+  </property>
+  <widget class="QPushButton" name="pushButton_ok">
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>160</y>
+     <width>85</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>OK</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_cancel">
+   <property name="geometry">
+    <rect>
+     <x>290</x>
+     <y>160</y>
+     <width>85</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Cancel</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>20</y>
+     <width>371</width>
+     <height>121</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>input dir</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit_input"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_input">
+        <property name="text">
+         <string>open</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>output dir</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit_output"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_output">
+        <property name="text">
+         <string>open</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>pushButton_input</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog_raster_to_polygon</receiver>
+   <slot>slot_open_inputdir()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>336</x>
+     <y>54</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>73</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_output</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog_raster_to_polygon</receiver>
+   <slot>slot_open_outputdir()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>339</x>
+     <y>121</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>387</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_ok</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog_raster_to_polygon</receiver>
+   <slot>slot_ok()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>244</x>
+     <y>171</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>156</x>
+     <y>167</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_cancel</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog_raster_to_polygon</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>346</x>
+     <y>175</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>372</x>
+     <y>187</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>slot_open_inputdir()</slot>
+  <slot>slot_open_outputdir()</slot>
+  <slot>slot_ok()</slot>
+ </slots>
+</ui>
