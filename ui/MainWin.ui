@@ -53,6 +53,7 @@
     <property name="title">
      <string>Classify</string>
     </property>
+    <addaction name="actionPredictOne"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -214,6 +215,11 @@
   <action name="actionRasterToPolygon">
    <property name="text">
     <string>RasterToPolygon</string>
+   </property>
+  </action>
+  <action name="actionPredictOne">
+   <property name="text">
+    <string>predict</string>
    </property>
   </action>
  </widget>
@@ -587,6 +593,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionPredictOne</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slot_predict_one()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>120</x>
+     <y>9</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>173</x>
+     <y>67</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>for_action_label_check()</slot>
@@ -611,5 +633,6 @@
   <slot>slot_action_binarization()</slot>
   <slot>slot_action_sampleGenSelfAdapt()</slot>
   <slot>slot_action_rasterToPolygon()</slot>
+  <slot>slot_predict_one()</slot>
  </slots>
 </ui>

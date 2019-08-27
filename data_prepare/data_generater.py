@@ -34,8 +34,14 @@ def random_crop(img1, img2, crop_H, crop_W):
     x0 = random.randrange(0, w - crop_W + 1, 50)
     y0 = random.randrange(0, h - crop_H + 1, 50)
 
-    crop_1 = img1[y0:y0+crop_H,x0:x0+crop_W, :]
-    crop_2 = img2[y0:y0+crop_H,x0:x0+crop_W]
+    try:
+        crop_1 = img1[y0:y0+crop_H,x0:x0+crop_W, :]
+    except:
+        print("can not extract data from img")
+    try:
+        crop_2 = img2[y0:y0+crop_H,x0:x0+crop_W]
+    except:
+        print("can not extract data from label")
 
     return crop_1,crop_2
 
@@ -136,7 +142,6 @@ def resample_data(img, dst_h, dst_w, mode = Image.ANTIALIAS, bits=8):
             for i in range(img.shape[-1]):
                 b_img = img[:, :, i]
                 b_img = Image.fromarray(b_img, mode='L')
-
                 b_img = b_img.resize((dst_h, dst_w), mode)
                 b_img = np.array(b_img, np.uint8)
                 n_img[:, :, i] = b_img[:, :]
@@ -174,7 +179,7 @@ def train_data_generator(config, sample_url):
         bits_num = 16
     else:
         pass
-    label_list,img_list=[],[]
+    label_list,img_list = [], []
     for pic in sample_url:
         _,t_img = load_img_normalization(1,config.train_data_path+'/label/'+pic)
         tp = np.unique(t_img)
@@ -184,31 +189,37 @@ def train_data_generator(config, sample_url):
                 print("no target value in {}".format(config.train_data_path+'/label/'+pic))
                 continue
 
-        label_list.append(t_img)
-        ret, s_img = load_img_bybandlist((config.train_data_path + '/src/' + pic),bandlist=config.band_list)
+        ret, s_img = load_img_bybandlist((config.train_data_path + '/src/' + pic), bandlist=config.band_list)
         if ret!=0:
             continue
 
-        s_img=img_to_array(s_img)
+        s_img = img_to_array(s_img)
         s_img = np.asarray(s_img, np.uint16)
         # plt.imshow(s_img[:,:,0])
         # plt.show()
         img_list.append(s_img)
+        label_list.append(t_img)
     assert len(label_list) == len(img_list)
 
     train_data = []
     train_label = []
     batch = 0
     while True:
-        # train_data = []
-        # train_label = []
-        # batch = 0
+        if batch==0:  # 防止训练集图像数量少于batch_size
+            train_data = []
+            train_label = []
 
         for i in np.random.permutation(np.arange(len(img_list))):
-            src_img=img_list[i]
-            label_img=label_list[i]
+            try:
+                src_img=img_list[i]
+            except:
+                print("can not extract data from img")
+            try:
+                label_img=label_list[i]
+            except:
+                print("can not extract data from label")
             random_size = random.randrange(config.img_w, config.img_w*2+1, config.img_w)
-            # random_size = 960
+            # random_size = config.img_w
             img, label = random_crop(src_img, label_img, random_size, random_size)
 
             if config.label_nodata in np.unique(label):
@@ -255,7 +266,6 @@ def val_data_generator(config, sample_url):
     label_list, img_list = [],[]
     for pic in sample_url:
         _, t_img = load_img_normalization(1, config.train_data_path + '/label/' + pic)
-        label_list.append(t_img)
         tp = np.unique(t_img)
         if len(tp) < 2:
             print("Only one value {} in {}".format(tp, config.train_data_path + '/label/' + pic))
@@ -267,13 +277,18 @@ def val_data_generator(config, sample_url):
             continue
         s_img = img_to_array(s_img)
         img_list.append(s_img)
+        label_list.append(t_img)
 
     assert len(label_list) == len(img_list)
 
+    train_data = []
+    train_label = []
+    batch = 0
     while True:
-        train_data = []
-        train_label = []
-        batch = 0
+        if batch==0:
+            train_data = []
+            train_label = []
+        # batch = 0
         for i in (range(len(img_list))):
             img = img_list[i]
             label = label_list[i]

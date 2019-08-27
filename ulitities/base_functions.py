@@ -273,6 +273,9 @@ def load_img_normalization_bybandlist(path, bandlist=[],data_type=UINT8):
     return 0, out_img
 
 def load_img_bybandlist(path, bandlist=[]):
+    if not os.path.isfile(path):
+        print("no file:{}".format(path))
+        return -1, []
     dataset = gdal.Open(path)
     if dataset == None:
         print("Open file failed:{}".format(path))

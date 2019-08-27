@@ -13,6 +13,7 @@ from ui.sampleProduce.sampleProcess_implements import child_sampleGenCommon,chil
 # from classifyUi.predict_implements import child_predictBinaryForSingleImage, child_predictMulticlassForSingleImage, child_predictBinaryBatch, child_predictMulticlassBatch
 from ui.postProcess.postProcess_implements import child_CombineMulticlassFromSingleModelResults, child_VoteMultimodleResults, child_AccuacyEvaluate, child_Binarization,child_raster_to_polygon
 from ui.about import Ui_Dialog_about
+from ui.classification.classification_implements import child_predict_one
 # from tmp.new_train_implements import child_trainBinaryCommon
 # from postProcess.RasterToPolygon import Ui_Dialog_raster_to_polygon
 
@@ -63,7 +64,12 @@ class mywindow(QMainWindow, Ui_MainWindow):
         self.action_VoteMultiModelResults.setText(_translate("MainWindow", "多模型集成"))
         self.actionAccuracyEvaluation.setText(_translate("MainWindow", "精度评估"))
         self.actionBinarization.setText(_translate("MainWindow", "掩膜二值化"))
+        self.actionPredictOne.setText(_translate("MainWindow", "分类"))
 
+    def slot_predict_one(self):
+        child = child_predict_one()
+        child.show()
+        child.exec()
 
     def slot_action_rasterToPolygon(self):
         child =child_raster_to_polygon()
