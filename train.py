@@ -33,7 +33,7 @@ parser.add_argument('--gpu', dest='gpu_id', help='GPU device id to use [0]', nar
 # parser.add_argument('--config', dest='config_file', help='json file to config',
 #                          default='config_binary_whu_buildings.json')
 parser.add_argument('--config', dest='config_file', help='json file to config',
-                         default='config_multiclass_global.json')
+                         default='config_binary_cloud.json')
 args=parser.parse_args()
 gpu_id=args.gpu_id
 print("gpu_id:{}".format(gpu_id))
@@ -174,7 +174,7 @@ def train(model):
     if 'adagrad' in config.optimizer:
         self_optimizer = Adagrad(lr=config.lr, decay=1e-6)
     elif 'adam' in config.optimizer:
-        self_optimizer = Adam(lr=config.lr, decay=1e-6)
+        self_optimizer = Adam(lr=config.lr, decay=1e-6, beta_1=0.9, beta_2=0.999, epsilon=1e-8)
     else:
         pass
 

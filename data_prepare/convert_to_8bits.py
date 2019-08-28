@@ -5,9 +5,9 @@ import fnmatch
 import numpy.ma as ma
 
 from ulitities.base_functions import get_file
-inputdir = '/home/omnisky/PycharmProjects/data/samples/global/miandian/big_sample/src_16bits'
+inputdir = '/home/omnisky/PycharmProjects/data/samples/cloud_samples/train/src_16bits'
 
-outputdir='/home/omnisky/PycharmProjects/data/samples/global/miandian/big_sample/src_8bits'
+outputdir='/home/omnisky/PycharmProjects/data/samples/cloud_samples/train/src'
 
 
 def getStatistics(inputRaster):

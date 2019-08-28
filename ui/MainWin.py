@@ -93,11 +93,14 @@ class Ui_MainWindow(object):
         self.actionSample_gen_Self_adapt.setObjectName("actionSample_gen_Self_adapt")
         self.actionRasterToPolygon = QtWidgets.QAction(MainWindow)
         self.actionRasterToPolygon.setObjectName("actionRasterToPolygon")
+        self.actionPredictOne = QtWidgets.QAction(MainWindow)
+        self.actionPredictOne.setObjectName("actionPredictOne")
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionExit)
         self.menuPrepocess.addAction(self.actionLabel_check)
         self.menuPrepocess.addAction(self.actionImage_strech)
         self.menuPrepocess.addAction(self.actionImage_Clip)
+        self.menuClassify.addAction(self.actionPredictOne)
         self.menuHelp.addAction(self.actionAbout)
         self.menuSampleProduce.addAction(self.actionSampleGenCommon)
         self.menuSampleProduce.addAction(self.actionSample_gen_Self_adapt)
@@ -138,6 +141,7 @@ class Ui_MainWindow(object):
         self.actionBinarization.triggered.connect(MainWindow.slot_action_binarization)
         self.actionSample_gen_Self_adapt.triggered.connect(MainWindow.slot_action_sampleGenSelfAdapt)
         self.actionRasterToPolygon.triggered.connect(MainWindow.slot_action_rasterToPolygon)
+        self.actionPredictOne.triggered.connect(MainWindow.slot_predict_one)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -173,4 +177,5 @@ class Ui_MainWindow(object):
         self.actionBinarization.setText(_translate("MainWindow", "Binarization"))
         self.actionSample_gen_Self_adapt.setText(_translate("MainWindow", "Sample_gen Self_adapt"))
         self.actionRasterToPolygon.setText(_translate("MainWindow", "RasterToPolygon"))
+        self.actionPredictOne.setText(_translate("MainWindow", "predict"))
 
