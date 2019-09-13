@@ -97,7 +97,7 @@ def get_train_val(val_rate=config.val_rate):
             train_url.append(pic)
     random.shuffle(train_url)
     total_num = len(train_url)
-    val_num = int(val_rate * total_num)
+    val_num = int(val_rate * total_num+0.5)
     if val_num<1:
         val_num=1
     for i in range(len(train_url)):
@@ -183,8 +183,8 @@ def train(model):
         print("Warning: compile failed with customer loss function and class_weights")
         print("Now, using default loss function without class_weights...")
         my_loss = eval("sm.losses."+config.loss)
-        # my_loss = sm.losses.DiceLoss(class_weights=np.array(config.class_weights))
-        my_metrics =eval("sm.metrics." + config.metrics)
+        # my_loss = sm.losses.DiceLoss(class_weights=np.array(config.class_weights)) + sm.losses.CategoricalCELoss(class_weights=np.array(config.class_weights))
+        my_metrics = eval("sm.metrics." + config.metrics)
         model.compile(self_optimizer, loss=my_loss, metrics=['accuracy',my_metrics])
 
     except:

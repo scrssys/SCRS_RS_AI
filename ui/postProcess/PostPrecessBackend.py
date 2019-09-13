@@ -191,6 +191,19 @@ def accuracy_evalute(input_dict):
     check_rate = input_dict['check_rate']
     # gup_id = input_dict['GPUID']
     # os.environ["CUDA_VISIBLE_DEVICES"] = gup_id
+    # input_files = []
+    # if os.path.isfile(config.img_input):
+    #     print("[INFO] input is one file...")
+    #     input_files.append(config.img_input)
+    # elif os.path.isdir(config.img_input):
+    #     print("[INFO] input is a directory...")
+    #     in_files, _ = get_file(config.img_input)
+    #     for file in in_files:
+    #         input_files.append(file)
+    # if len(input_files) == 0:
+    #     print("no input images")
+    #     sys.exit(-1)
+    # print("{} images will be classified".format(len(input_files)))
 
 
     ref_img = load_img_by_gdal(ref_file, grayscale=True)
