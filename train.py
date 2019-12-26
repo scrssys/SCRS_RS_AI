@@ -23,7 +23,7 @@ seed = 4
 np.random.seed(seed)
 import segmentation_models as sm
 
-from segmentation_models.deeplab.model import Deeplabv3
+from deeplab.model import Deeplabv3
 from data_prepare.data_generater import train_data_generator,val_data_generator
 from config import Config
 
