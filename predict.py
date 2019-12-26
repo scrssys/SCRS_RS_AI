@@ -27,7 +27,7 @@ from predict_backbone import predict_img_with_smooth_windowing,core_orignal_pred
 
 from config import Config
 import pandas as pd
-from segmentation_models.deeplab.model import relu6, BilinearUpsampling
+from deeplab.model import relu6, BilinearUpsampling
 # from crfrnn.crfrnn_layer import CrfRnnLayer
 # from segmentation_models import Unet,FPN,PSPNet,Linknet
 NDVI=True
@@ -185,7 +185,7 @@ if __name__ == '__main__':
             elif im_type == UINT10:
                 input_img = input_img / 1024.0
             elif im_type == UINT16:
-                input_img = input_img / 65535.0
+                input_img = input_img / 25535.0
 
             input_img = np.clip(input_img, 0.0, 1.0)
             input_img = input_img.astype(np.float16)

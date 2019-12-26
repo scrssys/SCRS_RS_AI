@@ -10,13 +10,13 @@
   "augment":true,
   "label_nodata":255,
 
-  "network":"unet",
-  "BACKBONE":"vgg16",
+  "network":"pspnet",
+  "BACKBONE":"inceptionresnetv2",
   "activation":"sigmoid",
   "encoder_weights":"imagenet",
   "dropout":0.5,
   "nb_classes":1,
-  "sample_per_img":500,
+  "sample_per_img":100,
   "batch_size":8,
   "epochs": 100,
 

@@ -83,7 +83,7 @@ class SampleGenerate():
         elif dtype == 2:
             noise_value = 1024
         else:
-            noise_value = 65535
+            noise_value = 25535
 
         tmp = np.random.random() / 20.0  # max = 0.05
         noise_num = int(tmp * width * height)

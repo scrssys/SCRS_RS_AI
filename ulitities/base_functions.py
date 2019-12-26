@@ -217,7 +217,7 @@ def load_img_normalization(input_bands, path, data_type=UINT8):
         elif data_type==UINT10:
             img = img / 1024.0
         elif data_type == UINT16:
-            img = img / 65535.0
+            img = img / 25535.0
         else:
             print("Not recognize this type!")
             sys.exit(-1)
@@ -263,7 +263,7 @@ def load_img_normalization_bybandlist(path, bandlist=[],data_type=UINT8):
     elif data_type == UINT10:
         out_img = out_img / 1024.0
     elif data_type == UINT16:
-        out_img = out_img / 65535.0
+        out_img = out_img / 25535.0
     else:
         print("Not recognize this type!")
         sys.exit(-1)

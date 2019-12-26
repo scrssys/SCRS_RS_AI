@@ -23,12 +23,12 @@ def random_crop(img1, img2, crop_H, crop_W):
     # 裁剪宽度不可超过原图可裁剪宽度
     if crop_W > w:
         crop_W = w
-        print("crop width is lager than img width")
+        # print("crop width is lager than img width")
     # 裁剪高度
 
     if crop_H > h:
         crop_H = h
-        print("crop height is lager than img height")
+        # print("crop height is lager than img height")
 
     # 随机生成左上角的位置
     x0 = random.randrange(0, w - crop_W + 1, 50)
@@ -59,7 +59,7 @@ def add_noise( xb, width, height, dtype=1):
     elif dtype == 2:
         noise_value = 1024
     else:
-        noise_value = 65535
+        noise_value = 25535
 
     tmp = np.random.random() / 20.0  # max = 0.05
     noise_num = int(tmp * width * height)
@@ -175,7 +175,7 @@ def train_data_generator(config, sample_url):
         norm_value = 1024.0
         bits_num = 16
     elif '16' in config.im_type:
-        norm_value = 65535.0
+        norm_value = 25535.0
         bits_num = 16
     else:
         pass
@@ -233,6 +233,9 @@ def train_data_generator(config, sample_url):
                 # print("resize samples")
                 img = resample_data(img,config.img_h,config.img_w,mode=Image.BILINEAR, bits=bits_num)
                 label=resample_data(label, config.img_h, config.img_w,mode=Image.NEAREST)
+                if (len(np.unique(label))>config.nb_classes):
+                    index = np.where(label==config.label_nodata )
+                    label[index]=0
 
             if config.augment:
                 img, label = data_augment(img,label,config.img_w,config.img_h)
