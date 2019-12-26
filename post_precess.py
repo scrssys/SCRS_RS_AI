@@ -27,8 +27,6 @@ def remove_small_objects_deal(predict, mask):
         img_pre = img_pre.astype(np.bool)
         img_pre = remove_small_objects(img_pre, 100).astype(np.uint8)
 
-
-
         imsave(os.path.join(mask, f), img_pre)
 
 

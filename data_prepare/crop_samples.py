@@ -7,9 +7,9 @@ from tqdm import tqdm
 from ulitities.base_functions import get_file, load_img_by_gdal, find_file
 
 
-inputdir = '/home/omnisky/PycharmProjects/data/samples/cloud_samples/new_train/Simple16'
-outputdir = '/home/omnisky/PycharmProjects/data/samples/cloud_samples/new_train/new_sample16'
-patch_size=3000
+inputdir = '/home/omnisky/PycharmProjects/data/samples/snowlineSamples/1220train/pre'
+outputdir = '/home/omnisky/PycharmProjects/data/samples/snowlineSamples/1220train/croped'
+patch_size=960
 
 if __name__=='__main__':
     if not os.path.isdir(inputdir):
@@ -49,7 +49,7 @@ if __name__=='__main__':
             continue
         img_list.append(s_img)
 
-    assert(len(label_list)==len(img_list))
+    # assert(len(label_list)==len(img_list))
     try:
         dataset = gdal.Open(img_files[0])
     except RuntimeError:
@@ -60,7 +60,8 @@ if __name__=='__main__':
 
     d_type = dataset.GetRasterBand(1).DataType
     del dataset
-
+    print(img_list)
+    print(label_list)
     for i in tqdm(range(len(label_list))):
         only_name = name_list[i]
         print("deal: {}".format(only_name))
@@ -87,10 +88,10 @@ if __name__=='__main__':
         else:
             for i in range(h//patch_size):
                 for j in range(w//patch_size):
-                    if i==h//patch_size-1:
+                    if i==h//patch_size:
                         crop_label = label[i * patch_size:h, j * patch_size:(j + 1) * patch_size]
                         crop_img = img[i * patch_size:h, j * patch_size:(j + 1) * patch_size, :]
-                    elif j==w//patch_size-1:
+                    elif j==w//patch_size:
                         crop_label = label[i * patch_size:(i + 1) * patch_size, j * patch_size:w]
                         crop_img = img[i * patch_size:(i + 1) * patch_size, j * patch_size:w, :]
                     else:

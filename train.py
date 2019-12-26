@@ -29,7 +29,7 @@ from config import Config
 
 parser=argparse.ArgumentParser(description='RS classification train')
 parser.add_argument('--gpu', dest='gpu_id', help='GPU device id to use [0]', nargs='+',
-                        default=2, type=int)
+                        default=4, type=int)
 # parser.add_argument('--config', dest='config_file', help='json file to config',
 #                          default='config_binary_whu_buildings.json')
 parser.add_argument('--config', dest='config_file', help='json file to config',

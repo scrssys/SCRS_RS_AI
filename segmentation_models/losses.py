@@ -127,7 +127,7 @@ class BinaryCELoss(Loss):
         super().__init__(name='binary_crossentropy')
 
     def __call__(self, gt, pr):
-        return F.bianary_crossentropy(gt, pr, **self.submodules)
+        return F.binary_crossentropy(gt, pr, **self.submodules)
 
 
 class CategoricalCELoss(Loss):
@@ -200,8 +200,8 @@ class CategoricalFocalLoss(Loss):
         return F.categorical_focal_loss(
             gt,
             pr,
-            self.alpha,
-            self.gamma,
+            alpha=self.alpha,
+            gamma=self.gamma,
             class_indexes=self.class_indexes,
             **self.submodules
         )
@@ -235,7 +235,7 @@ class BinaryFocalLoss(Loss):
         self.gamma = gamma
 
     def __call__(self, gt, pr):
-        return F.binary_focal_loss(gt, pr, self.alpha, self.gamma, **self.submodules)
+        return F.binary_focal_loss(gt, pr, alpha=self.alpha, gamma=self.gamma, **self.submodules)
 
 
 # aliases

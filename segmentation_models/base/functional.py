@@ -184,9 +184,9 @@ def precision(gt, pr, class_weights=1, class_indexes=None, smooth=SMOOTH, per_im
 
     # score calculation
     tp = backend.sum(gt * pr, axis=axes)
-    fn = backend.sum(gt, axis=axes) - tp
-
-    score = (tp + smooth) / (tp + fn + smooth)
+    fp = backend.sum(pr, axis=axes) - tp
+    
+    score = (tp + smooth) / (tp + fp + smooth)
     score = average(score, per_image, class_weights, **kwargs)
 
     return score
@@ -222,9 +222,9 @@ def recall(gt, pr, class_weights=1, class_indexes=None, smooth=SMOOTH, per_image
     axes = get_reduce_axes(per_image, **kwargs)
 
     tp = backend.sum(gt * pr, axis=axes)
-    fp = backend.sum(pr, axis=axes) - tp
+    fn = backend.sum(gt, axis=axes) - tp
 
-    score = (tp + smooth) / (tp + fp + smooth)
+    score = (tp + smooth) / (tp + fn + smooth)
     score = average(score, per_image, class_weights, **kwargs)
 
     return score
@@ -251,7 +251,7 @@ def categorical_crossentropy(gt, pr, class_weights=1., class_indexes=None, **kwa
     return - backend.mean(output)
 
 
-def bianary_crossentropy(gt, pr, **kwargs):
+def binary_crossentropy(gt, pr, **kwargs):
     backend = kwargs['backend']
     return backend.mean(backend.binary_crossentropy(gt, pr))
 
@@ -303,6 +303,6 @@ def binary_focal_loss(gt, pr, gamma=2.0, alpha=0.25, **kwargs):
     pr = backend.clip(pr, backend.epsilon(), 1.0 - backend.epsilon())
 
     loss_1 = - gt * (alpha * backend.pow((1 - pr), gamma) * backend.log(pr))
-    loss_0 = - (1 - gt) * (alpha * backend.pow((pr), gamma) * backend.log(1 - pr))
+    loss_0 = - (1 - gt) * ((1 - alpha) * backend.pow((pr), gamma) * backend.log(1 - pr))
     loss = backend.mean(loss_0 + loss_1)
     return loss

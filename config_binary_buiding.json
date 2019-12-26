@@ -1,11 +1,11 @@
 {
-  "train_data_path":"/home/omnisky/PycharmProjects/data/samples/cloud_samples/train/0919_cloud/",
+  "train_data_path":"/home/omnisky/PycharmProjects/data/samples/buildings/train/",
   "img_w":480,
   "img_h":480,
-  "im_bands":4,
+  "im_bands":3,
   "band_list":[0,1,2],
   "im_type":"UINT8",
-  "target_name":"cloud",
+  "target_name":"building",
   "val_rate":0.20,
   "augment":true,
   "label_nodata":255,
@@ -32,8 +32,8 @@
   "old_epoch":0,
   "test_pad": 64,
 
-  "model_dir": "/home/omnisky/PycharmProjects/data/samples/cloud_samples/model/",
-  "base_model":"/home/omnisky/PycharmProjects/data/samples/cloud_samples/model/cloud_unet_vgg16_bce_jaccard_loss_adam_480_012bands_2019-09-06_17-24-41best.h5",
+  "model_dir": "/home/omnisky/PycharmProjects/data/samples/buildings/model/",
+  "base_model":"",
   "monitor":"val_loss",
   "save_best_only":true,
   "mode":"min",
@@ -45,7 +45,7 @@
 
   "log_dir": "/home/omnisky/PycharmProjects/data/tmp/",
 
-  "img_input":"/home/omnisky/PycharmProjects/data/samples/cloud_samples/test/src_8bits/",
+  "img_input":"/home/omnisky/PycharmProjects/data/test/buiding/91wt/",
   "strategy":"smooth",
   "window_size":480,
   "subdivisions":2,
@@ -53,7 +53,7 @@
   "block_size":500000000,
   "nodata":65535,
   "tovector":false,
-  "model_path":"/home/omnisky/PycharmProjects/data/samples/cloud_samples/model/cloud_unet_vgg16_bce_jaccard_loss_adam_480_012bands_2019-08-25_06-25-00best.h5",
-  "mask_dir": "/home/omnisky/PycharmProjects/data/samples/cloud_samples/test/pred/"
+  "model_path":"/home/omnisky/PycharmProjects/data/samples/buildings/model/building_unet_vgg16_bce_jaccard_loss_adam_480_012bands_2019-12-25_18-20-27best.h5",
+  "mask_dir": "/home/omnisky/PycharmProjects/data/test/buiding/pred/"
 
 }
