@@ -2,8 +2,7 @@
 import os, sys
 import subprocess
 from PyQt5.QtCore import QFileInfo, QDir, QCoreApplication, Qt
-from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
-# import QAppllication
+from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox, QApplication
 from ui.classification.predict_one import Ui_Dialog_predict_one
 from ui.classification.classification_backend import predict_backend
 from ui.classification.Dialog_predict import Ui_Dialog_predict
@@ -19,29 +18,31 @@ class child_predict(QDialog, Ui_Dialog_predict):
     def slot_input(self):
         dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing dir", '')
         self.lineEdit_input.setText(dir_tmp)
-        QDir.setCurrent(dir_tmp)
 
     def slot_output(self):
         dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing dir", '')
         self.lineEdit_output.setText(dir_tmp)
-        QDir.setCurrent(dir_tmp)
 
     def slot_config(self):
         dir_tmp, _ = QFileDialog.getOpenFileName(self, "Select config", "",
                                                  self.tr("Json(*.json)"))
         self.lineEdit_config.setText(dir_tmp)
-        tp = QFileInfo(dir_tmp).path()
-        QDir.setCurrent(tp)
 
     def slot_done(self):
         input = self.lineEdit_input.text()
         output = self.lineEdit_output.text()
         config=self.lineEdit_config.text()
         gpu_id = self.comboBox_gpu.currentText()
-        # print(QAppllication::appllicationDirPath())
-        cmd =['/home/omnisky/PycharmProjects/SCRS_RS_AI/predict.py',' --gpu ',gpu_id, ' --input ', input, ' --output ', output, ' --config ', config]
+        print(os.getcwd())
+        print(QApplication.applicationDirPath())
+        # print(os.path.curdir)
+
+        cmd =['python3','../predict.py','--gpu',gpu_id, '--input', input, '--output', output, '--config', config]
         print("Converting command: ", cmd)
+
         subprocess.call(cmd)
+        # subprocess.call('python')
+
 
 
 class child_predict_one(QDialog, Ui_Dialog_predict_one):
@@ -52,26 +53,26 @@ class child_predict_one(QDialog, Ui_Dialog_predict_one):
     def slot_input(self):
         dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
         self.lineEdit_input.setText(dir_tmp)
-        QDir.setCurrent(dir_tmp)
+        # QDir.setCurrent(dir_tmp)
 
     def slot_config(self):
         dir_tmp, _ = QFileDialog.getOpenFileName(self, "Select config", '../../data/',
                                                  self.tr("Json(*.json)"))
         self.lineEdit_config.setText(dir_tmp)
         tp = QFileInfo(dir_tmp).path()
-        QDir.setCurrent(tp)
+        # QDir.setCurrent(tp)
 
     def slot_model(self):
         dir_tmp, _ = QFileDialog.getOpenFileName(self, "Select model", '../../data/',
                                                  self.tr("Model(*.h5)"))
         self.lineEdit_model.setText(dir_tmp)
         tp = QFileInfo(dir_tmp).path()
-        QDir.setCurrent(tp)
+        # QDir.setCurrent(tp)
 
     def slot_output(self):
         dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
         self.lineEdit_output.setText(dir_tmp)
-        QDir.setCurrent(dir_tmp)
+        # QDir.setCurrent(dir_tmp)
 
     def slot_ok(self):
         self.setWindowModality(Qt.ApplicationModal)
