@@ -6,9 +6,9 @@ import numpy.ma as ma
 import matplotlib.pyplot as plt
 import argparse
 from ulitities.base_functions import get_file
-inputdir = '/home/omnisky/PycharmProjects/data/samples/cloud_samples/train/src_16bits'
+inputdir = '/home/omnisky/PycharmProjects/data/test/guoqing/images'
 
-outputdir='/home/omnisky/PycharmProjects/data/samples/cloud_samples/train/src_test'
+outputdir='/home/omnisky/PycharmProjects/data/test/guoqing/img_8bits'
 
 
 def getStatistics(inputRaster):
@@ -164,6 +164,6 @@ if __name__=='__main__':
                          outputDataType='Byte',
                          stretch_type='rescale',
                          nodata=65535,
-                         percentiles=[1, 99.9])
+                         percentiles=[1, 99])
 
 
