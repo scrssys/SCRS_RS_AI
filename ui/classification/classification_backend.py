@@ -15,7 +15,7 @@ from predict_backbone import predict_img_with_smooth_windowing,core_orignal_pred
 
 from config import Config
 import pandas as pd
-from segmentation_models.deeplab.model import relu6, BilinearUpsampling
+from deeplab.model import relu6, BilinearUpsampling
 
 NDVI=True
 eps=0.00001

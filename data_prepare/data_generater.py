@@ -233,9 +233,9 @@ def train_data_generator(config, sample_url):
                 # print("resize samples")
                 img = resample_data(img,config.img_h,config.img_w,mode=Image.BILINEAR, bits=bits_num)
                 label=resample_data(label, config.img_h, config.img_w,mode=Image.NEAREST)
-                if (len(np.unique(label))>config.nb_classes):
-                    index = np.where(label==config.label_nodata )
-                    label[index]=0
+                # if (len(np.unique(label))>config.nb_classes):
+                index = np.where(label >= config.label_nodata )
+                label[index]=0
 
             if config.augment:
                 img, label = data_augment(img,label,config.img_w,config.img_h)

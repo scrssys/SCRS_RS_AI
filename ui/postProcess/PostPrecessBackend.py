@@ -303,7 +303,7 @@ def accuracy_evalute(input_dict):
         i = i
         prec = x_diagonal[i] / (x_row_plus[i]+SMOOTH)
         print("\nForground of {}".format(i))
-        print("\nprecision= {:.3f}".format(prec))
+        print("precision= {:.3f}".format(prec))
         recall = x_diagonal[i] / (x_col_plus[i]+SMOOTH)
         print("recall= {:.3f}".format(recall))
         F1_score = (2*recall*prec)/(recall+prec)

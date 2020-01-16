@@ -53,7 +53,7 @@
     <property name="title">
      <string>Classify</string>
     </property>
-    <addaction name="actionPredictOne"/>
+    <addaction name="actionPredict"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -217,7 +217,7 @@
     <string>RasterToPolygon</string>
    </property>
   </action>
-  <action name="actionPredictOne">
+  <action name="actionPredict">
    <property name="text">
     <string>predict</string>
    </property>
@@ -290,138 +290,10 @@
    </hints>
   </connection>
   <connection>
-   <sender>actionTrain_Binary_JaccCross</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>slot_action_trainBinaryJaccCross()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>257</x>
-     <y>202</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>actionTrain_Binary_Cross_entropy</sender>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>slot_action_trainBinaryCrossentropy()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>257</x>
-     <y>202</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionTrain_Binary_Jaccard</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>slot_action_trainBinaryJaccard()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>257</x>
-     <y>202</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionTrain_Binary_Onehot_Cross</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>slot_action_trainBinaryOnehot()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>257</x>
-     <y>202</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionTrain_Multiclass</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>slot_action_trainMulticlass()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>257</x>
-     <y>202</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionPredict_Binary_Single</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>slot_action_predictBinarySingleImg()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>257</x>
-     <y>202</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionPredict_Multiclass_Single</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>slot_action_predictMulticlassSingleImg()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>257</x>
-     <y>202</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionPredict_Binary_Batch</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>slot_action_predictBinaryBatch()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>257</x>
-     <y>202</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionPredict_Multiclass_Batch</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>slot_action_predictMulticlassBatch()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -530,22 +402,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>actionTrain_Binary_new</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>slot_action_trainBinaryNew()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>289</x>
-     <y>73</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>actionBinarization</sender>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
@@ -594,18 +450,18 @@
    </hints>
   </connection>
   <connection>
-   <sender>actionPredictOne</sender>
+   <sender>actionPredict</sender>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
-   <slot>slot_predict_one()</slot>
+   <slot>slot_predict()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>120</x>
-     <y>9</y>
+     <x>-1</x>
+     <y>-1</y>
     </hint>
     <hint type="destinationlabel">
-     <x>173</x>
-     <y>67</y>
+     <x>259</x>
+     <y>108</y>
     </hint>
    </hints>
   </connection>
@@ -634,5 +490,6 @@
   <slot>slot_action_sampleGenSelfAdapt()</slot>
   <slot>slot_action_rasterToPolygon()</slot>
   <slot>slot_predict_one()</slot>
+  <slot>slot_predict()</slot>
  </slots>
 </ui>

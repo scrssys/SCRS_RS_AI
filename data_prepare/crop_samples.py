@@ -7,9 +7,9 @@ from tqdm import tqdm
 from ulitities.base_functions import get_file, load_img_by_gdal, find_file
 
 
-inputdir = '/home/omnisky/PycharmProjects/data/snowline1226/sample/bak'
-outputdir = '/home/omnisky/PycharmProjects/data/snowline1226/sample/croped'
-patch_size=2000
+inputdir = '/home/omnisky/PycharmProjects/data/samples/global/sixBands/8bits_big'
+outputdir = '/home/omnisky/PycharmProjects/data/samples/global/sixBands/croped'
+patch_size=3000
 
 if __name__=='__main__':
     if not os.path.isdir(inputdir):

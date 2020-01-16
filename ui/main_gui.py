@@ -13,7 +13,7 @@ from ui.sampleProduce.sampleProcess_implements import child_sampleGenCommon,chil
 # from classifyUi.predict_implements import child_predictBinaryForSingleImage, child_predictMulticlassForSingleImage, child_predictBinaryBatch, child_predictMulticlassBatch
 from ui.postProcess.postProcess_implements import child_CombineMulticlassFromSingleModelResults, child_VoteMultimodleResults, child_AccuacyEvaluate, child_Binarization,child_raster_to_polygon
 from ui.about import Ui_Dialog_about
-from ui.classification.classification_implements import child_predict_one
+from ui.classification.classification_implements import child_predict_one, child_predict
 # from tmp.new_train_implements import child_trainBinaryCommon
 # from postProcess.RasterToPolygon import Ui_Dialog_raster_to_polygon
 
@@ -48,15 +48,15 @@ class mywindow(QMainWindow, Ui_MainWindow):
         self.actionSampleGenByCV2.setText(_translate("MainWindow", "SampleGenByCV2"))
         self.actionImage_Clip.setText(_translate("MainWindow", "图像裁剪"))
         self.actionMismatch_Analyze.setText(_translate("MainWindow", "Mismatch Analyze"))
-        self.actionTrain_Binary_Jaccard.setText(_translate("MainWindow", "二分类模型（Jaccard相似度）"))
-        self.actionTrain_Binary_JaccCross.setText(_translate("MainWindow", "二分类模型（相似度&交叉熵）"))
-        self.actionTrain_Binary_Cross_entropy.setText(_translate("MainWindow", "二分类模型（交叉熵）"))
-        self.actionTrain_Multiclass.setText(_translate("MainWindow", "多分类模型"))
-        self.actionTrain_Binary_Onehot_Cross.setText(_translate("MainWindow", "二分类模型（Onehot编码）"))
-        self.actionPredict_Binary_Single.setText(_translate("MainWindow", "二分类预测"))
-        self.actionPredict_Multiclass_Single.setText(_translate("MainWindow", "多分类预测"))
-        self.actionPredict_Binary_Batch.setText(_translate("MainWindow", "二分类批处理"))
-        self.actionPredict_Multiclass_Batch.setText(_translate("MainWindow", "多分类批处理"))
+        # self.actionTrain_Binary_Jaccard.setText(_translate("MainWindow", "二分类模型（Jaccard相似度）"))
+        # self.actionTrain_Binary_JaccCross.setText(_translate("MainWindow", "二分类模型（相似度&交叉熵）"))
+        # self.actionTrain_Binary_Cross_entropy.setText(_translate("MainWindow", "二分类模型（交叉熵）"))
+        # self.actionTrain_Multiclass.setText(_translate("MainWindow", "多分类模型"))
+        # self.actionTrain_Binary_Onehot_Cross.setText(_translate("MainWindow", "二分类模型（Onehot编码）"))
+        # self.actionPredict_Binary_Single.setText(_translate("MainWindow", "二分类预测"))
+        # self.actionPredict_Multiclass_Single.setText(_translate("MainWindow", "多分类预测"))
+        # self.actionPredict_Binary_Batch.setText(_translate("MainWindow", "二分类批处理"))
+        # self.actionPredict_Multiclass_Batch.setText(_translate("MainWindow", "多分类批处理"))
         self.actionAbout.setText(_translate("MainWindow", "关于"))
         self.actionOpen.setText(_translate("MainWindow", "影像打开"))
         self.actionExit.setText(_translate("MainWindow", "退出"))
@@ -64,10 +64,15 @@ class mywindow(QMainWindow, Ui_MainWindow):
         self.action_VoteMultiModelResults.setText(_translate("MainWindow", "多模型集成"))
         self.actionAccuracyEvaluation.setText(_translate("MainWindow", "精度评估"))
         self.actionBinarization.setText(_translate("MainWindow", "掩膜二值化"))
-        self.actionPredictOne.setText(_translate("MainWindow", "分类"))
+        # self.actionPredictOne.setText(_translate("MainWindow", "分类"))
 
     def slot_predict_one(self):
         child = child_predict_one()
+        child.show()
+        child.exec()
+
+    def slot_predict(self):
+        child = child_predict()
         child.show()
         child.exec()
 
