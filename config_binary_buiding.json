@@ -5,8 +5,8 @@
   "im_bands":3,
   "band_list":[0,1,2],
   "im_type":"UINT8",
-  "target_name":"building",
-  "val_rate":0.20,
+  "target_name":"building_imagenet",
+  "val_rate":0.25,
   "augment":true,
   "label_nodata":255,
 
@@ -22,7 +22,7 @@
 
   "loss":"bce_jaccard_loss",
   "class_weights":[],
-  "metrics":"iou_score",
+  "metrics":"f1_score",
   "optimizer": "adam",
   "lr": 0.0001,
   "lr_steps": [540, 560],
@@ -45,15 +45,15 @@
 
   "log_dir": "/home/omnisky/PycharmProjects/data/tmp/",
 
-  "img_input":"/home/omnisky/PycharmProjects/data/test/buiding/91wt/",
+  "img_input":"/home/omnisky/PycharmProjects/data/test/buiding/91wt",
   "strategy":"smooth",
   "window_size":480,
-  "subdivisions":2,
+  "subdivisions":4,
   "slices":1,
   "block_size":500000000,
   "nodata":65535,
   "tovector":false,
-  "model_path":"/home/omnisky/PycharmProjects/data/samples/buildings/model/building_unet_vgg16_bce_jaccard_loss_adam_480_012bands_2019-12-25_18-20-27best.h5",
-  "mask_dir": "/home/omnisky/PycharmProjects/data/test/buiding/pred/"
+  "model_path":"/home/omnisky/PycharmProjects/data/samples/buildings/model/building_imagenet_pspnet_inceptionresnetv2_bce_jaccard_loss_adam_480_012bands_2020-01-14_18-49-18best.h5",
+  "mask_dir": "/home/omnisky/PycharmProjects/data/test/buiding/pred"
 
 }

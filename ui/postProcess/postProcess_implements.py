@@ -31,14 +31,14 @@ class child_raster_to_polygon(QDialog, Ui_Dialog_raster_to_polygon):
     def slot_open_inputdir(self):
         dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
         self.lineEdit_input.setText(dir_tmp)
-        QDir.setCurrent(dir_tmp)
+        # QDir.setCurrent(dir_tmp)
 
         # pass
 
     def slot_open_outputdir(self):
         dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
         self.lineEdit_output.setText(dir_tmp)
-        QDir.setCurrent(dir_tmp)
+        # QDir.setCurrent(dir_tmp)
 
     def slot_ok(self):
         self.setWindowModality(Qt.ApplicationModal)
@@ -86,7 +86,7 @@ class child_Binarization(QDialog, Ui_Dialog_binarization):
         # QDir.setCurrent(tp_dir)
         dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
         self.lineEdit_grayscale_mask.setText(dir_tmp)
-        QDir.setCurrent(dir_tmp)
+        # QDir.setCurrent(dir_tmp)
 
 
     def slot_get_saving_binary_mask_path(self):
@@ -96,7 +96,7 @@ class child_Binarization(QDialog, Ui_Dialog_binarization):
         # QDir.setCurrent(tp_dir)
         dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
         self.lineEdit_binary_mask.setText(dir_tmp)
-        QDir.setCurrent(dir_tmp)
+        # QDir.setCurrent(dir_tmp)
 
 
     def slot_ok(self):
@@ -144,19 +144,19 @@ class child_CombineMulticlassFromSingleModelResults(QDialog, Ui_Dialog_combine_m
         str, _ = QFileDialog.getOpenFileName(self, "Select road mask", '../../data/', self.tr("masks(*.png *jpg)"))
         self.lineEdit_road_mask.setText(str)
         tp_dir = QFileInfo(str).path()
-        QDir.setCurrent(tp_dir)
+        # QDir.setCurrent(tp_dir)
 
     def slot_select_building_mask(self):
         str, _ = QFileDialog.getOpenFileName(self, "Select building mask", '../../data/', self.tr("masks(*.png *jpg)"))
         self.lineEdit_building_mask.setText(str)
         tp_dir = QFileInfo(str).path()
-        QDir.setCurrent(tp_dir)
+        # QDir.setCurrent(tp_dir)
 
     def slot_get_save_mask(self):
         str, _ = QFileDialog.getSaveFileName(self, "Save file", '../../data/', self.tr("mask(*.png)"))
         self.lineEdit_mask.setText(str)
         tp_dir = QFileInfo(str).path()
-        QDir.setCurrent(tp_dir)
+        # QDir.setCurrent(tp_dir)
 
     def slot_ok(self):
         self.setWindowModality(Qt.ApplicationModal)
@@ -196,14 +196,14 @@ class child_VoteMultimodleResults(QDialog, Ui_Dialog_vote_multimodels):
                 str +=';'
         self.lineEdit_inputs.setText(str)
         tp_dir = QFileInfo(filelist[0]).path()
-        QDir.setCurrent(tp_dir)
+        # QDir.setCurrent(tp_dir)
 
 
     def slot_get_save_mask(self):
         str, _ = QFileDialog.getSaveFileName(self, "Save file", '../../data/', self.tr("mask(*.png)"))
         self.lineEdit_mask.setText(str)
         tp_dir = QFileInfo(str).path()
-        QDir.setCurrent(tp_dir)
+        # QDir.setCurrent(tp_dir)
 
 
     def slot_ok(self):
@@ -236,14 +236,14 @@ class child_AccuacyEvaluate(QDialog, Ui_Dialog_accuracy_evaluate):
         str, _ = QFileDialog.getOpenFileName(self, "Select ground-truth file", '../../data/', self.tr("mask(*.png *.tif)"))
         self.lineEdit_gt.setText(str)
         dir = QFileInfo(str).path()
-        QDir.setCurrent(dir)
+        # QDir.setCurrent(dir)
 
 
     def slot_select_mask_file(self):
         str, _ = QFileDialog.getOpenFileName(self, "Select mask file", '../../data/', self.tr("mask(*.png *.tif)"))
         self.lineEdit_mask.setText(str)
         tp_dir = QFileInfo(str).path()
-        QDir.setCurrent(tp_dir)
+        # QDir.setCurrent(tp_dir)
 
 
     def slot_ok(self):

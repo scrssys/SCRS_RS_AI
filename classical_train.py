@@ -21,17 +21,18 @@ from ulitities.base_functions import UINT16, UINT8, UINT10
 
 seed = 4
 np.random.seed(seed)
-import segmentation_models as sm
-
-from deeplab.model import Deeplabv3
 from data_prepare.data_generater import train_data_generator,val_data_generator
 from config import Config
+
+from palaeoild_models.classical_models import multiclass_unet, multiclass_fcnnet,multiclass_segnet
 
 parser=argparse.ArgumentParser(description='RS classification train')
 parser.add_argument('--gpu', dest='gpu_id', help='GPU device id to use [0]', nargs='+',
                         default=4, type=int)
+# parser.add_argument('--config', dest='config_file', help='json file to config',
+#                          default='config_binary_whu_buildings.json')
 parser.add_argument('--config', dest='config_file', help='json file to config',
-                         default='config_multiclass_global.json')
+                         default='config_multiclass_global_classicalModels.json')
 args=parser.parse_args()
 gpu_id=args.gpu_id
 print("gpu_id:{}".format(gpu_id))
@@ -168,25 +169,6 @@ def train(model):
         if len(gpu_id)>1:
             model = multi_gpu_model(model, gpus=len(gpu_id))
 
-    self_optimizer = SGD(lr=config.lr, decay=1e-6, momentum=0.9, nesterov=True)
-    if 'adagrad' in config.optimizer:
-        self_optimizer = Adagrad(lr=config.lr, decay=1e-6)
-    elif 'adam' in config.optimizer:
-        self_optimizer = Adam(lr=config.lr, decay=1e-6, beta_1=0.9, beta_2=0.999, epsilon=1e-8)
-    else:
-        pass
-
-
-    try:
-        my_loss = eval("sm.losses."+config.loss)
-        my_metrics = eval("sm.metrics." + config.metrics)
-        model.compile(self_optimizer, loss=my_loss, metrics=['accuracy',my_metrics])
-    except:
-        print("model compile error")
-        exit(-5)
-    finally:
-        print("Compile model successfully!")
-
     H = model.fit_generator(generator=train_data_generator(config, train_set),
                             steps_per_epoch=train_numb // config.batch_size,
                             epochs=config.epochs,
@@ -210,32 +192,17 @@ if __name__ == '__main__':
         sys.exit(-2)
     input_layer = (config.img_w,config.img_h, len(config.band_list))
 
-    if 'unet' in config.network:
-        model = sm.Unet(backbone_name=config.BACKBONE, input_shape=input_layer,
-                 classes=config.nb_classes, activation=config.activation,
-                 encoder_weights=config.encoder_weights)
-    elif 'pspnet' in config.network:
-        model = sm.PSPNet(backbone_name=config.BACKBONE, input_shape=input_layer,
-                     classes=config.nb_classes, activation=config.activation,
-                     encoder_weights=config.encoder_weights,psp_dropout=config.dropout)
-    elif 'fpn' in config.network:
-        model = sm.FPN(backbone_name=config.BACKBONE, input_shape=input_layer,
-                     classes=config.nb_classes, activation=config.activation,
-                     encoder_weights=config.encoder_weights, pyramid_dropout=config.dropout)
-    elif 'linknet' in config.network:
-        model = sm.Linknet(backbone_name=config.BACKBONE, input_shape=input_layer,
-                     classes=config.nb_classes, activation=config.activation,
-                     encoder_weights=config.encoder_weights)
-    elif 'deeplabv3plus' in config.network:
-        model = Deeplabv3(weights=config.encoder_weights, input_shape=input_layer,
-                      classes=config.nb_classes, backbone=config.BACKBONE, activation=config.activation)
-
+    #test classical_unet
+    if "unet" in config.network:
+        model = multiclass_unet(config.img_w,config.img_h,3,config.nb_classes)
+    elif "fcnnet" in config.network:
+        model = multiclass_fcnnet(config.img_w,config.img_h,3,config.nb_classes)
     else:
-        print("Error:")
+        model = multiclass_segnet(config.img_w, config.img_h, 3, config.nb_classes)
 
 
     print(model.summary())
-    print("Train by : {}_{}".format(config.network, config.BACKBONE))
+    print("Train by : {}".format(config.network))
     #
     # model=add_new_model(model, config)
     # print(model.summary())

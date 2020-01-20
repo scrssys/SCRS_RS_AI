@@ -1,14 +1,15 @@
 import os, sys
 import numpy as np
 import subprocess
+from tqdm import tqdm
 import fnmatch
 import numpy.ma as ma
 import matplotlib.pyplot as plt
 import argparse
 from ulitities.base_functions import get_file
-inputdir = '/home/omnisky/PycharmProjects/data/test/guoqing/images'
+inputdir = '/home/omnisky/PycharmProjects/data/samples/cloud_samples/train/src_16bits'
 
-outputdir='/home/omnisky/PycharmProjects/data/test/guoqing/img_8bits'
+outputdir='/home/omnisky/PycharmProjects/data/samples/cloud_samples/train/src_8bits'
 
 
 def getStatistics(inputRaster):
@@ -157,13 +158,13 @@ if __name__=='__main__':
         os.mkdir(outputdir)
 
     files,_=get_file(inputdir)
-    for file in files:
+    for file in tqdm(files):
         absname = os.path.split(file)[1]
         outputfile = os.path.join(outputdir,absname)
         convert_to_8Bit_self(file, outputfile,
                          outputDataType='Byte',
                          stretch_type='rescale',
                          nodata=65535,
-                         percentiles=[1, 99])
+                         percentiles=[1, 99.8])
 
 

@@ -95,11 +95,14 @@ class Ui_MainWindow(object):
         self.actionRasterToPolygon.setObjectName("actionRasterToPolygon")
         self.actionPredict = QtWidgets.QAction(MainWindow)
         self.actionPredict.setObjectName("actionPredict")
+        self.action_Train = QtWidgets.QAction(MainWindow)
+        self.action_Train.setObjectName("action_Train")
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionExit)
         self.menuPrepocess.addAction(self.actionLabel_check)
         self.menuPrepocess.addAction(self.actionImage_strech)
         self.menuPrepocess.addAction(self.actionImage_Clip)
+        self.menuTrain.addAction(self.action_Train)
         self.menuClassify.addAction(self.actionPredict)
         self.menuHelp.addAction(self.actionAbout)
         self.menuSampleProduce.addAction(self.actionSampleGenCommon)
@@ -133,6 +136,7 @@ class Ui_MainWindow(object):
         self.actionSample_gen_Self_adapt.triggered.connect(MainWindow.slot_action_sampleGenSelfAdapt)
         self.actionRasterToPolygon.triggered.connect(MainWindow.slot_action_rasterToPolygon)
         self.actionPredict.triggered.connect(MainWindow.slot_predict)
+        self.action_Train.triggered.connect(MainWindow.slot_train)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -169,4 +173,5 @@ class Ui_MainWindow(object):
         self.actionSample_gen_Self_adapt.setText(_translate("MainWindow", "Sample_gen Self_adapt"))
         self.actionRasterToPolygon.setText(_translate("MainWindow", "RasterToPolygon"))
         self.actionPredict.setText(_translate("MainWindow", "predict"))
+        self.action_Train.setText(_translate("MainWindow", "train"))
 

@@ -32,12 +32,12 @@ class child_image_stretch(QDialog, Ui_Dialog_image_stretch):
     def slot_select_input_dir(self):
         dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
         self.lineEdit_input.setText(dir_tmp)
-        QDir.setCurrent(dir_tmp)
+        # QDir.setCurrent(dir_tmp)
 
     def slot_select_output_dir(self):
         dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
         self.lineEdit_output.setText(dir_tmp)
-        QDir.setCurrent(dir_tmp)
+        # QDir.setCurrent(dir_tmp)
 
     def slot_ok(self):
         self.setWindowModality(Qt.ApplicationModal)
@@ -50,7 +50,7 @@ class child_image_stretch(QDialog, Ui_Dialog_image_stretch):
         imgStretch_dict['CutValue']=self.spinBox_cutvalue.value()
 
         # ss = QCoreApplication.applicationDirPath()
-        QDir.setCurrent(QCoreApplication.applicationDirPath()) # change current dir to "venv/bin/"
+        # QDir.setCurrent(QCoreApplication.applicationDirPath()) # change current dir to "venv/bin/"
         ''' save parameters into xml '''
 
         ret =0
@@ -285,11 +285,11 @@ class child_label(QDialog, Ui_Dialog_label_check):
     def slot_select_input_path(self):
         dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
         self.lineEdit_input.setText(dir_tmp)
-        QDir.setCurrent(dir_tmp)
+        # QDir.setCurrent(dir_tmp)
 
     def slot_ok(self):
         self.setWindowModality(Qt.ApplicationModal)
-        QDir.setCurrent(QCoreApplication.applicationDirPath())  # change current dir to "venv/bin/"
+        # QDir.setCurrent(QCoreApplication.applicationDirPath())  # change current dir to "venv/bin/"
         min =self.spinBox_min.value()
         max=self.spinBox_max.value()
         assert (min<=max)
@@ -372,14 +372,14 @@ class child_ImageClip(QDialog, Ui_Dialog_image_clip):
         dir_tmp, _ = QFileDialog.getOpenFileName(self, "Open image", '../../data/', self.tr("Images(*.png *.jpg *.tif)"))
         self.lineEdit_input.setText(dir_tmp)
         tp = QFileInfo(dir_tmp).path()
-        QDir.setCurrent(tp)
+        # QDir.setCurrent(tp)
 
     def slot_output(self):
         # dir_tmp = QFileDialog.getOpenFileName(self, "Open image", '../../data/')
         dir_tmp, _ = QFileDialog.getSaveFileName(self, "Open image", '../../data/',
                                                  self.tr("Images(*.png *.jpg *.tif)"))
         self.lineEdit_output.setText(dir_tmp)
-        QDir.setCurrent(dir_tmp)
+        # QDir.setCurrent(dir_tmp)
 
     def slot_ok(self):
         self.setWindowModality(Qt.ApplicationModal)
@@ -391,7 +391,7 @@ class child_ImageClip(QDialog, Ui_Dialog_image_clip):
         inputDict['row']=self.spinBox_row.value()
         inputDict['column']=self.spinBox_column.value()
 
-        QDir.setCurrent(QCoreApplication.applicationDirPath())  # change current dir to "venv/bin/"
+        # QDir.setCurrent(QCoreApplication.applicationDirPath())  # change current dir to "venv/bin/"
 
         ret =0
         ret = image_clip(inputDict)

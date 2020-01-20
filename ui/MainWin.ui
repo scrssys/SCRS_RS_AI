@@ -48,6 +48,7 @@
     <property name="title">
      <string>Train</string>
     </property>
+    <addaction name="action_Train"/>
    </widget>
    <widget class="QMenu" name="menuClassify">
     <property name="title">
@@ -220,6 +221,11 @@
   <action name="actionPredict">
    <property name="text">
     <string>predict</string>
+   </property>
+  </action>
+  <action name="action_Train">
+   <property name="text">
+    <string>train</string>
    </property>
   </action>
  </widget>
@@ -465,6 +471,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_Train</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slot_train()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>259</x>
+     <y>108</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>for_action_label_check()</slot>
@@ -491,5 +513,6 @@
   <slot>slot_action_rasterToPolygon()</slot>
   <slot>slot_predict_one()</slot>
   <slot>slot_predict()</slot>
+  <slot>slot_train()</slot>
  </slots>
 </ui>

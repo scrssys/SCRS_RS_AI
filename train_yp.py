@@ -1,88 +1,90 @@
 # coding=utf-8
-
-from keras.utils.np_utils import to_categorical
-from keras.preprocessing.image import img_to_array
+import os, sys, json, random, time, argparse
+import segmentation_models as sm
 from keras.callbacks import ModelCheckpoint, EarlyStopping, History,ReduceLROnPlateau
-import matplotlib.pyplot as plt
-import cv2, argparse
-import os, sys, json, random, time
-from keras.models import *
 from keras.layers import *
 from keras.optimizers import *
-from keras.models import load_model
-
 from keras import backend as K
-
-K.set_image_dim_ordering('tf')
 from keras.callbacks import TensorBoard
 from keras.utils import multi_gpu_model
-
 from ulitities.base_functions import UINT16, UINT8, UINT10
-
-seed = 4
-np.random.seed(seed)
-import segmentation_models as sm
-
 from deeplab.model import Deeplabv3
 from data_prepare.data_generater import train_data_generator,val_data_generator
 from config import Config
 
+K.set_image_dim_ordering('tf')
+seed = 4
+print(np.random.seed(seed))
+
+
 parser=argparse.ArgumentParser(description='RS classification train')
+parser.add_argument('--sample', dest='sample_dir', help='the path of source and label file',
+                         default='')
+parser.add_argument('--model', dest='model_dir', help='path to storage model',
+                         default='')
 parser.add_argument('--gpu', dest='gpu_id', help='GPU device id to use [0]', nargs='+',
-                        default=4, type=int)
+                        default="0", type=int)
 parser.add_argument('--config', dest='config_file', help='json file to config',
                          default='config_multiclass_global.json')
 args=parser.parse_args()
-gpu_id=args.gpu_id
-print("gpu_id:{}".format(gpu_id))
-if isinstance(gpu_id,int):
-    os.environ["CUDA_VISIBLE_DEVICES"]=str(gpu_id)
-elif isinstance(gpu_id,list):
-    tp_str =[]
-    for i in gpu_id:
-        tp_str.append(str(i))
-    ns = ",".join(tp_str)
-    os.environ["CUDA_VISIBLE_DEVICES"] = ns
-else:
-    pass
-
 with open(args.config_file, 'r') as f:
     cfg = json.load(f)
-
 config = Config(**cfg)
-print(config)
+print(args.sample_dir)
+
+def get_parameters():
+
+    if not os.path.isdir(config.train_data_path):
+        print ("train data does not exist in the path:\n {}".format(config.train_data_path))
+        sys.exit(-1)
+
+    if len(config.band_list)==0:
+        print("Error: band_list should not be empty!")
+        sys.exit(-2)
+
+    'get gpuid'
+    gpu_id=args.gpu_id
+    print("gpu_id:{}".format(gpu_id))
+    if isinstance(gpu_id,int):
+        os.environ["CUDA_VISIBLE_DEVICES"]=str(gpu_id)
+    elif isinstance(gpu_id,list):
+        tp_str =[]
+        for i in gpu_id:
+            tp_str.append(str(i))
+        ns = ",".join(tp_str)
+        os.environ["CUDA_VISIBLE_DEVICES"] = ns
+    else:
+        pass
+
+    FLAG_MAKE_TEST=True
+
+    "get image type"
+    if '10' in config.im_type:
+        im_type=UINT10
+    elif '16' in config.im_type:
+        im_type=UINT16
+    else:
+        im_type = UINT8
+
+    "get image bands"
+    band_name=''
+    if len(config.band_list)==0:
+        band_name='fullbands'
+    else:
+        for i in range(len(config.band_list)):
+             band_name +=str(config.band_list[i])
+        band_name+="bands"
+    "config the model dir"
+    if not os.path.isdir(config.model_dir):
+        os.mkdir(config.model_dir)
 
 
-# loss = sm.losses.dice_loss(class_weights=np.array(config.class_weights))
-# print(loss)
+    date_time = time.strftime("%Y-%m-%d_%H-%M-%S", time.localtime())
+    model_save_path = ''.join([config.model_dir,'/',config.target_name, '_', config.network, '_',config.BACKBONE,'_',
+                               config.loss,'_',config.optimizer,'_',str(config.img_w), '_',band_name,'_', date_time, 'best.h5'])
+    last_model = ''.join([config.model_dir,'/',config.target_name, '_', config.network, '_',config.BACKBONE,'_',
+                          config.loss,'_',config.optimizer,'_',str(config.img_w), '_',band_name,'_', date_time, 'last.h5'])
 
-
-FLAG_MAKE_TEST=True
-im_type=UINT8
-if '10' in config.im_type:
-    im_type=UINT10
-elif '16' in config.im_type:
-    im_type=UINT16
-else:
-    pass
-
-date_time = time.strftime("%Y-%m-%d_%H-%M-%S", time.localtime())
-print("date and time: {}".format(date_time))
-print("traindata from: {}".format(config.train_data_path))
-band_name=''
-if len(config.band_list)==0:
-    band_name='fullbands'
-else:
-    for i in range(len(config.band_list)):
-         band_name +=str(config.band_list[i])
-    band_name+="bands"
-print("band_name:{}".format(band_name))
-if not os.path.isdir(config.model_dir):
-    print("Warning: model saveing directory is empty!")
-    os.mkdir(config.model_dir)
-model_save_path = ''.join([config.model_dir,'/',config.target_name, '_', config.network, '_',config.BACKBONE,'_',config.loss,'_',config.optimizer,'_',str(config.img_w), '_',band_name,'_', date_time, 'best.h5'])
-print("model save as to: {}".format(model_save_path))
-last_model = ''.join([config.model_dir,'/',config.target_name, '_', config.network, '_',config.BACKBONE,'_',config.loss,'_',config.optimizer,'_',str(config.img_w), '_',band_name,'_', date_time, 'last.h5'])
 
 """get the train file name and divide to train and val parts"""
 def get_train_val(val_rate=config.val_rate):
@@ -108,7 +110,7 @@ def get_train_val(val_rate=config.val_rate):
 
 
 """Train model ............................................."""
-def train(model):
+def train(model,gpu_id,model_save_path,last_model):
 
     if os.path.isfile(config.base_model):
         try:
@@ -145,7 +147,7 @@ def train(model):
     )
 
     model_history = History()
-
+    date_time = time.strftime("%Y-%m-%d_%H-%M-%S", time.localtime())
     logdir = ''.join([config.log_dir,'/log',config.target_name,"_", config.network,"_",config.BACKBONE,"_", config.loss, date_time])
     if not os.path.isdir(logdir):
         print("Warning: ")
@@ -201,15 +203,7 @@ def train(model):
 
 if __name__ == '__main__':
 
-    if not os.path.isdir(config.train_data_path):
-        print ("train data does not exist in the path:\n {}".format(config.train_data_path))
-        sys.exit(-1)
-
-    if len(config.band_list)==0:
-        print("Error: band_list should not be empty!")
-        sys.exit(-2)
     input_layer = (config.img_w,config.img_h, len(config.band_list))
-
     if 'unet' in config.network:
         model = sm.Unet(backbone_name=config.BACKBONE, input_shape=input_layer,
                  classes=config.nb_classes, activation=config.activation,
@@ -229,23 +223,15 @@ if __name__ == '__main__':
     elif 'deeplabv3plus' in config.network:
         model = Deeplabv3(weights=config.encoder_weights, input_shape=input_layer,
                       classes=config.nb_classes, backbone=config.BACKBONE, activation=config.activation)
-
     else:
         print("Error:")
 
-
     print(model.summary())
     print("Train by : {}_{}".format(config.network, config.BACKBONE))
-    #
-    # model=add_new_model(model, config)
-    # print(model.summary())
-
     """ Training model........"""
     train(model)
-
     print("[Info]:test model...")
-    # model_save_path = '/media/omnisky/b1aca4b8-81b8-4751-8dee-24f70574dae9/bieshu/models/20190731/bieshu_pspnet_inceptionresnetv2_binary_crossentropy_adam_480_012bands_2019-08-01_11-24-18best.h5'
-    # test(model_save_path,config)
+
 
 
 

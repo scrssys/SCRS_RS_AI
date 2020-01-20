@@ -27,29 +27,41 @@ from predict_backbone import predict_img_with_smooth_windowing,core_orignal_pred
 
 from config import Config
 import pandas as pd
+import segmentation_models  # very important!
 from deeplab.model import relu6, BilinearUpsampling
 # from crfrnn.crfrnn_layer import CrfRnnLayer
-# from segmentation_models import Unet,FPN,PSPNet,Linknet
+
 NDVI=True
 eps=0.00001
 
 """
    The following global variables should be put into meta data file 
 """
-import  argparse
 import json, time
 parser=argparse.ArgumentParser(description='RS classification train')
 parser.add_argument('--gpu', dest='gpu_id', help='GPU device id to use [0]',
-                        default=5, type=int)
+                        default=1, type=int)
+parser.add_argument('--input', dest='input', help='input file or dir',
+                         default='./default_img/')
+parser.add_argument('--output', dest='output', help='output dir',
+                         default='./default_pred/')
 parser.add_argument('--config', dest='config_file', help='json file to config',
-                         default='/home/omnisky/PycharmProjects/data/snowline1223/config/config_binary_snowline_4bands_123.json')
+                         default='config_binary_buiding.json')
+parser.add_argument('--model', dest='model', help='model file to segment',
+                         default='')
 args=parser.parse_args()
 gpu_id=args.gpu_id
 print("gpu_id:{}".format(gpu_id))
 os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
-
+curr_input = args.input
+print("current input:{}".format(curr_input))
+curr_output = args.output
+print("current output:{}".format(curr_output))
 config_file = args.config_file
 print("cofig file:{}".format(config_file))
+curr_model = args.model
+print("current model:{}".format(curr_model))
+
 with open(args.config_file, 'r') as f:
     cfgl = json.load(f)
 
@@ -84,20 +96,29 @@ if "smooth" in config.strategy:
 else:
     pass
 
+if os.path.isfile(curr_input) or os.path.isdir(curr_input):
+    ult_input=curr_input
+else:
+    ult_input=config.img_input
+print("Ultimate input dir:{}".format(ult_input))
+
 date_time = time.strftime("%Y-%m-%d_%H-%M-%S", time.localtime())
-output_dir = ''.join([config.mask_dir, '/',date_time])
+if os.path.isdir(curr_output):
+    output_dir = ''.join([curr_output, '/', date_time])
+else:
+    output_dir = ''.join([config.mask_dir, '/',date_time])
 os.mkdir(output_dir)
+print("Ultimate output dir:{}".format(output_dir))
 
 block_size = config.block_size
 nodata = config.nodata
 
-
 if __name__ == '__main__':
     input_files = []
-    if os.path.isfile(config.img_input):
+    if os.path.isfile(ult_input):
         print("[INFO] input is one file...")
         input_files.append(config.img_input)
-    elif os.path.isdir(config.img_input):
+    elif os.path.isdir(ult_input):
         print("[INFO] input is a directory...")
         in_files, _ = get_file(config.img_input)
         for file in in_files:
@@ -114,20 +135,19 @@ if __name__ == '__main__':
     out_bands = target_class
 
     try:
-        model = load_model(config.model_path, compile=False)
-        """load model using customer loss"""
-        # lossName = 'cce_jaccard_loss'
-        # model = load_model(config.model_path, custom_objects={'closure':self_define_loss(lossName)})
-    except ValueError:
-        print("Warning: there are several custom objects in model")
-        print("For deeplab V3+, load model with parameters of custom_objects\n")
-        model = load_model(config.model_path, custom_objects={'relu6': relu6, 'BilinearUpsampling': BilinearUpsampling}, compile=False)
+        if "deeplab" in config.model_path:
+            print("For deeplab V3+, load model with parameters of custom_objects\n")
+            model = load_model(config.model_path,
+                               custom_objects={'relu6': relu6, 'BilinearUpsampling': BilinearUpsampling}, compile=False)
+        else:
+            model = load_model(config.model_path, compile=False)
+
     except Exception:
         print("Error: failde to load model!\n")
         sys.exit(-1)
     else:
         print("model is not deeplab V3+!\n")
-    # print(model.summary())
+    print(model.summary())
 
     for img_file in tqdm(input_files):
         print("\n[INFO] opening image:{}...".format(img_file))

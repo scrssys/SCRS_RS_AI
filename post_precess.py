@@ -7,10 +7,12 @@ PIL.Image.MAX_IMAGE_PIXELS=10000000000
 from skimage.morphology import remove_small_objects, watershed
 from skimage.morphology import erosion, dilation, rectangle,opening,closing,disk
 
+# [Warning: only fit to binary classified results]
+
 def remove_small_objects_deal(predict, mask):
     lst = os.listdir(predict)
     for f in tqdm(lst):
-        if not f.endswith(".png"):
+        if not f.endswith(".tif"):
             continue
         img_pre = imread(os.path.join(predict, f))
         # absname = os.path.split(f)[1]
@@ -105,7 +107,7 @@ def calMetric(predict,mask):
 
 
 if __name__=="__main__":
-    remove_small_objects_deal("/home/omnisky/PycharmProjects/data/samples/cloud_samples/test/pred/2019-08-25_22-43-59"
-                              ,"/home/omnisky/PycharmProjects/data/samples/cloud_samples/test/pred/masks")
-    # calMetric("/home/omnisky/PycharmProjects/data/samples/cloud_samples/test/pred/2019-08-16_15-51-46"
-    #           ,"/home/omnisky/PycharmProjects/data/samples/cloud_samples/test/label")
+    # remove_small_objects_deal("/home/omnisky/PycharmProjects/data/samples/global/test/pred/2019-12-30_10-06-38"
+    #                           ,"/home/omnisky/PycharmProjects/data/samples/global/test/pred/post1")
+    calMetric("/home/omnisky/PycharmProjects/data/samples/global/test/reslult/2019-12-31_09-25-00 fpn cce imagenet"
+              ,"/home/omnisky/PycharmProjects/data/samples/global/test/label/paper")

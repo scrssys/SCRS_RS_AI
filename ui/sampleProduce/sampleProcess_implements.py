@@ -32,12 +32,12 @@ class child_sampleGenCommon(QDialog, Ui_Dialog_sampleGenCommon):
     def slot_input(self):
         dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
         self.lineEdit_input.setText(dir_tmp)
-        QDir.setCurrent(dir_tmp)
+        # QDir.setCurrent(dir_tmp)
 
     def slot_output(self):
         dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
         self.lineEdit_output.setText(dir_tmp)
-        QDir.setCurrent(dir_tmp)
+        # QDir.setCurrent(dir_tmp)
 
     def slot_strategy_binary(self):
         self.label_targetLabel.setVisible(True)
@@ -90,12 +90,12 @@ class child_sampleGenSelfAdapt(QDialog, Ui_Dialog_sampleGenSelfAdapt):
     def slot_input(self):
         dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
         self.lineEdit_input.setText(dir_tmp)
-        QDir.setCurrent(dir_tmp)
+        # QDir.setCurrent(dir_tmp)
 
     def slot_output(self):
         dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
         self.lineEdit_output.setText(dir_tmp)
-        QDir.setCurrent(dir_tmp)
+        # QDir.setCurrent(dir_tmp)
 
     def slot_strategy_binary(self):
         self.label_targetLabel.setVisible(True)

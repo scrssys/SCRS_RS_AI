@@ -27,21 +27,23 @@ class child_predict(QDialog, Ui_Dialog_predict):
         dir_tmp, _ = QFileDialog.getOpenFileName(self, "Select config", "",
                                                  self.tr("Json(*.json)"))
         self.lineEdit_config.setText(dir_tmp)
-
+    def slot_model(self):
+        dir_tmp, _ = QFileDialog.getOpenFileName(self, "Select model", "",
+                                                 self.tr("h5(*.h5)"))
+        self.lineEdit_model.setText(dir_tmp)
     def slot_done(self):
         input = self.lineEdit_input.text()
         output = self.lineEdit_output.text()
         config=self.lineEdit_config.text()
         gpu_id = self.comboBox_gpu.currentText()
-        print(os.getcwd())
-        print(QApplication.applicationDirPath())
+        model = self.lineEdit_model.text()
         # print(os.path.curdir)
-
-        cmd =['python3','../predict.py','--gpu',gpu_id, '--input', input, '--output', output, '--config', config]
+        cmd =['python3','../predict.py','--gpu',gpu_id, '--input', input, '--output', output,
+              '--config', config,"--model",model]
         print("Converting command: ", cmd)
-
         subprocess.call(cmd)
-        # subprocess.call('python')
+        QMessageBox.information(self,"提示","处理完成",QMessageBox.Yes | QMessageBox.No,QMessageBox.Yes)
+
 
 
 

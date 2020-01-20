@@ -14,6 +14,7 @@ from ui.sampleProduce.sampleProcess_implements import child_sampleGenCommon,chil
 from ui.postProcess.postProcess_implements import child_CombineMulticlassFromSingleModelResults, child_VoteMultimodleResults, child_AccuacyEvaluate, child_Binarization,child_raster_to_polygon
 from ui.about import Ui_Dialog_about
 from ui.classification.classification_implements import child_predict_one, child_predict
+from ui.train.Train_implement import child_train
 # from tmp.new_train_implements import child_trainBinaryCommon
 # from postProcess.RasterToPolygon import Ui_Dialog_raster_to_polygon
 
@@ -56,7 +57,7 @@ class mywindow(QMainWindow, Ui_MainWindow):
         # self.actionPredict_Binary_Single.setText(_translate("MainWindow", "二分类预测"))
         # self.actionPredict_Multiclass_Single.setText(_translate("MainWindow", "多分类预测"))
         # self.actionPredict_Binary_Batch.setText(_translate("MainWindow", "二分类批处理"))
-        # self.actionPredict_Multiclass_Batch.setText(_translate("MainWindow", "多分类批处理"))
+        self.actionPredict.setText(_translate("MainWindow", "分类"))
         self.actionAbout.setText(_translate("MainWindow", "关于"))
         self.actionOpen.setText(_translate("MainWindow", "影像打开"))
         self.actionExit.setText(_translate("MainWindow", "退出"))
@@ -64,6 +65,7 @@ class mywindow(QMainWindow, Ui_MainWindow):
         self.action_VoteMultiModelResults.setText(_translate("MainWindow", "多模型集成"))
         self.actionAccuracyEvaluation.setText(_translate("MainWindow", "精度评估"))
         self.actionBinarization.setText(_translate("MainWindow", "掩膜二值化"))
+        self.action_Train.setText(_translate("MainWindow", "训练"))
         # self.actionPredictOne.setText(_translate("MainWindow", "分类"))
 
     def slot_predict_one(self):
@@ -75,6 +77,12 @@ class mywindow(QMainWindow, Ui_MainWindow):
         child = child_predict()
         child.show()
         child.exec()
+
+    def slot_train(self):
+        child = child_train()
+        child.show()
+        child.exec()
+
 
     def slot_action_rasterToPolygon(self):
         child =child_raster_to_polygon()
