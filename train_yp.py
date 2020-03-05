@@ -25,14 +25,14 @@ parser.add_argument('--model', dest='model_dir', help='path to storage model',
 parser.add_argument('--gpu', dest='gpu_id', help='GPU device id to use [0]', nargs='+',
                         default="0", type=int)
 parser.add_argument('--config', dest='config_file', help='json file to config',
-                         default='config_multiclass_global.json')
+                         default="/home/omnisky/PycharmProjects/SCRS_RS_AI/config_binary_snowline.json")
 args=parser.parse_args()
 with open(args.config_file, 'r') as f:
     cfg = json.load(f)
 config = Config(**cfg)
-print(args.sample_dir)
 
-def get_parameters():
+def get_parameters(cfg,arg):
+    #"Get train data path"
 
     if not os.path.isdir(config.train_data_path):
         print ("train data does not exist in the path:\n {}".format(config.train_data_path))
@@ -42,7 +42,7 @@ def get_parameters():
         print("Error: band_list should not be empty!")
         sys.exit(-2)
 
-    'get gpuid'
+    # 'Get gpuid'
     gpu_id=args.gpu_id
     print("gpu_id:{}".format(gpu_id))
     if isinstance(gpu_id,int):
@@ -58,7 +58,8 @@ def get_parameters():
 
     FLAG_MAKE_TEST=True
 
-    "get image type"
+    # "Get image type"
+    im_type=""
     if '10' in config.im_type:
         im_type=UINT10
     elif '16' in config.im_type:
@@ -66,7 +67,7 @@ def get_parameters():
     else:
         im_type = UINT8
 
-    "get image bands"
+    "Get image bands"
     band_name=''
     if len(config.band_list)==0:
         band_name='fullbands'
@@ -77,7 +78,6 @@ def get_parameters():
     "config the model dir"
     if not os.path.isdir(config.model_dir):
         os.mkdir(config.model_dir)
-
 
     date_time = time.strftime("%Y-%m-%d_%H-%M-%S", time.localtime())
     model_save_path = ''.join([config.model_dir,'/',config.target_name, '_', config.network, '_',config.BACKBONE,'_',
@@ -225,11 +225,10 @@ if __name__ == '__main__':
                       classes=config.nb_classes, backbone=config.BACKBONE, activation=config.activation)
     else:
         print("Error:")
-
     print(model.summary())
     print("Train by : {}_{}".format(config.network, config.BACKBONE))
     """ Training model........"""
-    train(model)
+    train(model,"","/home/omnisky/PycharmProjects/SCRS_RS_AI","/home/omnisky/PycharmProjects/SCRS_RS_AI/we.h5")
     print("[Info]:test model...")
 
 

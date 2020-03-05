@@ -178,8 +178,6 @@ def HistMappingSML(scr, dest, scale):
     return histMap
 
 
-
-
 if __name__=='__main__':
 
     if Flag_Hist_match==0:
