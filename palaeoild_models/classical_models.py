@@ -220,8 +220,8 @@ def multiclass_segnet(img_w, img_h, im_bands, n_label=3):
     #axis=1和axis=2互换位置，等同于np.swapaxes(layer,1,2) # for theano backend
     # model.add(Permute((2,1)))
     model.add(Activation('softmax'))
-    # model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['accuracy'])
-    model.compile(optimizer='sgd', loss='categorical_crossentropy', metrics=['accuracy'])
+    model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['accuracy'])
+    # model.compile(optimizer='sgd', loss='categorical_crossentropy', metrics=['accuracy'])
 
     # model.summary()
     return model

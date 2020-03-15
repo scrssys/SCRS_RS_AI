@@ -2,21 +2,23 @@
 
 # Form implementation generated from reading ui file 'MainWin.ui'
 #
-# Created by: PyQt5 UI code generator 5.5.1
+# Created by: PyQt5 UI code generator 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(519, 218)
+        MainWindow.resize(599, 296)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 519, 20))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 599, 20))
         self.menubar.setDefaultUp(True)
         self.menubar.setNativeMenuBar(False)
         self.menubar.setObjectName("menubar")
@@ -38,6 +40,12 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+        self.dockWidget_4 = QtWidgets.QDockWidget(MainWindow)
+        self.dockWidget_4.setObjectName("dockWidget_4")
+        self.dockWidgetContents_4 = QtWidgets.QWidget()
+        self.dockWidgetContents_4.setObjectName("dockWidgetContents_4")
+        self.dockWidget_4.setWidget(self.dockWidgetContents_4)
+        MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(4), self.dockWidget_4)
         self.actionLabel_check = QtWidgets.QAction(MainWindow)
         self.actionLabel_check.setObjectName("actionLabel_check")
         self.actionImage_strech = QtWidgets.QAction(MainWindow)
@@ -97,11 +105,20 @@ class Ui_MainWindow(object):
         self.actionPredict.setObjectName("actionPredict")
         self.action_Train = QtWidgets.QAction(MainWindow)
         self.action_Train.setObjectName("action_Train")
+        self.actionconvert_8bit = QtWidgets.QAction(MainWindow)
+        self.actionconvert_8bit.setObjectName("actionconvert_8bit")
+        self.actionlabel_crop = QtWidgets.QAction(MainWindow)
+        self.actionlabel_crop.setObjectName("actionlabel_crop")
+        self.actionremove_small_object = QtWidgets.QAction(MainWindow)
+        self.actionremove_small_object.setObjectName("actionremove_small_object")
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionExit)
         self.menuPrepocess.addAction(self.actionLabel_check)
         self.menuPrepocess.addAction(self.actionImage_strech)
         self.menuPrepocess.addAction(self.actionImage_Clip)
+        self.menuPrepocess.addSeparator()
+        self.menuPrepocess.addAction(self.actionconvert_8bit)
+        self.menuPrepocess.addAction(self.actionlabel_crop)
         self.menuTrain.addAction(self.action_Train)
         self.menuClassify.addAction(self.actionPredict)
         self.menuHelp.addAction(self.actionAbout)
@@ -112,6 +129,7 @@ class Ui_MainWindow(object):
         self.menuPostproc.addAction(self.actionAccuracyEvaluation)
         self.menuPostproc.addAction(self.actionBinarization)
         self.menuPostproc.addAction(self.actionRasterToPolygon)
+        self.menuPostproc.addAction(self.actionremove_small_object)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuPrepocess.menuAction())
         self.menubar.addAction(self.menuSampleProduce.menuAction())
@@ -137,6 +155,9 @@ class Ui_MainWindow(object):
         self.actionRasterToPolygon.triggered.connect(MainWindow.slot_action_rasterToPolygon)
         self.actionPredict.triggered.connect(MainWindow.slot_predict)
         self.action_Train.triggered.connect(MainWindow.slot_train)
+        self.actionconvert_8bit.triggered.connect(MainWindow.slot_action_convert8bit)
+        self.actionlabel_crop.triggered.connect(MainWindow.slot_action_samplecrop)
+        self.actionremove_small_object.triggered.connect(MainWindow.slot_action_removesmallobject)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -174,4 +195,6 @@ class Ui_MainWindow(object):
         self.actionRasterToPolygon.setText(_translate("MainWindow", "RasterToPolygon"))
         self.actionPredict.setText(_translate("MainWindow", "predict"))
         self.action_Train.setText(_translate("MainWindow", "train"))
-
+        self.actionconvert_8bit.setText(_translate("MainWindow", "convert 8bit"))
+        self.actionlabel_crop.setText(_translate("MainWindow", "label crop"))
+        self.actionremove_small_object.setText(_translate("MainWindow", "Remove small object"))

@@ -1,17 +1,38 @@
-import os,sys
+import os,sys,cv2,gdal,fire
 import numpy as np
-import cv2
-import gdal
 gdal.UseExceptions()
 from tqdm import tqdm
 from ulitities.base_functions import get_file, load_img_by_gdal, find_file
 
 
-inputdir = '/home/omnisky/PycharmProjects/data/samples/global/sixBands/8bits_big'
-outputdir = '/home/omnisky/PycharmProjects/data/samples/global/sixBands/croped'
-patch_size=3000
+inputdir = 'D:/data/0918_cloudsaple_zy3/0919cloud'
+outputdir = 'D:/data/0918_cloudsaple_zy3/tes'
+patch_size=2000
+def get_seglist(w,h,p_size):
+    '''
+    wait for completion
+    :param w:
+    :param h:
+    :param p_size:
+    :return:
+    '''
 
-if __name__=='__main__':
+    seg_list=[]
+    n_x = w//p_size
+    n_y = h//p_size
+    if n_x==0 and n_y==0:
+        seg_list=[[w,h]]
+    if n_x==0 and n_y > 0:
+        last_h = h-p_size
+        seg_list = h
+    if n_x > 0 and n_y ==0:
+        last_w = w- p_size
+    if n_x>0 and n_y >0:
+        last_h = h - p_size
+        last_w = w - p_size
+
+    return seg_list
+def Simple_Crop(inputdir,outputdir,patch_size=2000):
     if not os.path.isdir(inputdir):
         print("Error: input directory is not existed")
         sys.exit(-1)
@@ -30,8 +51,7 @@ if __name__=='__main__':
         absname = absname.split('.')[0]
         img_f = find_file(inputdir+'/src',absname)
         img_files.append(img_f)
-    # img_files = list()
-    # img_files, _=get_file(inputdir+'/src')
+
     assert(len(label_files)==len(img_files))
     name_list =[]
     for i,file in enumerate(label_files):
@@ -42,14 +62,11 @@ if __name__=='__main__':
         absname = os.path.split(file)[1]
         only_name = absname.split('.')[0]
         name_list.append(only_name)
-        # src_file = inputdir+'/src/'+absname
 
         s_img = load_img_by_gdal(img_files[i])
         if len(s_img)==0:
             continue
         img_list.append(s_img)
-
-    # assert(len(label_list)==len(img_list))
     try:
         dataset = gdal.Open(img_files[0])
     except RuntimeError:
@@ -59,9 +76,9 @@ if __name__=='__main__':
         print("Prompt: opened:{}".format(img_files[0]))
 
     d_type = dataset.GetRasterBand(1).DataType
-    del dataset
-    print(img_list)
-    print(label_list)
+    # del dataset
+    # print(img_list)
+    # print(label_list)
     for i in tqdm(range(len(label_list))):
         only_name = name_list[i]
         print("deal: {}".format(only_name))
@@ -111,3 +128,6 @@ if __name__=='__main__':
                         for s in range(c):
                             outdataset.GetRasterBand(s + 1).WriteArray(crop_img[:,:,s])
                     del outdataset
+if __name__=='__main__':
+    # Simple_Crop(inputdir,outputdir)
+    fire.Fire()

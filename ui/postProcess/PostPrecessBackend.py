@@ -185,12 +185,7 @@ def vote_masks(input_dict):
 
 def accuracy_evalute(input_dict):
     ref_file = input_dict['gt_file']
-
     pred_file = input_dict['mask_file']
-    if not (os.path.isfile(ref_file) and os.path.isfile(pred_file)):
-        print("input file might not be a file")
-        return 0
-
     valid_labels = input_dict['valid_values']
     n_class = len(valid_labels)
     check_rate = input_dict['check_rate']

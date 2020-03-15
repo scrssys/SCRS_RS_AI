@@ -16,7 +16,6 @@ K.set_image_dim_ordering('tf')
 seed = 4
 print(np.random.seed(seed))
 
-print(sys.platform)
 
 parser=argparse.ArgumentParser(description='RS classification train')
 parser.add_argument('--sample', dest='sample_dir', help='the path of source and label file',
@@ -26,7 +25,7 @@ parser.add_argument('--model', dest='model_dir', help='path to storage model',
 parser.add_argument('--gpu', dest='gpu_id', help='GPU device id to use [0]', nargs='+',
                         default="0", type=int)
 parser.add_argument('--config', dest='config_file', help='json file to config',
-                         default="/home/omnisky/PycharmProjects/SCRS_RS_AI/config_binary_snowline.json")
+                         default="C:\\Users\SCRS\\PycharmProjects\\SCRS_RS_AI-developer\\config_multiclass_global.json")
 args=parser.parse_args()
 with open(args.config_file, 'r') as f:
     cfg = json.load(f)
@@ -85,7 +84,7 @@ def get_parameters(cfg,arg):
                                config.loss,'_',config.optimizer,'_',str(config.img_w), '_',band_name,'_', date_time, 'best.h5'])
     last_model = ''.join([config.model_dir,'/',config.target_name, '_', config.network, '_',config.BACKBONE,'_',
                           config.loss,'_',config.optimizer,'_',str(config.img_w), '_',band_name,'_', date_time, 'last.h5'])
-
+    return gpu_id,model,last_model
 
 """get the train file name and divide to train and val parts"""
 def get_train_val(val_rate=config.val_rate):
@@ -229,7 +228,8 @@ if __name__ == '__main__':
     print(model.summary())
     print("Train by : {}_{}".format(config.network, config.BACKBONE))
     """ Training model........"""
-    train(model,"","/home/omnisky/PycharmProjects/SCRS_RS_AI","/home/omnisky/PycharmProjects/SCRS_RS_AI/we.h5")
+    para = get_parameters()
+    train(model,para[0],para[1],para[2])
     print("[Info]:test model...")
 
 
