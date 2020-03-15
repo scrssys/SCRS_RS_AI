@@ -16,6 +16,7 @@ K.set_image_dim_ordering('tf')
 seed = 4
 print(np.random.seed(seed))
 
+print(sys.platform)
 
 parser=argparse.ArgumentParser(description='RS classification train')
 parser.add_argument('--sample', dest='sample_dir', help='the path of source and label file',
