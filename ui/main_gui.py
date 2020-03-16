@@ -1,11 +1,25 @@
+import os
+import gdal
+import numpy as np
+import matplotlib.pyplot as plt
+
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import QApplication, QMainWindow, QDialog, QFileDialog, QMessageBox
 from ui.MainWin import Ui_MainWindow
-from ui.sampleProduce.sampleProcess_implements import*
-from ui.preProcess.preprocess_implements import *
-from ui.postProcess.postProcess_implements import *
-from ui.classification.classification_implements import *
-from ui.train.Train_implement import *
+from PyQt5.QtGui import QIcon,QFont
+from ui.preProcess.preprocess_implements import child_image_stretch, child_label, child_ImageClip
+from ui.sampleProduce.sampleProcess_implements import child_sampleGenCommon,child_sampleGenSelfAdapt
+# from trainUi.trainModels_implements import child_trainBinaryJaccardCross, child_trainBinaryJaccardOnly, child_trainBinaryOnehot, child_trainBinaryCrossentropy, child_trainMulticlass
+# from classifyUi.predict_implements import child_predictBinaryForSingleImage, child_predictMulticlassForSingleImage, child_predictBinaryBatch, child_predictMulticlassBatch
+from ui.postProcess.postProcess_implements import child_CombineMulticlassFromSingleModelResults, child_VoteMultimodleResults, child_AccuacyEvaluate, child_Binarization,child_raster_to_polygon
 from ui.about import Ui_Dialog_about
-from ui.open import MyFigure
+from ui.classification.classification_implements import child_predict_one, child_predict
+from ui.train.Train_implement import child_train
+# from tmp.new_train_implements import child_trainBinaryCommon
+# from postProcess.RasterToPolygon import Ui_Dialog_raster_to_polygon
+
+
+
 class mywindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super(mywindow,self).__init__()
@@ -17,9 +31,11 @@ class mywindow(QMainWindow, Ui_MainWindow):
         self.setFont(QFont('SansSerif',12))
 
 
+
     def new_translate(self ):
         _translate = QtCore.QCoreApplication.translate
-        self.setWindowTitle(_translate("MainWindow", "    自然资源督察要素遥感识别监测系统（服务器）"))
+        self.setWindowTitle(_translate("MainWindow", "           遥感影像智能识别与监测系统（服务器）"))
+        # self.setWindowTitle(_translate("MainWindow", "    自然资源督察要素遥感识别监测系统（服务器）"))
         self.menuFile.setTitle(_translate("MainWindow", "文件"))
         self.menuPrepocess.setTitle(_translate("MainWindow", "预处理"))
         self.menuTrain.setTitle(_translate("MainWindow", "模型训练"))
@@ -29,8 +45,6 @@ class mywindow(QMainWindow, Ui_MainWindow):
         self.menuPostproc.setTitle(_translate("MainWindow", "后处理"))
         self.actionLabel_check.setText(_translate("MainWindow", "标注检查"))
         self.actionImage_strech.setText(_translate("MainWindow", "图像标准化"))
-        self.actionconvert_8bit.setText(_translate("MainWindow", "图像转8位"))
-        self.actionlabel_crop.setText(_translate("MainWindow", "样本裁切"))
         self.actionSampleGenCommon.setText(_translate("MainWindow", "样本制作(默认)"))
         self.actionSample_gen_Self_adapt.setText(_translate("MainWindow", "样本制作(自适应)"))
         self.actionSampleGenByCV2.setText(_translate("MainWindow", "SampleGenByCV2"))
@@ -53,8 +67,6 @@ class mywindow(QMainWindow, Ui_MainWindow):
         self.actionAccuracyEvaluation.setText(_translate("MainWindow", "精度评估"))
         self.actionBinarization.setText(_translate("MainWindow", "掩膜二值化"))
         self.action_Train.setText(_translate("MainWindow", "训练"))
-        self.actionremove_small_object.setText(_translate("MainWindow","消除小面"))
-        self.actionRasterToPolygon.setText(_translate("MainWindow","栅格转矢量"))
         # self.actionPredictOne.setText(_translate("MainWindow", "分类"))
 
     def slot_predict_one(self):
@@ -102,16 +114,6 @@ class mywindow(QMainWindow, Ui_MainWindow):
 
     def slot_actiong_image_clip(self):
         child = child_ImageClip()
-        child.show()
-        child.exec_()
-
-    def slot_action_convert8bit(self):
-        child = child_convert_8bit()
-        child.show()
-        child.exec_()
-
-    def slot_action_samplecrop(self):
-        child = child_samplecrop()
         child.show()
         child.exec_()
 
@@ -186,11 +188,6 @@ class mywindow(QMainWindow, Ui_MainWindow):
         child.show()
         child.exec_()
 
-    def slot_action_removesmallobject(self):
-        child = child_removesmallobject()
-        child.show()
-        child.exec_()
-
     def slot_action_about(self):
         child = child_abount()
         child.show()
@@ -198,10 +195,39 @@ class mywindow(QMainWindow, Ui_MainWindow):
 
 
     def slot_open_show(self):
-        self.F = MyFigure(width=3, height=2, dpi=100)
-        self.F.plotdesrt()
-        self.doc = QGridLayout(self.dockWidgetContents_4)
-        self.doc.addWidget(self.F, 0, 1)
+        file, _ = QFileDialog.getOpenFileName(self, 'Select image', '../../data/', self.tr("Image(*.png *.jpg *.tif)"))
+        if not os.path.isfile(file):
+            QMessageBox.warning(self, "Warning", 'Please select a raster image file!')
+            sys.exit(-1)
+
+        dataset = gdal.Open(file)
+        if dataset == None:
+            QMessageBox.warning(self, "Warning", 'Open file failed!')
+            sys.exit(-2)
+        im_band = dataset.RasterCount
+        height = dataset.RasterYSize
+        width = dataset.RasterXSize
+        data = dataset.ReadAsArray(0,0,width,height)
+        data = np.array(data)
+
+        if im_band ==1:
+            plt.imshow(data, cmap='gray')
+            plt.show()
+        elif im_band ==3:
+            data = data.transpose((1,2,0))
+            plt.imshow(data)
+            plt.show()
+        elif im_band >3:
+            data = data.transpose((1,2,0))
+            img = data[:,:,:3]
+            plt.imshow(data)
+            plt.show()
+        else:
+            data = data.transpose((1, 2, 0))
+            img = data[:, :, :0]
+            plt.imshow(data)
+            plt.show()
+
 
 
 class child_abount(QDialog, Ui_Dialog_about):

@@ -37,15 +37,12 @@ class child_predict(QDialog, Ui_Dialog_predict):
         config=self.lineEdit_config.text()
         gpu_id = self.comboBox_gpu.currentText()
         model = self.lineEdit_model.text()
-        import sys
-
-        cmd =['python','../predict.py','--gpu',gpu_id, '--input', input, '--output', output,
+        # print(os.path.curdir)
+        cmd =['python3','../predict.py','--gpu',gpu_id, '--input', input, '--output', output,
               '--config', config,"--model",model]
-        try:
-            subprocess.call(cmd)
-        except:
-            QMessageBox.information(self, '错误', "Error occurred")
-        QMessageBox.information(self, '提示', "Finished")
+        print("Converting command: ", cmd)
+        subprocess.call(cmd)
+        QMessageBox.information(self,"提示","处理完成",QMessageBox.Yes | QMessageBox.No,QMessageBox.Yes)
 
 
 

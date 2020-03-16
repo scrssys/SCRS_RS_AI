@@ -1,5 +1,8 @@
 #coding:utf8
+""""
+    This is main procedure for remote sensing image semantic segmentation
 
+"""
 import cv2
 import numpy as np
 import os
@@ -37,15 +40,15 @@ eps=0.00001
 import json, time
 parser=argparse.ArgumentParser(description='RS classification train')
 parser.add_argument('--gpu', dest='gpu_id', help='GPU device id to use [0]',
-                        default=0, type=int)
+                        default=1, type=int)
 parser.add_argument('--input', dest='input', help='input file or dir',
-                         default=r'D:\data\rice\test\UAV0.3\image\shahecun.png')
+                         default='./default_img/')
 parser.add_argument('--output', dest='output', help='output dir',
-                         default=r'D:\data\models\global')
+                         default='./default_pred/')
 parser.add_argument('--config', dest='config_file', help='json file to config',
-                         default=r'config_binary_cloud.json')
+                         default='config_binary_buiding.json')
 parser.add_argument('--model', dest='model', help='model file to segment',
-                         default=r'D:\data\models\ee.h5')
+                         default='')
 args=parser.parse_args()
 gpu_id=args.gpu_id
 print("gpu_id:{}".format(gpu_id))
@@ -101,9 +104,9 @@ print("Ultimate input dir:{}".format(ult_input))
 
 date_time = time.strftime("%Y-%m-%d_%H-%M-%S", time.localtime())
 if os.path.isdir(curr_output):
-    output_dir = ''.join([curr_output, '\\', date_time])
+    output_dir = ''.join([curr_output, '/', date_time])
 else:
-    output_dir = ''.join([config.mask_dir, '\\',date_time])
+    output_dir = ''.join([config.mask_dir, '/',date_time])
 os.mkdir(output_dir)
 print("Ultimate output dir:{}".format(output_dir))
 
@@ -131,18 +134,16 @@ if __name__ == '__main__':
 
     out_bands = target_class
 
-
     try:
         if "deeplab" in config.model_path:
             print("For deeplab V3+, load model with parameters of custom_objects\n")
             model = load_model(config.model_path,
                                custom_objects={'relu6': relu6, 'BilinearUpsampling': BilinearUpsampling}, compile=False)
         else:
-
             model = load_model(config.model_path, compile=False)
 
     except Exception:
-        print("Error: failed to load model!\n")
+        print("Error: failde to load model!\n")
         sys.exit(-1)
     else:
         print("model is not deeplab V3+!\n")
@@ -265,7 +266,7 @@ if __name__ == '__main__':
         print(np.unique(result_mask))
         # result_mask[nodata_indx]=255
         # output_file = ''.join([output_dir, '/', abs_filename, config.suffix])
-        output_file = ''.join([output_dir, '\\', abs_filename])
+        output_file = ''.join([output_dir, '/', abs_filename])
         driver = gdal.GetDriverByName("GTiff")
         outdataset = driver.Create(output_file, W, H, 1, gdal.GDT_Byte)
         outdataset.SetGeoTransform(geoinf)

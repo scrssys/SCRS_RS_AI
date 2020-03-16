@@ -25,7 +25,7 @@ parser.add_argument('--model', dest='model_dir', help='path to storage model',
 parser.add_argument('--gpu', dest='gpu_id', help='GPU device id to use [0]', nargs='+',
                         default="0", type=int)
 parser.add_argument('--config', dest='config_file', help='json file to config',
-                         default="C:\\Users\SCRS\\PycharmProjects\\SCRS_RS_AI-developer\\config_multiclass_global.json")
+                         default="/home/omnisky/PycharmProjects/SCRS_RS_AI/config_binary_snowline.json")
 args=parser.parse_args()
 with open(args.config_file, 'r') as f:
     cfg = json.load(f)
@@ -84,7 +84,7 @@ def get_parameters(cfg,arg):
                                config.loss,'_',config.optimizer,'_',str(config.img_w), '_',band_name,'_', date_time, 'best.h5'])
     last_model = ''.join([config.model_dir,'/',config.target_name, '_', config.network, '_',config.BACKBONE,'_',
                           config.loss,'_',config.optimizer,'_',str(config.img_w), '_',band_name,'_', date_time, 'last.h5'])
-    return gpu_id,model,last_model
+
 
 """get the train file name and divide to train and val parts"""
 def get_train_val(val_rate=config.val_rate):
@@ -228,8 +228,7 @@ if __name__ == '__main__':
     print(model.summary())
     print("Train by : {}_{}".format(config.network, config.BACKBONE))
     """ Training model........"""
-    para = get_parameters()
-    train(model,para[0],para[1],para[2])
+    train(model,"","/home/omnisky/PycharmProjects/SCRS_RS_AI","/home/omnisky/PycharmProjects/SCRS_RS_AI/we.h5")
     print("[Info]:test model...")
 
 

@@ -29,9 +29,9 @@ from config import Config
 
 parser=argparse.ArgumentParser(description='RS classification train')
 parser.add_argument('--gpu', dest='gpu_id', help='GPU device id to use [0]', nargs='+',
-                        default=0, type=int)
+                        default=4, type=int)
 parser.add_argument('--config', dest='config_file', help='json file to config',
-                         default='config_binary_cloud.json')
+                         default='config_multiclass_global.json')
 args=parser.parse_args()
 gpu_id=args.gpu_id
 print("gpu_id:{}".format(gpu_id))

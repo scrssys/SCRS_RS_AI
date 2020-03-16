@@ -314,7 +314,7 @@ def load_img_bybandlist(path, bandlist=[]):
     return 0, out_img
 
 
-def get_file(file_dir, file_type=[".png",'.jpg', '.PNG', '.tif', ".TIF",'.img','.IMG']):
+def get_file(file_dir, file_type=["png",'.png', '.PNG', '.tif', '.img','.IMG']):
     """
 
     :param file_dir: directory of input files, it may have sub_folders
