@@ -4,7 +4,7 @@
   "img_h":480,
   "im_bands":3,
   "band_list":[0,1,2],
-  "im_type":"UINT8",
+  "im_type":"UINT10",
   "target_name":"building_imagenet",
   "val_rate":0.25,
   "augment":true,
