@@ -1,7 +1,5 @@
 
-import os ,sys
-import gdal,osr,ogr
-import gc
+import os ,sys,subprocess
 from tqdm import tqdm
 from PyQt5.QtCore import QFileInfo, QDir, QCoreApplication, Qt
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
@@ -12,6 +10,7 @@ from ui.postProcess.AccuracyEvaluate import Ui_Dialog_accuracy_evaluate
 from ui.postProcess.Binarization import Ui_Dialog_binarization
 from ui.postProcess.PostPrecessBackend import combine_masks, vote_masks, accuracy_evalute,binarize_mask,batchbinarize_masks
 from ui.postProcess.RasterToPolygon import Ui_Dialog_raster_to_polygon
+from ui.postProcess.removeSmallPolygon import  Ui_Dialog_removeSmallPolygon
 from ulitities.base_functions import get_file, polygonize
 
 combinefile_dict = {'road_mask':'', 'building_mask':'', 'save_mask':'', 'foreground':127}
@@ -265,3 +264,24 @@ class child_AccuacyEvaluate(QDialog, Ui_Dialog_accuracy_evaluate):
 
         self.setWindowModality(Qt.NonModal)
 
+class child_removesmallobject(QDialog, Ui_Dialog_removeSmallPolygon):
+    def __init__(self):
+        super(child_removesmallobject, self).__init__()
+        self.setupUi(self)
+    def slot_select_inputdir(self):
+        dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
+        self.lineEdit_inputdir.setText(dir_tmp)
+    def slot_select_outputdir(self):
+        dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
+        self.lineEdit_outputdir.setText(dir_tmp)
+    def slot_ok(self):
+        in_dir = self.lineEdit_inputdir.text()
+        ou_dir = self.lineEdit_outputdir.text()
+        scale_factor = str(int(self.comboBox_scale.currentText())*10)
+        cmd = ['python', '../post_process/remove_small_object.py',"batch_rmovesmallobj", in_dir,ou_dir,scale_factor]
+        try:
+            subprocess.call(cmd)
+        except:
+            QMessageBox.information(self, '提示', "Error occurred")
+        QMessageBox.information(self, '提示', "Finished")
+        # print(in_dir + "\n" +ou_dir + "\n"+ scale_factor)

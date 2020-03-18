@@ -60,7 +60,7 @@
         </size>
        </property>
        <property name="text">
-        <string>Output file</string>
+        <string>Output dir</string>
        </property>
       </widget>
      </item>
@@ -123,7 +123,7 @@
           </size>
          </property>
          <property name="text">
-          <string>Input file</string>
+          <string>Input dir</string>
          </property>
         </widget>
        </item>

@@ -10,11 +10,11 @@ import cv2
 from tqdm import tqdm
 from PyQt5.QtCore import QFileInfo, QDir, QCoreApplication, Qt
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
-from sampleProduce.SampleGenCommon import Ui_Dialog_sampleGenCommon
-from sampleProduce.SampleGenSelfAdapt import Ui_Dialog_sampleGenSelfAdapt
+from ui.sampleProduce.SampleGenCommon import Ui_Dialog_sampleGenCommon
+from ui.sampleProduce.SampleGenSelfAdapt import Ui_Dialog_sampleGenSelfAdapt
 
 from ulitities.base_functions import get_file, load_img_by_gdal
-from sampleProduce.sampleProcess_backend import SampleGenerate
+from ui.sampleProduce.sampleProcess_backend import SampleGenerate
 
 sampleGen_dict={'input_dir':'', 'output_dir':'', 'window_size':256, 'min':0, 'max':2, 'target_label':1, 'sample_num':5000, 'mode':'augment'}
 sampleGenSelfAdapt_dict={'input_dir':'', 'output_dir':'', 'window_size':256, 'min':0, 'max':2, 'target_label':1, 'sample_scaleRate':1.0, 'mode':'augment', 'imgmode':"normalize"}

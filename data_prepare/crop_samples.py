@@ -1,4 +1,4 @@
-import os,sys
+import os,sys,fire
 import numpy as np
 import cv2
 import gdal
@@ -7,11 +7,7 @@ from tqdm import tqdm
 from ulitities.base_functions import get_file, load_img_by_gdal, find_file
 
 
-inputdir = '/home/omnisky/PycharmProjects/data/rice/samples/all1'
-outputdir = '/home/omnisky/PycharmProjects/data/rice/samples_crop1'
-patch_size=4000
-
-if __name__=='__main__':
+def Simple_Crop(inputdir,outputdir,patch_size=3000):
     if not os.path.isdir(inputdir):
         print("Error: input directory is not existed")
         sys.exit(-1)
@@ -119,3 +115,6 @@ if __name__=='__main__':
                         for s in range(c):
                             outdataset.GetRasterBand(s + 1).WriteArray(crop_img[:,:,s])
                     del outdataset
+
+if __name__=="__main__":
+    fire.Fire()

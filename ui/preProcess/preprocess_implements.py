@@ -1,20 +1,29 @@
 #coding:utf-8
-
 import os
 import sys
 import gdal
+import cv2
+import subprocess
 import numpy as np
 import matplotlib.pyplot as plt
-import cv2
 from tqdm import tqdm
 from PyQt5.QtCore import QFileInfo, QDir, QCoreApplication, Qt
+from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
 from ui.preProcess.ImageStretch import Ui_Dialog_image_stretch
 from ui.preProcess.label_check import Ui_Dialog_label_check
 from ui.preProcess.ImageClip import Ui_Dialog_image_clip
+from ui.preProcess.convert_8bit import Ui_Dialog_convert8bit
+from ui.preProcess.samplecrop import Ui_Dialog_samplecrop
 from ulitities.xml_prec import generate_xml_from_dict, parse_xml_to_dict
 from ulitities.base_functions import get_file, load_img_by_gdal
 from .preprocess_backend import image_normalize, image_clip
+
+
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
+from  PyQt5.QtGui import *
+QTranslator()
 
 imgStretch_dict = {'input_dir': '', 'output_dir': '', 'NoData': '65535', 'OutBits': '16bits',
                        'StretchRange': '1024','CutValue': '100'}
@@ -22,12 +31,75 @@ imgClip_dict = {'input_file':'', 'output_file':'', 'x':'0', 'y':'0', 'row':'1', 
 
 
 # HAS_INVALID_VALUE = False
+class child_convert_8bit(QDialog,Ui_Dialog_convert8bit):
+    def __init__(self):
+        super(child_convert_8bit,self).__init__()
+        self.setWindowTitle("convert 8bit")
+        self.setupUi(self)
+    def slot_select_samplepath(self):
+        dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
+        self.lineEdit_imagpath.setText(dir_tmp)
+    def slot_select_outputpath(self):
+        dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
+        self.lineEdit_outputpath.setText(dir_tmp)
+    def slot_ok(self):
+        dir_sample = self.lineEdit_outputpath.text()
+        dir_output = self.lineEdit_outputpath.text()
+        # QMessageBox.information(self, '提示',
+        #                         "input:{}\n output :{}".format(dir_sample, dir_output)
+        #                         , QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
+        #excute pragram
+        cmd = ['python', '../data_prepare/convert_to_8bits.py',"batch_convert_8bit" ,dir_sample,dir_output]
+        try:
+            subprocess.call(cmd)
+        except:
+            QMessageBox.information(self, '提示', "Error occurred")
+        QMessageBox.information(self, '提示', "Finished")
 
+class child_samplecrop(QDialog,Ui_Dialog_samplecrop):
+    def __init__(self):
+        super(child_samplecrop,self).__init__()
+        # self.lineEdit_cropsize.setPlaceholderText()
+
+        self.setWindowTitle("samplecrop")
+        self.setupUi(self)
+        self.new_translate()
+
+    def new_translate(self):
+        _translate = QCoreApplication.translate
+        pIntvalidator=QIntValidator(self)
+        pIntvalidator.setRange(1,9999)
+        self.lineEdit_cropsize.setValidator(pIntvalidator)
+    def slot_select_inputdir(self):
+        dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
+        self.lineEdit_inputdir.setText(dir_tmp)
+        # QDir.setCurrent(dir_tmp)
+    def slot_select_outputdir(self):
+        dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
+        self.lineEdit_outputdir.setText(dir_tmp)
+    def slot_ok(self):
+        cropsize = self.lineEdit_cropsize.text()
+        sample_dir = self.lineEdit_inputdir.text()
+        output_dir = self.lineEdit_outputdir.text()
+
+        #excute program
+
+        cmd =['python',r'C:\Users\SCRS\PycharmProjects\SCRS_RS_AI-developer\data_prepare\crop_samples.py',
+              "Simple_Crop",sample_dir,output_dir,cropsize]
+        # cmd =['python',r'..\data_prepare\crop_samples.py',
+        #       "Simple_Crop",sample_dir,output_dir,cropsize]
+        try:
+            subprocess.call(cmd)
+        except:
+            QMessageBox.information(self, '错误', "Error occurred")
+        QMessageBox.information(self, '提示', "Finished")
 class child_image_stretch(QDialog, Ui_Dialog_image_stretch):
     def __init__(self):
         super(child_image_stretch,self).__init__()
+
         self.setWindowTitle("Image stretch")
         self.setupUi(self)
+
 
     def slot_select_input_dir(self):
         dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
