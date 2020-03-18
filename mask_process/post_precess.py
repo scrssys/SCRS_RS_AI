@@ -12,7 +12,7 @@ from skimage.morphology import erosion, dilation, rectangle,opening,closing,disk
 def remove_small_objects_deal(predict, mask):
     lst = os.listdir(predict)
     for f in tqdm(lst):
-        if not f.endswith(".tif"):
+        if not f.endswith(".png"):
             continue
         img_pre = imread(os.path.join(predict, f))
         # absname = os.path.split(f)[1]
@@ -23,7 +23,7 @@ def remove_small_objects_deal(predict, mask):
         # img_mask[ np.where ( img_mask == 255 ) ] = 1
         # if img_mask.max() > 1:
         #     print("error")
-        size = 3
+        size = 29
         im_open = opening(img_pre, disk(size))
         img_pre = im_open
         img_pre = img_pre.astype(np.bool)
@@ -109,5 +109,5 @@ def calMetric(predict,mask):
 if __name__=="__main__":
     # remove_small_objects_deal("/home/omnisky/PycharmProjects/data/samples/global/test/pred/2019-12-30_10-06-38"
     #                           ,"/home/omnisky/PycharmProjects/data/samples/global/test/pred/post1")
-    calMetric("/home/omnisky/PycharmProjects/data/samples/global/test/reslult/2019-12-31_09-25-00 fpn cce imagenet"
-              ,"/home/omnisky/PycharmProjects/data/samples/global/test/label/paper")
+    remove_small_objects_deal("/home/omnisky/PycharmProjects/data/rice/test/pred/classical/rice_all1_null_classical_unet_efficientnetb5_binary_crossentropy_adam_480_012bands_2020-03-14_16-55-24best"
+              ,"/home/omnisky/PycharmProjects/data/rice/test/pred/classical/ts/")

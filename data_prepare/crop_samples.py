@@ -7,9 +7,9 @@ from tqdm import tqdm
 from ulitities.base_functions import get_file, load_img_by_gdal, find_file
 
 
-inputdir = '/home/omnisky/PycharmProjects/data/samples/global/sixBands/8bits_big'
-outputdir = '/home/omnisky/PycharmProjects/data/samples/global/sixBands/croped'
-patch_size=3000
+inputdir = '/home/omnisky/PycharmProjects/data/rice/samples/all1'
+outputdir = '/home/omnisky/PycharmProjects/data/rice/samples_crop1'
+patch_size=4000
 
 if __name__=='__main__':
     if not os.path.isdir(inputdir):
@@ -19,8 +19,12 @@ if __name__=='__main__':
         print("Warning: output directory is not existed")
         os.mkdir(outputdir)
     out_label_dir=outputdir+'/label/'
-    out_src_dir = outputdir + '/src/'
+    if not os.path.isdir(out_label_dir):
+        os.mkdir(out_label_dir)
 
+    out_src_dir = outputdir + '/src/'
+    if not os.path.isdir(out_src_dir):
+        os.mkdir(out_src_dir)
     label_list, img_list =[], []
 
     label_files, _=get_file(inputdir+'/label')
@@ -38,7 +42,7 @@ if __name__=='__main__':
         l_img = load_img_by_gdal(file, grayscale=True)
         if len(l_img)==0:
             continue
-        label_list.append(l_img)
+        # label_list.append(l_img)
         absname = os.path.split(file)[1]
         only_name = absname.split('.')[0]
         name_list.append(only_name)
@@ -48,6 +52,7 @@ if __name__=='__main__':
         if len(s_img)==0:
             continue
         img_list.append(s_img)
+        label_list.append(l_img)
 
     # assert(len(label_list)==len(img_list))
     try:
@@ -60,14 +65,17 @@ if __name__=='__main__':
 
     d_type = dataset.GetRasterBand(1).DataType
     del dataset
-    print(img_list)
-    print(label_list)
+    # print(img_list)
+    # print(label_list)
     for i in tqdm(range(len(label_list))):
         only_name = name_list[i]
         print("deal: {}".format(only_name))
         label=np.asarray(label_list[i], np.uint8)
         img=np.asarray(img_list[i], np.uint8)
-        assert(label.shape[:2]==img.shape[:2])
+        if label.shape[:2]!=img.shape[:2]:
+            print("the size of label and src are not equal:{}".format(only_name))
+
+            continue
         h,w,c = img.shape
         if h//patch_size==0 or w//patch_size==0:
             crop_label = label

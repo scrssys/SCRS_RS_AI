@@ -53,7 +53,7 @@
   "block_size":500000000,
   "nodata":65535,
   "tovector":false,
-  "model_path":"/home/omnisky/PycharmProjects/data/samples/global/model/8bits_new/pspnet/global_SEAsia_classical_segnet_senet154_categorical_crossentropy_adam_480_012bands_2020-03-04_14-47-30best.h5",
+  "model_path":"/home/omnisky/PycharmProjects/data/samples/global/model/8bits_new/pspnet/global_SEAsia_null_pspnet_senet154_categorical_crossentropy_adam_480_012bands_2020-03-05_09-53-24last.h5",
   "mask_dir": "/home/omnisky/PycharmProjects/data/samples/global/test/pred/"
 
 }

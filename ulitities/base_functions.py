@@ -92,7 +92,7 @@ def load_img_by_gdal(path, grayscale=False):
         try:
             img = np.transpose(img, (1, 2, 0))
         except:
-            print("image should be 3 dimensions!")
+            print("image should be 3 dimensions!{}".format(path))
             return []
     else:
         if im_bands > 1:

@@ -13,7 +13,7 @@ from keras.optimizers import Nadam
 from keras import optimizers
 
 
-def multiclass_unet(img_w, img_h, im_bands, n_label=3):
+def classical_unet(img_w, img_h, im_bands, n_label=3):
     inputs = Input((img_w, img_h, im_bands))
 
     conv1 = Conv2D(32, (3, 3), activation="relu", padding="same")(inputs)
@@ -53,19 +53,23 @@ def multiclass_unet(img_w, img_h, im_bands, n_label=3):
     conv9 = Conv2D(32, (3, 3), activation="relu", padding="same")(up9)
     conv9 = Conv2D(32, (3, 3), activation="relu", padding="same")(conv9)
 
-    conv10 = Conv2D(n_label, (1, 1), activation="softmax")(conv9)
+    if n_label>2:
+        conv10 = Conv2D(n_label, (1, 1), activation="softmax")(conv9)
+    else:
+        conv10 = Conv2D(n_label, (1, 1), activation="sigmoid")(conv9)
+
 
     conv10 = Reshape((img_w, img_h, n_label))(conv10)  # 4D(bath_size, img_w*img_h, n_label)
 
     model = Model(inputs=inputs, outputs=conv10)
 
-    model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['accuracy'])
+    # model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['accuracy'])
     # model.compile(optimizer=sgd, loss='categorical_crossentropy', metrics=['accuracy'])
 
     # model.summary()
     return model
 
-def multiclass_fcnnet(img_w, img_h, im_bands,n_label=3):
+def classical_fcnnet(img_w, img_h, im_bands,n_label=3):
 
     inputs = Input((img_w, img_h, im_bands))
 
@@ -120,16 +124,19 @@ def multiclass_fcnnet(img_w, img_h, im_bands,n_label=3):
     #up11
     up11 = Conv2DTranspose(n_label,(16,16), strides=(8,8), padding='same')(up10)
 
-    up12 = Conv2D(n_label, (1, 1), activation="softmax")(up11)
+    if n_label>2:
+        up12 = Conv2D(n_label, (1, 1), activation="softmax")(up11)
+    else:
+        up12 = Conv2D(n_label, (1, 1), activation="sigmoid")(up11)
     up13 = Reshape((img_w, img_h, n_label))(up12)  # 4D(bath_size, img_w*img_h, n_label)
 
     model = Model(inputs=inputs, outputs=up13)
-    model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['accuracy'])
+    # model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['accuracy'])
     # model.compile(optimizer='sgd', loss='categorical_crossentropy', metrics=['accuracy'])
 
     return model
 
-def multiclass_segnet(img_w, img_h, im_bands, n_label=3):
+def classical_segnet(img_w, img_h, im_bands, n_label=3):
     model = Sequential()
     #encoder
     model.add(Conv2D(64, (3, 3), strides=(1, 1), input_shape=(img_w, img_h, im_bands), padding='same', activation='relu')) # for channels_last
@@ -219,9 +226,12 @@ def multiclass_segnet(img_w, img_h, im_bands, n_label=3):
 
     #axis=1和axis=2互换位置，等同于np.swapaxes(layer,1,2) # for theano backend
     # model.add(Permute((2,1)))
-    model.add(Activation('softmax'))
+    if n_label>2:
+        model.add(Activation('softmax'))
+    else:
+        model.add(Activation('sigmoid'))
     # model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['accuracy'])
-    model.compile(optimizer='sgd', loss='categorical_crossentropy', metrics=['accuracy'])
+    # model.compile(optimizer='sgd', loss='categorical_crossentropy', metrics=['accuracy'])
 
     # model.summary()
     return model

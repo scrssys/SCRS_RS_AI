@@ -24,7 +24,7 @@ np.random.seed(seed)
 from data_prepare.data_generater import train_data_generator,val_data_generator
 from config import Config
 
-from palaeoild_models.classical_models import multiclass_unet, multiclass_fcnnet,multiclass_segnet
+from palaeoild_models.classical_models import classical_unet, classical_fcnnet,classical_segnet
 
 parser=argparse.ArgumentParser(description='RS classification train')
 parser.add_argument('--gpu', dest='gpu_id', help='GPU device id to use [0]', nargs='+',
@@ -32,7 +32,7 @@ parser.add_argument('--gpu', dest='gpu_id', help='GPU device id to use [0]', nar
 # parser.add_argument('--config', dest='config_file', help='json file to config',
 #                          default='config_binary_whu_buildings.json')
 parser.add_argument('--config', dest='config_file', help='json file to config',
-                         default='config_multiclass_global_classicalModels.json')
+                         default='/home/omnisky/PycharmProjects/data/rice/samples_all1_crop_copy/config_binary_global_classical.json')
 args=parser.parse_args()
 gpu_id=args.gpu_id
 print("gpu_id:{}".format(gpu_id))
@@ -169,6 +169,24 @@ def train(model):
         if len(gpu_id)>1:
             model = multi_gpu_model(model, gpus=len(gpu_id))
 
+    self_optimizer = SGD(lr=config.lr, decay=1e-6, momentum=0.9, nesterov=True)
+    if 'adagrad' in config.optimizer:
+        self_optimizer = Adagrad(lr=config.lr, decay=1e-6)
+    elif 'adam' in config.optimizer:
+        self_optimizer = Adam(lr=config.lr, decay=1e-6, beta_1=0.9, beta_2=0.999, epsilon=1e-8)
+    else:
+        pass
+
+    try:
+        my_loss = config.loss
+        # my_metrics = eval(config.metrics)
+        model.compile(self_optimizer, loss=my_loss, metrics=['accuracy'])
+    except:
+        print("model compile error")
+        exit(-5)
+    finally:
+        print("Compile model successfully!")
+
     H = model.fit_generator(generator=train_data_generator(config, train_set),
                             steps_per_epoch=train_numb // config.batch_size,
                             epochs=config.epochs,
@@ -194,11 +212,11 @@ if __name__ == '__main__':
 
     #test classical_unet
     if "unet" in config.network:
-        model = multiclass_unet(config.img_w,config.img_h,3,config.nb_classes)
-    elif "fcnnet" in config.network:
-        model = multiclass_fcnnet(config.img_w,config.img_h,3,config.nb_classes)
+        model = classical_unet(config.img_w,config.img_h,3,config.nb_classes)
+    elif "fcns" in config.network:
+        model = classical_fcnnet(config.img_w,config.img_h,3,config.nb_classes)
     else:
-        model = multiclass_segnet(config.img_w, config.img_h, 3, config.nb_classes)
+        model = classical_segnet(config.img_w, config.img_h, 3, config.nb_classes)
 
 
     print(model.summary())
