@@ -256,7 +256,7 @@ def _recreate_from_subdivs(subdivs, window_size, subdivisions, padded_out_shape)
     return y / (subdivisions ** 2)
 
 
-def _windowed_subdivs_multiclassbands(padded_img, model, window_size, subdivisions, real_classes, pred_func):
+def _windowed_subdivs_multiclassbands(padded_img, model, window_size, subdivisions, real_classes, pred_func,QuanScale):
     """
     Create tiled overlapping patches.
 
@@ -294,7 +294,7 @@ def _windowed_subdivs_multiclassbands(padded_img, model, window_size, subdivisio
     subdivs = subdivs.reshape(a * b, c, d, e)
     gc.collect()
 
-    subdivs = pred_func(subdivs, model, real_classes)
+    subdivs = pred_func(subdivs, model, real_classes,QuanScale)
     gc.collect()
     subdivs = subdivs.astype(np.float16)
     subdivs = np.array([patch * WINDOW_SPLINE_2D for patch in subdivs])
@@ -311,7 +311,12 @@ def _windowed_subdivs_multiclassbands(padded_img, model, window_size, subdivisio
     return subdivs
 
 
-def predict_img_with_smooth_windowing(input_img, model, window_size, subdivisions, slices, real_classes, pred_func, PLOT_PROGRESS = True):
+def predict_img_with_smooth_windowing(input_img, model, window_size,
+                                      subdivisions, slices, real_classes,
+                                      pred_func,
+                                      PLOT_PROGRESS = True,
+                                      QuanScale=255.0
+                                      ):
     """
     Apply the `pred_func` function to square patches of the image, and overlap
     the predictions to merge them smoothly.
@@ -338,7 +343,8 @@ def predict_img_with_smooth_windowing(input_img, model, window_size, subdivision
     for pad in tqdm(pads):
         # For every rotation:
         # predict each rotation with smooth window
-        sd = _windowed_subdivs_multiclassbands(pad, model, window_size, subdivisions, real_classes, pred_func)
+        sd = _windowed_subdivs_multiclassbands(pad, model, window_size, subdivisions,
+                                               real_classes, pred_func, QuanScale)
 
         # Merge tiled overlapping patches smoothly.
         one_padded_result = _recreate_from_subdivs(
@@ -421,7 +427,7 @@ def core_orignal_predict(image,bands, model,window_size,img_w=256, mask_bands=1)
     # cv2.imwrite('../../data/predict/test_model.png',outputresult*255)
     return outputresult
 
-def core_smooth_predict_multiclass(small_img_patches, model, real_classes):
+def core_smooth_predict_multiclass(small_img_patches, model, real_classes,QuanScale=255.0):
     """
 
     :param small_img_patches: input image 4D array (patches, row,column, channels)
@@ -440,11 +446,12 @@ def core_smooth_predict_multiclass(small_img_patches, model, real_classes):
     mask_output = []
     for p in list(range(patches)):
         crop = small_img_patches[p,:,:,:]
-        # ignore the backgroud
+        # ignore the nodata
         if len(np.unique(crop))<2:
-            pred= np.zeros(crop.shape,np.uint8)
+            a, b, _ = crop.shape
+            pred = np.zeros((a, b), np.uint8)
         else:
-            crop = img_to_array(crop)
+            crop = img_to_array(crop)/QuanScale
             crop = np.expand_dims(crop, axis=0)
             # print ('crop:{}'.format(crop.shape))
             pred = model.predict(crop, verbose=2)
@@ -485,7 +492,7 @@ def core_smooth_predict_multiclass(small_img_patches, model, real_classes):
 
 
 
-def core_smooth_predict_binary(small_img_patches, model, real_classes):
+def core_smooth_predict_binary(small_img_patches, model, real_classes,QuanScale=255.0):
     """
 
     :param small_img_patches: input image 4D array (patches, row,column, channels)
@@ -507,13 +514,18 @@ def core_smooth_predict_binary(small_img_patches, model, real_classes):
     mask_output = []
     for p in list(range(patches)):
         crop = small_img_patches[p,:,:,:]
-        crop = img_to_array(crop)
-        crop = np.expand_dims(crop, axis=0)
-        # print ('crop:{}'.format(crop.shape))
-        pred = model.predict(crop, verbose=2)
-        pred[pred<0.5]=0
-        pred[pred>=0.5]=1
-        pred = pred.reshape((row,column))
+        if len(np.unique(crop.astype(np.uint)))<2:
+            a,b,_=crop.shape
+            pred= np.zeros((a,b),np.uint8)
+        else:
+            crop =crop/QuanScale
+            crop = img_to_array(crop)
+            crop = np.expand_dims(crop, axis=0)
+            # print ('crop:{}'.format(crop.shape))
+            pred = model.predict(crop, verbose=2)
+            pred[pred<0.5]=0
+            pred[pred>=0.5]=1
+            pred = pred.reshape((row,column))
 
         # 将预测结果2D expand to 3D
         res_pred = np.expand_dims(pred, axis=-1)

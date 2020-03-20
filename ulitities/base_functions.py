@@ -168,10 +168,13 @@ def load_img_by_gdal_info(path, grayscale=False):
     im_bands = dataset.RasterCount
     # img = dataset.ReadAsArray(0,0,x_width,y_height)
     geotransform = dataset.GetGeoTransform()
+    projectInfo = dataset.GetProjectionRef()
+    print(projectInfo)
 
     del dataset
 
-    return y_height,x_width, im_bands, geotransform
+    return y_height,x_width, im_bands, geotransform, projectInfo
+
 
 def load_img_by_gdal_blocks(path, x,y,width,height,grayscale=False):
 
