@@ -440,14 +440,18 @@ def core_smooth_predict_multiclass(small_img_patches, model, real_classes):
     mask_output = []
     for p in list(range(patches)):
         crop = small_img_patches[p,:,:,:]
-        crop = img_to_array(crop)
-        crop = np.expand_dims(crop, axis=0)
-        # print ('crop:{}'.format(crop.shape))
-        pred = model.predict(crop, verbose=2)
-        if len(pred.shape) > 3:
-            pred = np.argmax(pred, axis=3)
+        # ignore the backgroud
+        if len(np.unique(crop))<2:
+            pred= np.zeros(crop.shape,np.uint8)
         else:
-            pred = np.argmax(pred, axis=2)
+            crop = img_to_array(crop)
+            crop = np.expand_dims(crop, axis=0)
+            # print ('crop:{}'.format(crop.shape))
+            pred = model.predict(crop, verbose=2)
+            if len(pred.shape) > 3:
+                pred = np.argmax(pred, axis=3)
+            else:
+                pred = np.argmax(pred, axis=2)
 
         # pred = np.argmax(pred, axis=2)
         pred = pred.reshape((row*column))
