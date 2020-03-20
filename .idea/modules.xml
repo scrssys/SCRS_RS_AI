@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/SCRS_RS_AI.iml" filepath="$PROJECT_DIR$/.idea/SCRS_RS_AI.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../semantic_segment_RSImage_2019/.idea/semantic_segment_RSImage.iml" filepath="$PROJECT_DIR$/../semantic_segment_RSImage_2019/.idea/semantic_segment_RSImage.iml" />
     </modules>
   </component>
 </project>
