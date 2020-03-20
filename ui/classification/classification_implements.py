@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox, QApplication
 from ui.classification.predict_one import Ui_Dialog_predict_one
 from ui.classification.classification_backend import predict_backend
 from ui.classification.Dialog_predict import Ui_Dialog_predict
+from predict import predict
 
 inputdict = {'input':'','output':'','gpu':'0','config':'','model':''}
 
@@ -38,13 +39,18 @@ class child_predict(QDialog, Ui_Dialog_predict):
         gpu_id = self.comboBox_gpu.currentText()
         model = self.lineEdit_model.text()
         # print(os.path.curdir)
-        cmd =['python','../predict.py','--gpu',gpu_id, '--input', input, '--output', output,
-              '--config', config,"--model",model]
-        try:
-            subprocess.call(cmd)
-        except:
-            QMessageBox.information(self, '错误', "Error occurred")
-        QMessageBox.information(self, '提示', "Finished")
+
+        ret=predict(config, gpu=gpu_id, input=input, output=output, model=model)
+        # cmd =['python','../predict.py','--gpu',gpu_id, '--input', input, '--output', output,
+        #       '--config', config,"--model",model]
+        # try:
+        #     subprocess.call(cmd)
+        # except:
+        #     QMessageBox.information(self, '错误', "Error occurred")
+        if ret!=0:
+            QMessageBox.warning(self,'提示', "Wrong")
+        else:
+            QMessageBox.information(self, '提示', "Finished")
 
 
 

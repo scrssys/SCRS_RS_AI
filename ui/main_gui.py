@@ -18,6 +18,10 @@ class mywindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.new_translate()
         self.setFont(QFont('SansSerif',12))
+        self.newlay = QGridLayout(self.centralwidget)
+        self.newlay.addWidget(self.dockWidget_4,0,0)
+        self.newlay.addWidget(self.tabWidget,1,0)
+
         self.doc = QGridLayout(self.dockWidgetContents_4)
 
 
@@ -59,6 +63,7 @@ class mywindow(QMainWindow, Ui_MainWindow):
         self.action_Train.setText(_translate("MainWindow", "训练"))
         self.actionremove_small_object.setText(_translate("MainWindow","消除小面"))
         self.actionRasterToPolygon.setText(_translate("MainWindow","栅格转矢量"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "输出"))
         # self.actionPredictOne.setText(_translate("MainWindow", "分类"))
 
     def slot_predict_one(self):

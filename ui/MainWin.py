@@ -2,23 +2,30 @@
 
 # Form implementation generated from reading ui file 'MainWin.ui'
 #
-# Created by: PyQt5 UI code generator 5.13.0
+# Created by: PyQt5 UI code generator 5.5.1
 #
 # WARNING! All changes made in this file will be lost!
 
-
 from PyQt5 import QtCore, QtGui, QtWidgets
-
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(599, 296)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setEnabled(False)
         self.centralwidget.setObjectName("centralwidget")
+        self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
+        self.tabWidget.setGeometry(QtCore.QRect(22, 150, 521, 80))
+        self.tabWidget.setMinimumSize(QtCore.QSize(500, 80))
+        self.tabWidget.setMaximumSize(QtCore.QSize(16777215, 80))
+        self.tabWidget.setObjectName("tabWidget")
+        self.tab = QtWidgets.QWidget()
+        self.tab.setObjectName("tab")
+        self.tabWidget.addTab(self.tab, "")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 599, 20))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 599, 18))
         self.menubar.setDefaultUp(True)
         self.menubar.setNativeMenuBar(False)
         self.menubar.setObjectName("menubar")
@@ -41,6 +48,7 @@ class Ui_MainWindow(object):
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
         self.dockWidget_4 = QtWidgets.QDockWidget(MainWindow)
+        self.dockWidget_4.setEnabled(False)
         self.dockWidget_4.setObjectName("dockWidget_4")
         self.dockWidgetContents_4 = QtWidgets.QWidget()
         self.dockWidgetContents_4.setObjectName("dockWidgetContents_4")
@@ -139,6 +147,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuHelp.menuAction())
 
         self.retranslateUi(MainWindow)
+        self.tabWidget.setCurrentIndex(0)
         self.actionLabel_check.triggered.connect(MainWindow.for_action_label_check)
         self.actionImage_strech.triggered.connect(MainWindow.for_action_image_stretch)
         self.actionImage_Clip.triggered.connect(MainWindow.slot_actiong_image_clip)
@@ -163,6 +172,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "RS Imagery Deep Learning Process System"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "tab 1"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuPrepocess.setTitle(_translate("MainWindow", "PreProcess"))
         self.menuTrain.setTitle(_translate("MainWindow", "Train"))
@@ -198,3 +208,4 @@ class Ui_MainWindow(object):
         self.actionconvert_8bit.setText(_translate("MainWindow", "convert 8bit"))
         self.actionlabel_crop.setText(_translate("MainWindow", "label crop"))
         self.actionremove_small_object.setText(_translate("MainWindow", "Remove small object"))
+
