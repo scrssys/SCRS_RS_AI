@@ -7,6 +7,11 @@ from ui.train.Train_implement import *
 from ui.about import Ui_Dialog_about
 from ui.open import MyFigure
 
+import platform
+sysinfo=platform.system()
+if sysinfo=='Linux':
+    from qgis.gui import QgsMapCanvas
+    from qgis.core import QgsMapLayer,QgsRasterLayer,QgsProject,QgsDataSourceUri
 
 
 class mywindow(QMainWindow, Ui_MainWindow):
@@ -19,15 +24,18 @@ class mywindow(QMainWindow, Ui_MainWindow):
         self.new_translate()
         self.setFont(QFont('SansSerif',12))
         self.newlay = QGridLayout(self.centralwidget)
+        self.canvas = QgsMapCanvas()
+        self.canvas.setCanvasColor(Qt.red)
+        # canvas.show()
+        # self.newlay.addWidget(self.canvas,0,0)
         self.newlay.addWidget(self.dockWidget_4,0,0)
-        self.newlay.addWidget(self.tabWidget,1,0)
-
         self.doc = QGridLayout(self.dockWidgetContents_4)
+        self.newlay.addWidget(self.tabWidget, 1, 0)
 
 
     def new_translate(self ):
         _translate = QtCore.QCoreApplication.translate
-        self.setWindowTitle(_translate("MainWindow", "    自然资源督察要素遥感识别监测系统（服务器）"))
+        self.setWindowTitle(_translate("MainWindow", "    自然资源督察要素遥感识别监测系统"))
         self.menuFile.setTitle(_translate("MainWindow", "文件"))
         self.menuPrepocess.setTitle(_translate("MainWindow", "预处理"))
         self.menuTrain.setTitle(_translate("MainWindow", "模型训练"))
@@ -65,6 +73,47 @@ class mywindow(QMainWindow, Ui_MainWindow):
         self.actionRasterToPolygon.setText(_translate("MainWindow","栅格转矢量"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "输出"))
         # self.actionPredictOne.setText(_translate("MainWindow", "分类"))
+
+    if sysinfo=='Linux':
+        def slot_open_show_qgis(self):
+            file, _ = QFileDialog.getOpenFileName(self, 'Select image', '../../data/', self.tr("Image(*.png *.jpg *.tif)"))
+            if not os.path.isfile(file):
+                QMessageBox.warning(self, "Warning", 'Please select a raster image file!')
+                # sys.exit(-1)
+            else:
+                # data=cv2.imread(file)
+                # pRasterLayer = QgsRasterLayer(file,'raster','true')
+                # path_to_tif = os.path.join(zy304016420151108.tif")
+                if os.path.isfile(file):
+                    reg=QgsProject.instance()
+                    file='/home/omnisky/Desktop/data/scale0ingdal23.tif'
+                    fileInfo = QFileInfo(file)
+                    baseName = fileInfo.baseName()
+                    rlayer = QgsRasterLayer(file, baseName)
+                    print(file)
+                    # rlayer = QgsRasterLayer(file, "chb_gaofen", "gdal")
+                    # layer_name = 'modis'
+                    # uri = QgsDataSourceUri()
+                    # uri.setParam('url', 'http://demo.mapserver.org/cgi-bin/wcs')
+                    # uri.setParam("identifier", layer_name)
+                    # rlayer = QgsRasterLayer(str(uri.encodedUri()), 'my wcs layer', 'wcs')
+                    if not rlayer.isValid():
+                        print("图层加载失败！")
+                    else:
+                        reg.addMapLayer(rlayer)
+
+                        # set extent to the extent of our layer
+                        self.canvas.setExtent(rlayer.extent())
+
+                        # set the map canvas layer set
+                        self.canvas.setLayerSet([QgsMapLayer(rlayer)])
+
+
+    def slot_open_show(self):
+        self.F = MyFigure( dpi=100)
+        self.F.plotdesrt()
+        # self.doc = QGridLayout(self.dockWidgetContents_4)
+        self.doc.addWidget(self.F, 0, 1)
 
     def slot_predict_one(self):
         child = child_predict_one()
@@ -206,11 +255,7 @@ class mywindow(QMainWindow, Ui_MainWindow):
         child.exec_()
 
 
-    def slot_open_show(self):
-        self.F = MyFigure(width=3, height=2, dpi=100)
-        self.F.plotdesrt()
-        # self.doc = QGridLayout(self.dockWidgetContents_4)
-        self.doc.addWidget(self.F, 0, 1)
+
 
 
 class child_abount(QDialog, Ui_Dialog_about):
