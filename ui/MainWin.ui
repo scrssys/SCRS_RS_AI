@@ -45,6 +45,16 @@
      <attribute name="title">
       <string>tab 1</string>
      </attribute>
+     <widget class="QTextEdit" name="textEdit">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>0</y>
+        <width>181</width>
+        <height>75</height>
+       </rect>
+      </property>
+     </widget>
     </widget>
    </widget>
   </widget>

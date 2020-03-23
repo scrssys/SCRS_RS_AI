@@ -6,13 +6,18 @@ from ui.classification.classification_implements import *
 from ui.train.Train_implement import *
 from ui.about import Ui_Dialog_about
 from ui.open import MyFigure
+from PyQt5.QtCore import QEventLoop, QThread
+import sys
+from ui.myThread import myThread
+from ui.hapImg import HapImg
 
 import platform
 sysinfo=platform.system()
 if sysinfo=='Linux':
-    from qgis.gui import QgsMapCanvas
-    from qgis.core import QgsMapLayer,QgsRasterLayer,QgsProject,QgsDataSourceUri
-
+    # from qgis.gui import QgsMapCanvas
+    # from qgis.core import QgsMapLayer,QgsRasterLayer,QgsProject,QgsDataSourceUri,QgsApplication
+    from qgis.gui import *
+    from qgis.core import *
 
 class mywindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -24,13 +29,17 @@ class mywindow(QMainWindow, Ui_MainWindow):
         self.new_translate()
         self.setFont(QFont('SansSerif',12))
         self.newlay = QGridLayout(self.centralwidget)
-        self.canvas = QgsMapCanvas()
-        self.canvas.setCanvasColor(Qt.red)
-        # canvas.show()
+        # self.canvas = QgsMapCanvas()
+        # self.canvas.setCanvasColor(Qt.white)
+        # self.canvas.show()
         # self.newlay.addWidget(self.canvas,0,0)
         self.newlay.addWidget(self.dockWidget_4,0,0)
         self.doc = QGridLayout(self.dockWidgetContents_4)
         self.newlay.addWidget(self.tabWidget, 1, 0)
+        self.output=QGridLayout(self.tabWidget)
+        # self.text=
+        self.output.addWidget(self.textEdit)
+        self.textEdit.setText("test")
 
 
     def new_translate(self ):
@@ -75,42 +84,60 @@ class mywindow(QMainWindow, Ui_MainWindow):
         # self.actionPredictOne.setText(_translate("MainWindow", "分类"))
 
     if sysinfo=='Linux':
-        def slot_open_show_qgis(self):
+        def init(self):
+            a = QgsApplication(sys.argv, True)
+            QgsApplication.setPrefixPath('/usr/local/', True)
+            QgsApplication.initQgis()
+            return a
+
+        def show_canvas(self,app):
+            canvas = QgsMapCanvas()
+            canvas.show()
+            app.exec_()
+
+        def slot_open_show_bk(self):
+
             file, _ = QFileDialog.getOpenFileName(self, 'Select image', '../../data/', self.tr("Image(*.png *.jpg *.tif)"))
             if not os.path.isfile(file):
                 QMessageBox.warning(self, "Warning", 'Please select a raster image file!')
                 # sys.exit(-1)
             else:
-                # data=cv2.imread(file)
-                # pRasterLayer = QgsRasterLayer(file,'raster','true')
-                # path_to_tif = os.path.join(zy304016420151108.tif")
                 if os.path.isfile(file):
-                    reg=QgsProject.instance()
-                    file='/home/omnisky/Desktop/data/scale0ingdal23.tif'
-                    fileInfo = QFileInfo(file)
-                    baseName = fileInfo.baseName()
-                    rlayer = QgsRasterLayer(file, baseName)
-                    print(file)
-                    # rlayer = QgsRasterLayer(file, "chb_gaofen", "gdal")
-                    # layer_name = 'modis'
-                    # uri = QgsDataSourceUri()
-                    # uri.setParam('url', 'http://demo.mapserver.org/cgi-bin/wcs')
-                    # uri.setParam("identifier", layer_name)
-                    # rlayer = QgsRasterLayer(str(uri.encodedUri()), 'my wcs layer', 'wcs')
-                    if not rlayer.isValid():
-                        print("图层加载失败！")
-                    else:
-                        reg.addMapLayer(rlayer)
+                    # file='/home/omnisky/Desktop/data/test1.tif'
+                    # apps = QgsApplication()
+                    QgsApplication.setPrefixPath('/usr/local/',True)
+                    qgs=QgsApplication([],True)
+                    qgs.initQgis()
+                    reg = QgsProject.instance()
+                    mloop=QEventLoop()
+                    pthread = myThread(file,self.canvas)
+                    pthread.start()
+                    pthread.finished.connect(mloop.exec())
 
-                        # set extent to the extent of our layer
-                        self.canvas.setExtent(rlayer.extent())
-
-                        # set the map canvas layer set
-                        self.canvas.setLayerSet([QgsMapLayer(rlayer)])
+                    # fileInfo = QFileInfo(file)
+                    # baseName = fileInfo.baseName()
+                    # rlayer = QgsRasterLayer(file, baseName)
+                    # print(file)
+                    # if not rlayer.isValid():
+                    #     print("图层加载失败！")
+                    # else:
+                    #     reg.addMapLayer(rlayer)
+                    #
+                    #     # set extent to the extent of our layer
+                    #     self.canvas.setExtent(rlayer.extent())
+                    #
+                    #     # set the map canvas layer set
+                    #     self.canvas.setLayers([rlayer])
+                        # self.canvas.show()
+                        # self.canvas.exec()
+                    # sys.exit(qgs.exec_())
+                    # qgs.quit()
+                    # qgs.exitQgis()
+                    # QCoreApplication.quit()
 
 
     def slot_open_show(self):
-        self.F = MyFigure( dpi=100)
+        self.F = MyFigure(dpi=100)
         self.F.plotdesrt()
         # self.doc = QGridLayout(self.dockWidgetContents_4)
         self.doc.addWidget(self.F, 0, 1)
