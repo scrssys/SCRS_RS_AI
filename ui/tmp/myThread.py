@@ -1,6 +1,5 @@
-import os,sys
-from PyQt5.QtCore import QEventLoop, QThread,QObject
-from ui.hapImg import HapImg
+from PyQt5.QtCore import QThread
+from ui.tmp.hapImg import HapImg
 
 class myThread(QThread):
     def __init__(self,file,canvas):

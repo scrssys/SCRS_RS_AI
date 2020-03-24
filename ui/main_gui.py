@@ -6,18 +6,16 @@ from ui.classification.classification_implements import *
 from ui.train.Train_implement import *
 from ui.about import Ui_Dialog_about
 from ui.open import MyFigure
-from PyQt5.QtCore import QEventLoop, QThread
-import sys
-from ui.myThread import myThread
-from ui.hapImg import HapImg
+from PyQt5.QtCore import QEventLoop
+
 
 import platform
 sysinfo=platform.system()
 if sysinfo=='Linux':
-    # from qgis.gui import QgsMapCanvas
-    # from qgis.core import QgsMapLayer,QgsRasterLayer,QgsProject,QgsDataSourceUri,QgsApplication
-    from qgis.gui import *
-    from qgis.core import *
+    from qgis.gui import QgsMapCanvas
+    from qgis.core import QgsMapLayer,QgsRasterLayer,QgsProject,QgsDataSourceUri,QgsApplication
+    # from qgis.gui import *
+    # from qgis.core import *
 
 class mywindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -29,15 +27,16 @@ class mywindow(QMainWindow, Ui_MainWindow):
         self.new_translate()
         self.setFont(QFont('SansSerif',12))
         self.newlay = QGridLayout(self.centralwidget)
-        # self.canvas = QgsMapCanvas()
-        # self.canvas.setCanvasColor(Qt.white)
+        self.canvas = QgsMapCanvas()
+        self.canvas.setCanvasColor(Qt.white)
         # self.canvas.show()
-        # self.newlay.addWidget(self.canvas,0,0)
-        self.newlay.addWidget(self.dockWidget_4,0,0)
-        self.doc = QGridLayout(self.dockWidgetContents_4)
+        self.newlay.addWidget(self.canvas,0,0)
+        '''display img by matplotlib.figure'''
+        # self.newlay.addWidget(self.dockWidget_4,0,0)
+        # self.doc = QGridLayout(self.dockWidgetContents_4)
+
         self.newlay.addWidget(self.tabWidget, 1, 0)
         self.output=QGridLayout(self.tabWidget)
-        # self.text=
         self.output.addWidget(self.textEdit)
         self.textEdit.setText("test")
 
@@ -61,14 +60,6 @@ class mywindow(QMainWindow, Ui_MainWindow):
         self.actionSampleGenByCV2.setText(_translate("MainWindow", "SampleGenByCV2"))
         self.actionImage_Clip.setText(_translate("MainWindow", "图像裁剪"))
         self.actionMismatch_Analyze.setText(_translate("MainWindow", "Mismatch Analyze"))
-        # self.actionTrain_Binary_Jaccard.setText(_translate("MainWindow", "二分类模型（Jaccard相似度）"))
-        # self.actionTrain_Binary_JaccCross.setText(_translate("MainWindow", "二分类模型（相似度&交叉熵）"))
-        # self.actionTrain_Binary_Cross_entropy.setText(_translate("MainWindow", "二分类模型（交叉熵）"))
-        # self.actionTrain_Multiclass.setText(_translate("MainWindow", "多分类模型"))
-        # self.actionTrain_Binary_Onehot_Cross.setText(_translate("MainWindow", "二分类模型（Onehot编码）"))
-        # self.actionPredict_Binary_Single.setText(_translate("MainWindow", "二分类预测"))
-        # self.actionPredict_Multiclass_Single.setText(_translate("MainWindow", "多分类预测"))
-        # self.actionPredict_Binary_Batch.setText(_translate("MainWindow", "二分类批处理"))
         self.actionPredict.setText(_translate("MainWindow", "分类"))
         self.actionAbout.setText(_translate("MainWindow", "关于"))
         self.actionOpen.setText(_translate("MainWindow", "影像打开"))
@@ -95,7 +86,7 @@ class mywindow(QMainWindow, Ui_MainWindow):
             canvas.show()
             app.exec_()
 
-        def slot_open_show_bk(self):
+        def slot_open_show(self):
 
             file, _ = QFileDialog.getOpenFileName(self, 'Select image', '../../data/', self.tr("Image(*.png *.jpg *.tif)"))
             if not os.path.isfile(file):
@@ -109,34 +100,28 @@ class mywindow(QMainWindow, Ui_MainWindow):
                     qgs=QgsApplication([],True)
                     qgs.initQgis()
                     reg = QgsProject.instance()
-                    mloop=QEventLoop()
-                    pthread = myThread(file,self.canvas)
-                    pthread.start()
-                    pthread.finished.connect(mloop.exec())
 
-                    # fileInfo = QFileInfo(file)
-                    # baseName = fileInfo.baseName()
-                    # rlayer = QgsRasterLayer(file, baseName)
-                    # print(file)
-                    # if not rlayer.isValid():
-                    #     print("图层加载失败！")
-                    # else:
-                    #     reg.addMapLayer(rlayer)
-                    #
-                    #     # set extent to the extent of our layer
-                    #     self.canvas.setExtent(rlayer.extent())
-                    #
-                    #     # set the map canvas layer set
-                    #     self.canvas.setLayers([rlayer])
-                        # self.canvas.show()
-                        # self.canvas.exec()
-                    # sys.exit(qgs.exec_())
-                    # qgs.quit()
-                    # qgs.exitQgis()
-                    # QCoreApplication.quit()
+                    fileInfo = QFileInfo(file)
+                    baseName = fileInfo.baseName()
+                    rlayer = QgsRasterLayer(file, baseName)
+                    print(file)
+                    if not rlayer.isValid():
+                        print("图层加载失败！")
+                    else:
+                        reg.addMapLayer(rlayer)
+
+                        # set extent to the extent of our layer
+                        self.canvas.setExtent(rlayer.extent())
+
+                        # set the map canvas layer set
+                        self.canvas.setLayers([rlayer])
+                        self.canvas.show()
+                    mloop = QEventLoop()
+                    self.canvas.extentsChanged.connect(mloop.exec())
 
 
-    def slot_open_show(self):
+
+    def slot_open_show_bk(self):
         self.F = MyFigure(dpi=100)
         self.F.plotdesrt()
         # self.doc = QGridLayout(self.dockWidgetContents_4)
