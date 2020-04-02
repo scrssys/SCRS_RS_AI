@@ -1,11 +1,8 @@
 
 #coding:utf-8
-import os
-import sys
-import cv2
+import os,sys,time,cv2,gc
 import numpy as np
 import gdal,osr,ogr
-import gc
 gdal.UseExceptions()
 
 # from error_code import *
@@ -45,6 +42,18 @@ class Base_ulitities:
 
 
 
+def echoRuntime(func):
+    def wrapper(*args, **kwargs):
+        startTime = time.strftime("%Y:%m:%d:%H:%M:%S",time.localtime())
+        t1 = time.time()
+        print(func.__name__ + ">>>......Strat at : " + str(startTime))
+        func(*args, **kwargs)
+        endTime = time.strftime("%Y:%m:%d:%H:%M:%S",time.localtime())
+        t2 = time.time()
+        print(func.__name__ + ">>>......Finished at : "+ endTime)
+        msecs = (t2 - t1)
+        print(func.__name__+" running time is %.2f s" %msecs)
+    return wrapper
 
 
 def load_img_by_cv2(path, grayscale=False):

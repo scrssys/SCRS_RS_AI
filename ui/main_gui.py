@@ -5,19 +5,25 @@ from ui.postProcess.postProcess_implements import *
 from ui.classification.classification_implements import *
 from ui.train.Train_implement import *
 from ui.about import Ui_Dialog_about
-from ui.open import MyFigure
+from ui.open import matplot_Figure,qgis_plot
 from PyQt5.QtCore import QEventLoop
-
-
+from qgis.gui import QgsMapCanvas
 import platform
 sysinfo=platform.system()
-if sysinfo=='Linux':
-    from qgis.gui import QgsMapCanvas
-    from qgis.core import QgsMapLayer,QgsRasterLayer,QgsProject,QgsDataSourceUri,QgsApplication
-    # from qgis.gui import *
-    # from qgis.core import *
+
+class EmittingStream(QObject):
+    """
+    redirect print
+    """
+    textWritten = pyqtSignal(str)
+    def write(self, text):
+        self.textWritten.emit(str(text))
+    def flush(self):
+        sys.stdout.flush()
+
 
 class mywindow(QMainWindow, Ui_MainWindow):
+    main_message_sig = pyqtSignal(str)
     def __init__(self):
         super(mywindow,self).__init__()
         self.move(300,300)
@@ -26,20 +32,43 @@ class mywindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.new_translate()
         self.setFont(QFont('SansSerif',12))
+        # self.m_thread = main_thread()
         self.newlay = QGridLayout(self.centralwidget)
         self.canvas = QgsMapCanvas()
         self.canvas.setCanvasColor(Qt.white)
         # self.canvas.show()
         self.newlay.addWidget(self.canvas,0,0)
         '''display img by matplotlib.figure'''
-        # self.newlay.addWidget(self.dockWidget_4,0,0)
-        # self.doc = QGridLayout(self.dockWidgetContents_4)
+        self.newlay.addWidget(self.dockWidget_4,0,0)
+        self.doc = QGridLayout(self.dockWidgetContents_4)
 
         self.newlay.addWidget(self.tabWidget, 1, 0)
         self.output=QGridLayout(self.tabWidget)
-        self.output.addWidget(self.textEdit)
-        self.textEdit.setText("test")
 
+        self.output.addWidget(self.textBrowser)
+        self.textBrowser.setText("Runtime message:\n")
+
+        self.main_message_sig.connect(self.OutputWritten)
+    """
+    #   Redirect standard output
+        sys.stdout = EmittingStream(textWritten=self.OutputWritten)
+        sys.stderr = EmittingStream(textWritten=self.OutputWritten)
+    def __del__(self):
+        sys.stdout = sys.__stdout__
+        sys.stderr = sys.__stderr__
+    """
+    def OutputWritten(self, text):
+        """
+        send massage to main window
+        :param str:
+        :return:
+        """
+        curr_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+        cursor = self.textBrowser.textCursor()
+        cursor.movePosition(cursor.End)
+        cursor.insertText(curr_time + " "+ text + "\n")
+        self.textBrowser.setTextCursor(cursor)
+        self.textBrowser.ensureCursorVisible()
 
     def new_translate(self ):
         _translate = QtCore.QCoreApplication.translate
@@ -74,58 +103,24 @@ class mywindow(QMainWindow, Ui_MainWindow):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "输出"))
         # self.actionPredictOne.setText(_translate("MainWindow", "分类"))
 
-    if sysinfo=='Linux':
-        def init(self):
-            a = QgsApplication(sys.argv, True)
-            QgsApplication.setPrefixPath('/usr/local/', True)
-            QgsApplication.initQgis()
-            return a
+    def slot_open_show(self):
+        img, _ = QFileDialog.getOpenFileName(self, 'Select image', '../../data/',
+                                             self.tr("Image(*.png *.jpg *.tif)"))
+        if sysinfo == 'Linux':
+            try:
+                self.OutputWritten("Openning:" + img)
+                qgis_plot(self.canvas, img)
 
-        def show_canvas(self,app):
-            canvas = QgsMapCanvas()
-            canvas.show()
-            app.exec_()
-
-        def slot_open_show(self):
-
-            file, _ = QFileDialog.getOpenFileName(self, 'Select image', '../../data/', self.tr("Image(*.png *.jpg *.tif)"))
-            if not os.path.isfile(file):
-                QMessageBox.warning(self, "Warning", 'Please select a raster image file!')
-                # sys.exit(-1)
-            else:
-                if os.path.isfile(file):
-                    # file='/home/omnisky/Desktop/data/test1.tif'
-                    # apps = QgsApplication()
-                    QgsApplication.setPrefixPath('/usr/local/',True)
-                    qgs=QgsApplication([],True)
-                    qgs.initQgis()
-                    reg = QgsProject.instance()
-
-                    fileInfo = QFileInfo(file)
-                    baseName = fileInfo.baseName()
-                    rlayer = QgsRasterLayer(file, baseName)
-                    print(file)
-                    if not rlayer.isValid():
-                        print("图层加载失败！")
-                    else:
-                        reg.addMapLayer(rlayer)
-
-                        # set extent to the extent of our layer
-                        self.canvas.setExtent(rlayer.extent())
-
-                        # set the map canvas layer set
-                        self.canvas.setLayers([rlayer])
-                        self.canvas.show()
-                    mloop = QEventLoop()
-                    self.canvas.extentsChanged.connect(mloop.exec())
-
-
-
-    def slot_open_show_bk(self):
-        self.F = MyFigure(dpi=100)
-        self.F.plotdesrt()
-        # self.doc = QGridLayout(self.dockWidgetContents_4)
-        self.doc.addWidget(self.F, 0, 1)
+            except:
+                self.OutputWritten("Fialed on open:")
+        else:
+            try:
+                self.OutputWritten("Openning:" + img)
+                self.F = matplot_Figure(dpi=100,file=img)
+                self.F.plotdesrt()
+                self.doc.addWidget(self.F, 0, 1)
+            except:
+                self.OutputWritten("Fialed on open:")
 
     def slot_predict_one(self):
         child = child_predict_one()
@@ -133,7 +128,9 @@ class mywindow(QMainWindow, Ui_MainWindow):
         child.exec()
 
     def slot_predict(self):
+
         child = child_predict()
+        child.child_sig_message.connect(self.OutputWritten)
         child.show()
         child.exec()
 
@@ -142,12 +139,10 @@ class mywindow(QMainWindow, Ui_MainWindow):
         child.show()
         child.exec()
 
-
     def slot_action_rasterToPolygon(self):
         child =child_raster_to_polygon()
         child.show()
         child.exec_()
-
 
     def slot_action_sampleGenSelfAdapt(self):
         child = child_sampleGenSelfAdapt()
@@ -265,10 +260,6 @@ class mywindow(QMainWindow, Ui_MainWindow):
         child = child_abount()
         child.show()
         child.exec_()
-
-
-
-
 
 class child_abount(QDialog, Ui_Dialog_about):
     def __init__(self):

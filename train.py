@@ -235,6 +235,10 @@ if __name__ == '__main__':
 
 
     print(model.summary())
+    from keras.utils import plot_model
+    plot_model(model, to_file='model.png')
+    # from keras import  layers.UpSampling2D
+
     print("Train by : {}_{}".format(config.network, config.BACKBONE))
     #
     # model=add_new_model(model, config)

@@ -340,7 +340,7 @@ def predict_img_with_smooth_windowing(input_img, model, window_size,
     # windows.
 
     res = []
-    for pad in tqdm(pads):
+    for pad in pads:#tqdm(pads):
         # For every rotation:
         # predict each rotation with smooth window
         sd = _windowed_subdivs_multiclassbands(pad, model, window_size, subdivisions,
@@ -397,7 +397,7 @@ def core_orignal_predict(image,bands, model,window_size,img_w=256, mask_bands=1)
     padding_img = img_to_array(padding_img)
 
     mask_whole = np.zeros((padding_h, padding_w), dtype=np.float32)
-    for i in tqdm(list(range(padding_h // stride))):
+    for i in list(range(padding_h // stride)):#tqdm(list(range(padding_h // stride))):
         for j in list(range(padding_w // stride)):
             crop = padding_img[i * stride:i * stride + window_size, j * stride:j * stride + window_size, :bands]
 

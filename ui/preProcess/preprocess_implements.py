@@ -18,7 +18,8 @@ from ui.preProcess.samplecrop import Ui_Dialog_samplecrop
 from ulitities.xml_prec import generate_xml_from_dict, parse_xml_to_dict
 from ulitities.base_functions import get_file, load_img_by_gdal
 from .preprocess_backend import image_normalize, image_clip
-
+from data_prepare.convert_to_8bits import batch_convert_8bit
+from data_prepare.crop_samples import Simple_Crop
 
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -43,18 +44,23 @@ class child_convert_8bit(QDialog,Ui_Dialog_convert8bit):
         dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
         self.lineEdit_outputpath.setText(dir_tmp)
     def slot_ok(self):
-        dir_sample = self.lineEdit_outputpath.text()
+        dir_input = self.lineEdit_imagpath.text()
         dir_output = self.lineEdit_outputpath.text()
         # QMessageBox.information(self, '提示',
         #                         "input:{}\n output :{}".format(dir_sample, dir_output)
         #                         , QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
         #excute pragram
-        cmd = ['python', '../data_prepare/convert_to_8bits.py',"batch_convert_8bit" ,dir_sample,dir_output]
-        try:
-            subprocess.call(cmd)
-        except:
-            QMessageBox.information(self, '提示', "Error occurred")
-        QMessageBox.information(self, '提示', "Finished")
+        # cmd = ['python', '../data_prepare/convert_to_8bits.py',"batch_convert_8bit" ,dir_sample,dir_output]
+        # try:
+        #     subprocess.call(cmd)
+        # except:
+        #     QMessageBox.information(self, '提示', "Error occurred")
+        # QMessageBox.information(self, '提示', "Finished")
+        print("dir_input is " + dir_output+ "\n")
+
+        batch_convert_8bit(dir_input, dir_output)
+
+
 
 class child_samplecrop(QDialog,Ui_Dialog_samplecrop):
     def __init__(self):
@@ -84,15 +90,18 @@ class child_samplecrop(QDialog,Ui_Dialog_samplecrop):
 
         #excute program
 
-        cmd =['python',r'C:\Users\SCRS\PycharmProjects\SCRS_RS_AI-developer\data_prepare\crop_samples.py',
-              "Simple_Crop",sample_dir,output_dir,cropsize]
-        # cmd =['python',r'..\data_prepare\crop_samples.py',
+        # cmd =['python',r'C:\Users\SCRS\PycharmProjects\SCRS_RS_AI-developer\data_prepare\crop_samples.py',
         #       "Simple_Crop",sample_dir,output_dir,cropsize]
-        try:
-            subprocess.call(cmd)
-        except:
-            QMessageBox.information(self, '错误', "Error occurred")
-        QMessageBox.information(self, '提示', "Finished")
+        # # cmd =['python',r'..\data_prepare\crop_samples.py',
+        # #       "Simple_Crop",sample_dir,output_dir,cropsize]
+        # try:
+        #     subprocess.call(cmd)
+        # except:
+        #     QMessageBox.information(self, '错误', "Error occurred")
+        # QMessageBox.information(self, '提示', "Finished")
+        print("input dir is " + sample_dir + "\n")
+        Simple_Crop(sample_dir,output_dir,cropsize)
+
 class child_image_stretch(QDialog, Ui_Dialog_image_stretch):
     def __init__(self):
         super(child_image_stretch,self).__init__()

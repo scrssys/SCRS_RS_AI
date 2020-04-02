@@ -9,7 +9,7 @@ import os
 import sys
 import gc
 import gdal
-import json, time
+import json,time
 import fire
 import argparse
 from keras.models import load_model
@@ -24,7 +24,7 @@ K.set_image_dim_ordering('tf')
 K.clear_session()
 
 # from base_predict_functions import orignal_predict_notonehot, smooth_predict_for_binary_notonehot
-from ulitities.base_functions import load_img_by_gdal,load_img_by_gdal_geo, load_img_by_gdal_blocks, UINT10,UINT8,UINT16, get_file, polygonize,load_img_by_gdal_info
+from ulitities.base_functions import echoRuntime,load_img_by_gdal_geo, load_img_by_gdal_blocks, UINT10,UINT8,UINT16, get_file, polygonize,load_img_by_gdal_info
 from predict_backbone import predict_img_with_smooth_windowing,core_orignal_predict,core_smooth_predict_multiclass, core_smooth_predict_binary
 
 from config import Config
@@ -36,15 +36,15 @@ from deeplab.model import relu6, BilinearUpsampling
 NDVI=True
 eps=0.00001
 
-
 def check_predict_input(dict_para):
+    print(dict_para)
     if dict_para["gpu"]==None:
         gpu_id=0
     elif isinstance(dict_para["gpu"], int):
         gpu_id=dict_para["gpu"]
         print("gpu_id:{}".format(gpu_id))
     else:
-        tmp=int(dict_para["gpu"])
+        tmp=int(dict_para["gpu"][0])
         if isinstance(tmp,int):
             gpu_id=tmp
         else:
@@ -103,13 +103,30 @@ def check_predict_input(dict_para):
     out = {"configs": config_file, "gpu":gpu_id, "input":ult_input,
            "output":output_dir, "model":curr_model}
     return out
+def message_send(text):
+    print(text)
+    pass
 
-
-def predict(configs,gpu=None, input='',output='',model=''):
+@echoRuntime
+def predict(message_send, configs=None,gpu=0, input='',output='',model=''):
+    message_send("predict >>>")
+    # return 0
     dict_in = {"configs": configs, "gpu":gpu, "input":input,"output":output, "model":model}
-    out=check_predict_input(dict_in)
+    try:
+        from PyQt5.QtCore import QTimer, QEventLoop
+        while 1:
+            message_send("message 1")
+            loop = QEventLoop()
+            QTimer.singleShot(1000, loop.quit)
+            loop.exec_()
+            message_send("message 2")
+        out=check_predict_input(dict_in)
+    except:
+        out=0
     if isinstance(out, int):
+        message_send("Fault! check input parameter ")
         return out
+
 
     os.environ["CUDA_VISIBLE_DEVICES"] = str(out["gpu"])
     with open(configs, 'r') as f:
@@ -142,7 +159,8 @@ def predict(configs,gpu=None, input='',output='',model=''):
     output_dir=os.path.join(out["output"], date_time)
     if not os.path.isdir(output_dir):
        os.mkdir(output_dir)
-    print("Ultimate output dir:{}".format(output_dir))
+    # print("Ultimate output dir:{}".format(output_dir))
+
 
     block_size = config.block_size
     # nodata = config.nodata
@@ -184,7 +202,7 @@ def predict(configs,gpu=None, input='',output='',model=''):
         print("model is not deeplab V3+!\n")
     # print(model.summary())
 
-    for img_file in tqdm(input_files):
+    for img_file in input_files:#tqdm(input_files):
         print("\n[INFO] opening image:{}...".format(img_file))
         abs_filename = os.path.split(img_file)[1]
         H, W, C, geoinf,projinf = load_img_by_gdal_info(img_file)
@@ -199,7 +217,7 @@ def predict(configs,gpu=None, input='',output='',model=''):
         block_h = int(block_size/W)
         print("single block size :[{},{}]".format(block_h,W))
         result_mask = np.zeros((H, W), np.uint8)
-        for i in tqdm(list(range(nb_blocks))):
+        for i in list(range(nb_blocks)):#tqdm(list(range(nb_blocks))):
             print("[INFO] predict image for {} block".format(i))
             start =block_h*i
             this_h = block_h
@@ -327,7 +345,13 @@ def predict(configs,gpu=None, input='',output='',model=''):
     return 0
 
 if __name__=="__main__":
-    predict(configs='/home/omnisky/PycharmProjects/data/rice/samples_uav1_crop_classical/config_binary_global_classical.json',
-            gpu=3)
+    # predict(configs='/home/omnisky/PycharmProjects/data/rice/samples_uav1_crop_classical/config_binary_global_classical.json',
+    #         gpu=3)
+
+    # predict(configs='/home/omnisky/PycharmProjects/data/rice/samples_uav1_crop_fpn/config_binary_global.json',
+    #         gpu=3,
+    #         input="/home/omnisky/PycharmProjects/data/rice/test/all0.1/image",
+    #         output = "/home/omnisky/PycharmProjects/data/rice/test/pred/fpn",
+    #         model = "/home/omnisky/PycharmProjects/data/rice/models/fpn/rice_uav1_null_fpn_seresnet34_binary_crossentropy_adam_480_012bands_2020-03-25_15-49-16best.h5")
     fire.Fire()
 

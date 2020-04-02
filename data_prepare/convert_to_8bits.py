@@ -1,9 +1,10 @@
 import os, sys,subprocess, fire
 import numpy as np
 from tqdm import tqdm
-from ulitities.base_functions import get_file
+from ulitities.base_functions import get_file,echoRuntime
 
 
+@echoRuntime
 def convert_to_8Bit_percentclip(inputRaster, outputRaster,
                     outputDataType='Byte',
                     outputFormat='GTiff',
@@ -86,7 +87,9 @@ def batch_convert_8bit(inputdir,outputdir):
         print('Warning: output directory is not existed')
         os.mkdir(outputdir)
     files,_=get_file(inputdir)
-    for file in tqdm(files):
+    # print(files)
+    for file in files:#tqdm(files):
+        print("\ndealing with : " + file)
         absname = os.path.split(file)[1]
         outputfile = os.path.join(outputdir,absname)
         convert_to_8Bit_percentclip(file,outputfile)

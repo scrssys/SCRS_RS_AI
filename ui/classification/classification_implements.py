@@ -1,8 +1,9 @@
-
 import os, sys
-import subprocess
-from PyQt5.QtCore import QFileInfo, QDir, QCoreApplication, Qt
-from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox, QApplication
+
+from main_thread import *
+
+from PyQt5.QtCore import QFileInfo,Qt
+from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
 from ui.classification.predict_one import Ui_Dialog_predict_one
 from ui.classification.classification_backend import predict_backend
 from ui.classification.Dialog_predict import Ui_Dialog_predict
@@ -12,8 +13,10 @@ inputdict = {'input':'','output':'','gpu':'0','config':'','model':''}
 
 
 class child_predict(QDialog, Ui_Dialog_predict):
+    child_sig_message = pyqtSignal(str)
     def __init__(self):
         super(child_predict, self).__init__()
+        self.text = 's'
         self.setupUi(self)
 
     def slot_input(self):
@@ -32,25 +35,46 @@ class child_predict(QDialog, Ui_Dialog_predict):
         dir_tmp, _ = QFileDialog.getOpenFileName(self, "Select model", "",
                                                  self.tr("h5(*.h5)"))
         self.lineEdit_model.setText(dir_tmp)
+    def set_btn(self):
+        self.buttonBox.setEnabled(True)
+
+    def send_message(self,text):
+        self.child_sig_message.emit(text)
     def slot_done(self):
         input = self.lineEdit_input.text()
         output = self.lineEdit_output.text()
         config=self.lineEdit_config.text()
         gpu_id = self.comboBox_gpu.currentText()
         model = self.lineEdit_model.text()
-        # print(os.path.curdir)
 
-        ret=predict(config, gpu=gpu_id, input=input, output=output, model=model)
+        predict(self.send_message)
+
+        # self.buttonBox.setEnabled(True)
+        # self.predict_thread = main_thread()
+        # self.predict_thread.main_signal.connect(self.set_btn)
+        # self.predict_thread.add_massage.connect()
+        # self.predict_thread.run_predict(config,gpu_id,input,output,model)
+
+
         # cmd =['python','../predict.py','--gpu',gpu_id, '--input', input, '--output', output,
         #       '--config', config,"--model",model]
         # try:
         #     subprocess.call(cmd)
         # except:
         #     QMessageBox.information(self, '错误', "Error occurred")
-        if ret!=0:
-            QMessageBox.warning(self,'提示', "Wrong")
-        else:
-            QMessageBox.information(self, '提示', "Finished")
+
+
+        # cs = '/home/omnisky/PycharmProjects/data/rice/samples_uav1_crop_fpn/config_binary_global.json'
+        # gpu_id= 3
+        # inpu="/home/omnisky/PycharmProjects/data/rice/test/all0.1/image"
+        # outpu = "/home/omnisky/PycharmProjects/data/rice/test/pred/fpn"
+        # mode = "/home/omnisky/PycharmProjects/data/rice/models/fpn/rice_uav1_null_fpn_seresnet34_binary_crossentropy_adam_480_012bands_2020-03-25_15-49-16best.h5"
+        #
+        # ret=predict(cs, gpu_id, inpu, outpu, mode)
+        # if ret!=0:
+        #     QMessageBox.warning(self,'提示', "Wrong")
+        # else:
+        #     QMessageBox.information(self, '提示', "Finished")
 
 
 

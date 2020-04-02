@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>599</width>
-    <height>296</height>
+    <width>524</width>
+    <height>384</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,8 +20,8 @@
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>22</x>
-      <y>150</y>
+      <x>0</x>
+      <y>220</y>
       <width>521</width>
       <height>80</height>
      </rect>
@@ -43,15 +43,15 @@
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
-      <string>tab 1</string>
+      <string>Runtime message:</string>
      </attribute>
-     <widget class="QTextEdit" name="textEdit">
+     <widget class="QTextBrowser" name="textBrowser">
       <property name="geometry">
        <rect>
-        <x>40</x>
-        <y>0</y>
-        <width>181</width>
-        <height>75</height>
+        <x>0</x>
+        <y>20</y>
+        <width>501</width>
+        <height>151</height>
        </rect>
       </property>
      </widget>
@@ -63,7 +63,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>599</width>
+     <width>524</width>
      <height>18</height>
     </rect>
    </property>
