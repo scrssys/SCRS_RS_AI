@@ -16,7 +16,7 @@ from ui.preProcess.ImageClip import Ui_Dialog_image_clip
 from ui.preProcess.convert_8bit import Ui_Dialog_convert8bit
 from ui.preProcess.samplecrop import Ui_Dialog_samplecrop
 from ulitities.xml_prec import generate_xml_from_dict, parse_xml_to_dict
-from ulitities.base_functions import get_file, load_img_by_gdal
+from ulitities.base_functions import get_file, load_img_by_gdal,base_message
 from .preprocess_backend import image_normalize, image_clip
 from data_prepare.convert_to_8bits import batch_convert_8bit
 from data_prepare.crop_samples import Simple_Crop
@@ -32,7 +32,7 @@ imgClip_dict = {'input_file':'', 'output_file':'', 'x':'0', 'y':'0', 'row':'1', 
 
 
 # HAS_INVALID_VALUE = False
-class child_convert_8bit(QDialog,Ui_Dialog_convert8bit):
+class child_convert_8bit(QDialog,Ui_Dialog_convert8bit,base_message):
     def __init__(self):
         super(child_convert_8bit,self).__init__()
         self.setWindowTitle("convert 8bit")
@@ -46,6 +46,7 @@ class child_convert_8bit(QDialog,Ui_Dialog_convert8bit):
     def slot_ok(self):
         dir_input = self.lineEdit_imagpath.text()
         dir_output = self.lineEdit_outputpath.text()
+
         # QMessageBox.information(self, '提示',
         #                         "input:{}\n output :{}".format(dir_sample, dir_output)
         #                         , QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
@@ -56,13 +57,18 @@ class child_convert_8bit(QDialog,Ui_Dialog_convert8bit):
         # except:
         #     QMessageBox.information(self, '提示', "Error occurred")
         # QMessageBox.information(self, '提示', "Finished")
-        print("dir_input is " + dir_output+ "\n")
+        # print("dir_input is " + dir_output+ "\n")
+        self.buttonBox.setEnabled(False)
+        try:
+            batch_convert_8bit(self.send,dir_input, dir_output)
+            QMessageBox.information(self, '提示', "Finished")
+        except:
+            QMessageBox.information(self, '提示', "Error occurred")
+        finally:
+            self.buttonBox.setEnabled(True)
 
-        batch_convert_8bit(dir_input, dir_output)
 
-
-
-class child_samplecrop(QDialog,Ui_Dialog_samplecrop):
+class child_samplecrop(QDialog,Ui_Dialog_samplecrop,base_message):
     def __init__(self):
         super(child_samplecrop,self).__init__()
         # self.lineEdit_cropsize.setPlaceholderText()
@@ -99,8 +105,16 @@ class child_samplecrop(QDialog,Ui_Dialog_samplecrop):
         # except:
         #     QMessageBox.information(self, '错误', "Error occurred")
         # QMessageBox.information(self, '提示', "Finished")
-        print("input dir is " + sample_dir + "\n")
-        Simple_Crop(sample_dir,output_dir,cropsize)
+
+        try:
+            self.pushButton_process.setEnabled(False)
+            Simple_Crop(self.send, sample_dir, output_dir, cropsize)
+            QMessageBox.information(self, '提示', "Finished")
+        except:
+            QMessageBox.information(self, '错误', "Error occurred")
+        finally:
+            self.pushButton_process.setEnabled(True)
+
 
 class child_image_stretch(QDialog, Ui_Dialog_image_stretch):
     def __init__(self):

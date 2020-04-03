@@ -4,15 +4,15 @@ import cv2
 import gdal
 gdal.UseExceptions()
 from tqdm import tqdm
-from ulitities.base_functions import get_file, load_img_by_gdal, find_file
+from ulitities.base_functions import get_file, load_img_by_gdal, find_file,send_message_callback
 
 
-def Simple_Crop(inputdir,outputdir,patch_size=3000):
+def Simple_Crop(send_message_callback,inputdir,outputdir,patch_size=3000):
     if not os.path.isdir(inputdir):
-        print("Error: input directory is not existed")
+        send_message_callback("Error: input directory is not existed")
         sys.exit(-1)
     if not os.path.isdir(outputdir):
-        print("Warning: output directory is not existed")
+        send_message_callback("Warning: output directory is not existed")
         os.mkdir(outputdir)
     out_label_dir=outputdir+'/label/'
     if not os.path.isdir(out_label_dir):
@@ -54,7 +54,7 @@ def Simple_Crop(inputdir,outputdir,patch_size=3000):
     try:
         dataset = gdal.Open(img_files[0])
     except RuntimeError:
-        print("Warning: open file failed:{}".format(img_files[0]))
+        send_message_callback("Warning: open file failed:{}".format(img_files[0]))
         dataset=gdal.Open(img_files[1])
     else:
         print("Prompt: opened:{}".format(img_files[0]))
@@ -65,7 +65,7 @@ def Simple_Crop(inputdir,outputdir,patch_size=3000):
     # print(label_list)
     for i in tqdm(range(len(label_list))):
         only_name = name_list[i]
-        print("deal: {}".format(only_name))
+        send_message_callback("Cropping : " + only_name)
         label=np.asarray(label_list[i], np.uint8)
         img=np.asarray(img_list[i], np.uint8)
         if label.shape[:2]!=img.shape[:2]:
@@ -73,6 +73,7 @@ def Simple_Crop(inputdir,outputdir,patch_size=3000):
 
             continue
         h,w,c = img.shape
+        patch_size = int(patch_size)
         if h//patch_size==0 or w//patch_size==0:
             crop_label = label
             crop_img = img

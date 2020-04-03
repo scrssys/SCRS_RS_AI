@@ -5,7 +5,7 @@ from ui.postProcess.postProcess_implements import *
 from ui.classification.classification_implements import *
 from ui.train.Train_implement import *
 from ui.about import Ui_Dialog_about
-from ui.open import matplot_Figure,qgis_plot
+from ui.open import matplot_Figure,qgis_plotRaster,qgis_plotVector
 from PyQt5.QtCore import QEventLoop
 from qgis.gui import QgsMapCanvas
 import platform
@@ -63,6 +63,7 @@ class mywindow(QMainWindow, Ui_MainWindow):
         :param str:
         :return:
         """
+        QCoreApplication.processEvents()
         curr_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
         cursor = self.textBrowser.textCursor()
         cursor.movePosition(cursor.End)
@@ -92,6 +93,8 @@ class mywindow(QMainWindow, Ui_MainWindow):
         self.actionPredict.setText(_translate("MainWindow", "分类"))
         self.actionAbout.setText(_translate("MainWindow", "关于"))
         self.actionOpen.setText(_translate("MainWindow", "影像打开"))
+        self.actionOpen_Vector.setText(_translate("MainWindow", "矢量打开"))
+
         self.actionExit.setText(_translate("MainWindow", "退出"))
         self.actionCombineSingleModelReults.setText(_translate("MainWindow", "多类别合成"))
         self.action_VoteMultiModelResults.setText(_translate("MainWindow", "多模型集成"))
@@ -102,14 +105,24 @@ class mywindow(QMainWindow, Ui_MainWindow):
         self.actionRasterToPolygon.setText(_translate("MainWindow","栅格转矢量"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "输出"))
         # self.actionPredictOne.setText(_translate("MainWindow", "分类"))
-
+    def slot_action_openvector(self):
+        shp, _ = QFileDialog.getOpenFileName(self, 'Select Vector', '../../data/',
+                                             self.tr("Image( *.*)"))
+        if sysinfo == 'Linux':
+            try:
+                self.OutputWritten("Openning:" + shp)
+                qgis_plotVector(self.canvas, shp)
+            except:
+                self.OutputWritten("Fialed on open")
+        else:
+            self.OutputWritten("Can not open Vector")
     def slot_open_show(self):
         img, _ = QFileDialog.getOpenFileName(self, 'Select image', '../../data/',
-                                             self.tr("Image(*.png *.jpg *.tif)"))
+                                             self.tr("Image(*.*)"))
         if sysinfo == 'Linux':
             try:
                 self.OutputWritten("Openning:" + img)
-                qgis_plot(self.canvas, img)
+                qgis_plotRaster(self.canvas, img)
 
             except:
                 self.OutputWritten("Fialed on open:")
@@ -128,9 +141,8 @@ class mywindow(QMainWindow, Ui_MainWindow):
         child.exec()
 
     def slot_predict(self):
-
         child = child_predict()
-        child.child_sig_message.connect(self.OutputWritten)
+        child.message_sig.connect(self.OutputWritten)
         child.show()
         child.exec()
 
@@ -172,11 +184,13 @@ class mywindow(QMainWindow, Ui_MainWindow):
 
     def slot_action_convert8bit(self):
         child = child_convert_8bit()
+        child.message_sig.connect(self.OutputWritten)
         child.show()
         child.exec_()
 
     def slot_action_samplecrop(self):
         child = child_samplecrop()
+        child.message_sig.connect(self.OutputWritten)
         child.show()
         child.exec_()
 
@@ -253,6 +267,7 @@ class mywindow(QMainWindow, Ui_MainWindow):
 
     def slot_action_removesmallobject(self):
         child = child_removesmallobject()
+        child.message_sig.connect(self.OutputWritten)
         child.show()
         child.exec_()
 

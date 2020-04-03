@@ -24,7 +24,7 @@ K.set_image_dim_ordering('tf')
 K.clear_session()
 
 # from base_predict_functions import orignal_predict_notonehot, smooth_predict_for_binary_notonehot
-from ulitities.base_functions import echoRuntime,load_img_by_gdal_geo, load_img_by_gdal_blocks, UINT10,UINT8,UINT16, get_file, polygonize,load_img_by_gdal_info
+from ulitities.base_functions import echoRuntime,send_message_callback, load_img_by_gdal_blocks, UINT10,UINT8,UINT16, get_file, polygonize,load_img_by_gdal_info
 from predict_backbone import predict_img_with_smooth_windowing,core_orignal_predict,core_smooth_predict_multiclass, core_smooth_predict_binary
 
 from config import Config
@@ -103,28 +103,25 @@ def check_predict_input(dict_para):
     out = {"configs": config_file, "gpu":gpu_id, "input":ult_input,
            "output":output_dir, "model":curr_model}
     return out
-def message_send(text):
-    print(text)
-    pass
 
 @echoRuntime
-def predict(message_send, configs=None,gpu=0, input='',output='',model=''):
-    message_send("predict >>>")
+def predict(send_massage_callback, configs=None,gpu=0, input='',output='',model=''):
+    send_massage_callback("predict >>>")
     # return 0
     dict_in = {"configs": configs, "gpu":gpu, "input":input,"output":output, "model":model}
     try:
-        from PyQt5.QtCore import QTimer, QEventLoop
-        while 1:
-            message_send("message 1")
-            loop = QEventLoop()
-            QTimer.singleShot(1000, loop.quit)
-            loop.exec_()
-            message_send("message 2")
+        # from PyQt5.QtCore import QTimer, QEventLoop
+        # while 1:
+        #     send_massage_callback("message 1")
+        #     loop = QEventLoop()
+        #     QTimer.singleShot(1000, loop.quit)
+        #     loop.exec_()
+        #     send_massage_callback("message 2")
         out=check_predict_input(dict_in)
     except:
         out=0
     if isinstance(out, int):
-        message_send("Fault! check input parameter ")
+        send_massage_callback("Fault! check input parameter ")
         return out
 
 
@@ -168,19 +165,18 @@ def predict(message_send, configs=None,gpu=0, input='',output='',model=''):
     input_files = []
     if os.path.isfile(out["input"]):
         print("[INFO] input is one file...")
-        input_files.append(config.img_input)
+        input_files.append(out["input"])
     elif os.path.isdir(out["input"]):
         print("[INFO] input is a directory...")
-        in_files, _ = get_file(config.img_input)
+        in_files, _ = get_file(out["input"])
         for file in in_files:
             input_files.append(file)
     if len(input_files)==0:
-        print("no input images")
+        send_massage_callback("no input images")
         sys.exit(-1)
-    print("{} images will be classified".format(len(input_files)))
+    send_massage_callback(" {} images will be classified".format(len(input_files)))
 
     csv_file = os.path.join(output_dir, 'readme.csv')
-    # ts = list(config)
 
     df = pd.DataFrame.from_dict(out, orient='index')
     df.to_csv(csv_file)
@@ -203,7 +199,8 @@ def predict(message_send, configs=None,gpu=0, input='',output='',model=''):
     # print(model.summary())
 
     for img_file in input_files:#tqdm(input_files):
-        print("\n[INFO] opening image:{}...".format(img_file))
+        send_massage_callback(" ClassFicating : "+file)
+        # print("\n[INFO] opening image:{}...".format(img_file))
         abs_filename = os.path.split(img_file)[1]
         H, W, C, geoinf,projinf = load_img_by_gdal_info(img_file)
         if H==0:
@@ -218,7 +215,8 @@ def predict(message_send, configs=None,gpu=0, input='',output='',model=''):
         print("single block size :[{},{}]".format(block_h,W))
         result_mask = np.zeros((H, W), np.uint8)
         for i in list(range(nb_blocks)):#tqdm(list(range(nb_blocks))):
-            print("[INFO] predict image for {} block".format(i))
+            send_massage_callback("[INFO] predict image for {} block".format(i))
+            # print("[INFO] predict image for {} block".format(i))
             start =block_h*i
             this_h = block_h
             if (i+1)*block_h>H:

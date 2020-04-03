@@ -2,21 +2,19 @@ import os, sys
 
 from main_thread import *
 
-from PyQt5.QtCore import QFileInfo,Qt
+from PyQt5.QtCore import QFileInfo,Qt,QCoreApplication
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
 from ui.classification.predict_one import Ui_Dialog_predict_one
 from ui.classification.classification_backend import predict_backend
 from ui.classification.Dialog_predict import Ui_Dialog_predict
 from predict import predict
-
+from ulitities.base_functions import base_message
 inputdict = {'input':'','output':'','gpu':'0','config':'','model':''}
 
 
-class child_predict(QDialog, Ui_Dialog_predict):
-    child_sig_message = pyqtSignal(str)
+class child_predict(QDialog, Ui_Dialog_predict,base_message):
     def __init__(self):
         super(child_predict, self).__init__()
-        self.text = 's'
         self.setupUi(self)
 
     def slot_input(self):
@@ -35,11 +33,6 @@ class child_predict(QDialog, Ui_Dialog_predict):
         dir_tmp, _ = QFileDialog.getOpenFileName(self, "Select model", "",
                                                  self.tr("h5(*.h5)"))
         self.lineEdit_model.setText(dir_tmp)
-    def set_btn(self):
-        self.buttonBox.setEnabled(True)
-
-    def send_message(self,text):
-        self.child_sig_message.emit(text)
     def slot_done(self):
         input = self.lineEdit_input.text()
         output = self.lineEdit_output.text()
@@ -47,8 +40,19 @@ class child_predict(QDialog, Ui_Dialog_predict):
         gpu_id = self.comboBox_gpu.currentText()
         model = self.lineEdit_model.text()
 
-        predict(self.send_message)
-
+        # config = '/home/omnisky/PycharmProjects/data/rice/samples_uav1_crop_fpn/config_binary_global.json'
+        # gpu_id= 3
+        # input="/home/omnisky/PycharmProjects/data/samples/snowlineSamples/croped/960x960/src"
+        # output = "/home/omnisky/PycharmProjects/data/rice/test/pred/fpn"
+        # model = "/home/omnisky/PycharmProjects/data/rice/models/fpn/rice_uav1_null_fpn_seresnet34_binary_crossentropy_adam_480_012bands_2020-03-25_15-49-16best.h5"
+        self.buttonBox.setEnabled(False)
+        try:
+            predict(self.send,config,gpu_id,input,output,model)
+            QMessageBox.information(self, 'Prompt', "Finished")
+        except:
+            QMessageBox.information(self, '错误', "Error occurred")
+        finally:
+            self.buttonBox.setEnabled(True)
         # self.buttonBox.setEnabled(True)
         # self.predict_thread = main_thread()
         # self.predict_thread.main_signal.connect(self.set_btn)

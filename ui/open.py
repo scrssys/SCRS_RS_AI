@@ -4,7 +4,8 @@ gdal.UseExceptions()
 matplotlib.use("Qt5Agg")
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-from PyQt5.QtCore import QFileInfo,QEventLoop
+from PyQt5.QtCore import QFileInfo,QEventLoop,Qt
+
 from PyQt5.QtWidgets import QFileDialog,QMessageBox
 class matplot_Figure(FigureCanvas):
     """
@@ -57,12 +58,12 @@ import platform
 sysinfo = platform.system()
 if sysinfo == 'Linux':
     from qgis.gui import QgsMapCanvas
-    from qgis.core import QgsMapLayer, QgsRasterLayer, QgsProject, QgsDataSourceUri, QgsApplication
+    from qgis.core import QgsMapLayer, QgsRasterLayer, QgsProject, QgsDataSourceUri, QgsApplication,QgsVectorLayer
 
 
 def canvas():
     pass
-def qgis_plot(canvas,file):
+def qgis_plotRaster(canvas,file):
     """
     use qgis map canvas to plot raster or vector
     :param canvas: qt canvas
@@ -91,6 +92,43 @@ def qgis_plot(canvas,file):
             canvas.setExtent(rlayer.extent())
             # set the map canvas layer set
             canvas.setLayers([rlayer])
+            canvas.setCanvasColor(Qt.white)
             canvas.show()
-        mloop = QEventLoop()
-        canvas.extentsChanged.connect(mloop.exec())
+            mloop = QEventLoop()
+            canvas.extentsChanged.connect(mloop.exec())
+def qgis_plotVector(canvas,file):
+    """
+    use qgis map canvas to plot raster or vector
+    :param canvas: qt canvas
+    :param file: image file
+    :return:
+    """
+    if os.path.isfile(file):
+        QgsApplication.setPrefixPath('/usr/local/', True)
+        qgs = QgsApplication([], True)
+        qgs.initQgis()
+        reg = QgsProject.instance()
+
+        fileInfo = QFileInfo(file)
+        baseName = fileInfo.baseName()
+        # rlayer = QgsRasterLayer(file, baseName)
+
+        rlayer = QgsVectorLayer(file,baseName)
+        print("Vector:" + file)
+        if not rlayer.isValid():
+            print("图层加载失败！")
+            # current_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+            # self.OutputWritten(current_time + "Fialed on Opened: " + file + "\n")
+        else:
+
+            # current_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+            # self.OutputWritten(current_time + " Opened: " + file + "\n")
+            reg.addMapLayer(rlayer)
+            # set extent to the extent of our layer
+            canvas.setExtent(rlayer.extent())
+            # set the map canvas layer set
+            canvas.setLayers([rlayer])
+            canvas.setCanvasColor(Qt.white)
+            canvas.show()
+            mloop = QEventLoop()
+            canvas.extentsChanged.connect(mloop.exec())

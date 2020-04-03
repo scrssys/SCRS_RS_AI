@@ -1,5 +1,5 @@
 # coding=utf-8
-import os, sys, json, random, time, argparse
+import os, sys, json, random, time, argparse,fire
 import segmentation_models as sm
 from keras.callbacks import ModelCheckpoint, EarlyStopping, History,ReduceLROnPlateau
 from keras.layers import *
@@ -11,7 +11,6 @@ from ulitities.base_functions import UINT16, UINT8, UINT10
 from deeplab.model import Deeplabv3
 from data_prepare.data_generater import train_data_generator,val_data_generator
 from config import Config
-
 K.set_image_dim_ordering('tf')
 seed = 4
 print(np.random.seed(seed))
@@ -230,6 +229,8 @@ if __name__ == '__main__':
     """ Training model........"""
     train(model,"","/home/omnisky/PycharmProjects/SCRS_RS_AI","/home/omnisky/PycharmProjects/SCRS_RS_AI/we.h5")
     print("[Info]:test model...")
+
+    fire.Fire()
 
 
 

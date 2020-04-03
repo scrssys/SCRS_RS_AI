@@ -4,7 +4,10 @@ import os,sys,time,cv2,gc
 import numpy as np
 import gdal,osr,ogr
 gdal.UseExceptions()
-
+try:
+    from PyQt5.QtCore import pyqtSignal
+except:
+    raise ImportError
 # from error_code import *
 
 UINT8=0
@@ -55,6 +58,13 @@ def echoRuntime(func):
         print(func.__name__+" running time is %.2f s" %msecs)
     return wrapper
 
+def send_message_callback(text):
+    print(text)
+
+class base_message():
+    message_sig = pyqtSignal(str)
+    def send(self,text):
+        self.message_sig.emit(text)
 
 def load_img_by_cv2(path, grayscale=False):
     """

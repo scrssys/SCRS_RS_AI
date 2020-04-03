@@ -1,7 +1,7 @@
 import os, sys,subprocess, fire
 import numpy as np
 from tqdm import tqdm
-from ulitities.base_functions import get_file,echoRuntime
+from ulitities.base_functions import get_file,echoRuntime,send_message_callback
 
 
 @echoRuntime
@@ -78,17 +78,20 @@ def convert_8bit_histspecification():
     pass
 
 
-def batch_convert_8bit(inputdir,outputdir):
+def batch_convert_8bit(send_massage_callback,inputdir,outputdir):
     if not os.path.isdir(inputdir):
-        print("Please check input directory:{}".format(inputdir))
-        sys.exit(-1)
+        send_massage_callback("Please check input directory:{}".format(inputdir))
 
     if not os.path.isdir(outputdir):
-        print('Warning: output directory is not existed')
-        os.mkdir(outputdir)
+        send_massage_callback('Warning: output directory is not existed')
+        try:
+            os.mkdir(outputdir)
+        except:
+            pass
     files,_=get_file(inputdir)
     # print(files)
     for file in files:#tqdm(files):
+        send_massage_callback("Converting : " + file)
         print("\ndealing with : " + file)
         absname = os.path.split(file)[1]
         outputfile = os.path.join(outputdir,absname)

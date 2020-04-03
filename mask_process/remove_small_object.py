@@ -1,10 +1,9 @@
 import fire,os,sys,numpy
 from tqdm import tqdm
 from skimage import io,morphology
-from ulitities.base_functions import get_file,load_img_by_gdal
+from ulitities.base_functions import get_file,send_message_callback
 def remove_small_obj(inf,outf,minsize):
     pass
-    # img = load_img_by_gdal()
     import cv2
     img = cv2.imread(inf)
     kernel = numpy.ones((5,5),numpy.uint8)
@@ -14,15 +13,16 @@ def remove_small_obj(inf,outf,minsize):
     img = io.imread(inf)
     cv2.imwrite(outf, img)
     # img_ = morphology.remove_small_holes(img,800)
-def batch_rmovesmallobj(inputdir,outputdir,minsize=5):
+def batch_rmovesmallobj(send_message_callback,inputdir,outputdir,minsize=5):
     if not os.path.isdir(inputdir):
-        print("Please check input directory:{}".format(inputdir))
+        send_message_callback("Please check input directory:{}".format(inputdir))
         sys.exit(-1)
     if not os.path.isdir(outputdir):
-        print('Warning: output directory is not existed')
+        send_message_callback('Warning: output directory is not existed')
         os.mkdir(outputdir)
     files,_=get_file(inputdir)
-    for file in tqdm(files):
+    for file in files:#tqdm(files):
+        send_message_callback("Dealing with : "+file)
         absname = os.path.split(file)[1]
         outputfile = os.path.join(outputdir, absname)
         remove_small_obj(file, outputfile,minsize)

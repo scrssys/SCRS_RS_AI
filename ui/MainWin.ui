@@ -78,6 +78,7 @@
      <string>File</string>
     </property>
     <addaction name="actionOpen"/>
+    <addaction name="actionOpen_Vector"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuPrepocess">
@@ -298,6 +299,11 @@
   <action name="actionremove_small_object">
    <property name="text">
     <string>Remove small object</string>
+   </property>
+  </action>
+  <action name="actionOpen_Vector">
+   <property name="text">
+    <string>Open Vector</string>
    </property>
   </action>
  </widget>
@@ -607,6 +613,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionOpen_Vector</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slot_action_openvector()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>261</x>
+     <y>191</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>for_action_label_check()</slot>
@@ -637,5 +659,6 @@
   <slot>slot_action_convert8bit()</slot>
   <slot>slot_action_samplecrop()</slot>
   <slot>slot_action_removesmallobject()</slot>
+  <slot>slot_action_openvector()</slot>
  </slots>
 </ui>

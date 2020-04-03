@@ -11,8 +11,8 @@ from ui.postProcess.Binarization import Ui_Dialog_binarization
 from ui.postProcess.PostPrecessBackend import combine_masks, vote_masks, accuracy_evalute,binarize_mask,batchbinarize_masks
 from ui.postProcess.RasterToPolygon import Ui_Dialog_raster_to_polygon
 from ui.postProcess.removeSmallPolygon import  Ui_Dialog_removeSmallPolygon
-from ulitities.base_functions import get_file, polygonize
-
+from ulitities.base_functions import get_file, polygonize,base_message
+from mask_process.remove_small_object import batch_rmovesmallobj
 combinefile_dict = {'road_mask':'', 'building_mask':'', 'save_mask':'', 'foreground':127}
 vote_dict = {'input_files':'', 'save_mask':'', 'target_values':[]}
 
@@ -264,7 +264,7 @@ class child_AccuacyEvaluate(QDialog, Ui_Dialog_accuracy_evaluate):
 
         self.setWindowModality(Qt.NonModal)
 
-class child_removesmallobject(QDialog, Ui_Dialog_removeSmallPolygon):
+class child_removesmallobject(QDialog, Ui_Dialog_removeSmallPolygon,base_message):
     def __init__(self):
         super(child_removesmallobject, self).__init__()
         self.setupUi(self)
@@ -279,9 +279,12 @@ class child_removesmallobject(QDialog, Ui_Dialog_removeSmallPolygon):
         ou_dir = self.lineEdit_outputdir.text()
         scale_factor = str(int(self.comboBox_scale.currentText())*10)
         cmd = ['python', '../post_process/remove_small_object.py',"batch_rmovesmallobj", in_dir,ou_dir,scale_factor]
+        self.buttonBox.setEnabled(False)
         try:
-            subprocess.call(cmd)
+            batch_rmovesmallobj(self.send,in_dir,ou_dir,scale_factor)
+            QMessageBox.information(self, '提示', "Finished")
         except:
             QMessageBox.information(self, '提示', "Error occurred")
-        QMessageBox.information(self, '提示', "Finished")
+        finally:
+            self.buttonBox.setEnabled(True)
         # print(in_dir + "\n" +ou_dir + "\n"+ scale_factor)

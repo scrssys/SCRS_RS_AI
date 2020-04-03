@@ -122,7 +122,10 @@ class Ui_MainWindow(object):
         self.actionlabel_crop.setObjectName("actionlabel_crop")
         self.actionremove_small_object = QtWidgets.QAction(MainWindow)
         self.actionremove_small_object.setObjectName("actionremove_small_object")
+        self.actionOpen_Vector = QtWidgets.QAction(MainWindow)
+        self.actionOpen_Vector.setObjectName("actionOpen_Vector")
         self.menuFile.addAction(self.actionOpen)
+        self.menuFile.addAction(self.actionOpen_Vector)
         self.menuFile.addAction(self.actionExit)
         self.menuPrepocess.addAction(self.actionLabel_check)
         self.menuPrepocess.addAction(self.actionImage_strech)
@@ -170,6 +173,7 @@ class Ui_MainWindow(object):
         self.actionconvert_8bit.triggered.connect(MainWindow.slot_action_convert8bit)
         self.actionlabel_crop.triggered.connect(MainWindow.slot_action_samplecrop)
         self.actionremove_small_object.triggered.connect(MainWindow.slot_action_removesmallobject)
+        self.actionOpen_Vector.triggered.connect(MainWindow.slot_action_openvector)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -211,4 +215,5 @@ class Ui_MainWindow(object):
         self.actionconvert_8bit.setText(_translate("MainWindow", "convert 8bit"))
         self.actionlabel_crop.setText(_translate("MainWindow", "label crop"))
         self.actionremove_small_object.setText(_translate("MainWindow", "Remove small object"))
+        self.actionOpen_Vector.setText(_translate("MainWindow", "Open Vector"))
 
