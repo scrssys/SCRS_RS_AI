@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 # import tensorflow as tf
 from sklearn.metrics import confusion_matrix
 
-from ulitities.base_functions import load_img_by_cv2,get_file,load_img_by_gdal
+from ulitities.base_functions import load_img_by_cv2,get_file,load_img_by_gdal,send_message_callback
 
 ROAD_VALUE=127
 BUILDING_VALUE=255
@@ -52,7 +52,7 @@ def binarize_mask(input_dict):
 
     return 0
 
-def batchbinarize_masks(inputdict):
+def batchbinarize_masks(send_message_callback,inputdict):
     threshold = inputdict['threshold']
     inputdir=inputdict['inputdir']
     outputdir=inputdict['outputdir']
@@ -62,7 +62,8 @@ def batchbinarize_masks(inputdict):
 
     files, num= get_file(inputdir)
 
-    for file in tqdm(files):
+    for file in files:#tqdm(files):
+        send_message_callback("Dealing : "+file)
         img = cv2.imread(file, cv2.IMREAD_GRAYSCALE)
 
         result = np.zeros(img.shape, np.uint8)
@@ -84,7 +85,8 @@ def batchbinarize_masks(inputdict):
     return 0
 
 
-def combine_masks(input_dict):
+def combine_masks(send_message_callback,input_dict):
+    send_message_callback("Begin")
     FOREGROUND = input_dict['foreground']
     road_mask = input_dict['road_mask']
     building_mask = input_dict['building_mask']
@@ -97,6 +99,7 @@ def combine_masks(input_dict):
 
     final_mask = np.zeros((height, width), np.uint8)
     for idx, file in enumerate(files):
+        send_message_callback("Dealing : " + file )
         ret, img = load_img_by_cv2(file, grayscale=True)
         assert (ret == 0)
         label_value = 0
@@ -133,11 +136,15 @@ def combine_masks(input_dict):
     print("Saved to : {}".format(output_file))
 
 
-def vote_masks(input_dict):
+def vote_masks(send_message_callback,input_dict):
+    send_message_callback("Begin")
+
     target_values = input_dict['target_values']
     num_target = len(target_values)
     input_files = input_dict['input_files']
     output_file = input_dict['save_mask']
+
+    send_message_callback("Dealing : " + input_files)
 
     files = input_files.split(';')
 
@@ -183,7 +190,7 @@ def vote_masks(input_dict):
 
 
 
-def accuracy_evalute(input_dict):
+def accuracy_evalute(send_message_callback,input_dict):
     ref_file = input_dict['gt_file']
     pred_file = input_dict['mask_file']
     valid_labels = input_dict['valid_values']
@@ -210,15 +217,15 @@ def accuracy_evalute(input_dict):
 
     pred_img = load_img_by_gdal(pred_file, grayscale=True)
 
-    print("\nfile: {}".format(os.path.split(pred_file)[1]))
+    send_message_callback("\nfile: {}".format(os.path.split(pred_file)[1]))
 
-    print("[INFO] Calculate confusion matrix..\n")
+    send_message_callback("[INFO] Calculate confusion matrix..\n")
 
     ref_img = np.array(ref_img)
     height, width = ref_img.shape
-    print(height, width)
+    send_message_callback(height, width)
     if height != pred_img.shape[0] or width != pred_img.shape[1]:
-        print("image sizes of reference and predicted are not equal!\n")
+        send_message_callback("image sizes of reference and predicted are not equal!\n")
 
     img_length = height * width
     if check_rate<0.01:
@@ -248,15 +255,15 @@ def accuracy_evalute(input_dict):
 
     valid_index.sort()
     valid_num_checkpoints = len(valid_index)
-    print("{}points have been selected, and {} valid points will be used to evaluate accuracy!\n".format(num_checkpoints,
+    send_message_callback("{}points have been selected, and {} valid points will be used to evaluate accuracy!\n".format(num_checkpoints,
                                                                                                    valid_num_checkpoints))
     # valid_ref=ref_img[valid_index]
     valid_ref = labels[valid_index]
-    print("valid value in reference image: {}".format(np.unique(valid_ref)))
+    send_message_callback("valid value in reference image: {}".format(np.unique(valid_ref)))
 
     ts = pred_img[pos]
     valid_pred = ts[valid_index]
-    print("valid value in predicton image: {}".format(np.unique(valid_pred)))
+    send_message_callback("valid value in predicton image: {}".format(np.unique(valid_pred)))
 
     tmp = np.unique(valid_pred)
     """make nodata to zero in predicted results"""
@@ -269,7 +276,7 @@ def accuracy_evalute(input_dict):
     # confus_matrix = tf.contrib.metrics.confusion_matrix(valid_pred, valid_ref, n_class)
     # with tf.Session() as sess:
     #     confus_matrix = sess.run(confus_matrix)
-    print(confus_matrix)
+    send_message_callback(confus_matrix)
 
     confus_matrix = np.array(confus_matrix)
 
@@ -285,29 +292,29 @@ def accuracy_evalute(input_dict):
         x_row_plus.append(row_sum)
         x_col_plus.append(col_sum)
 
-    print("x_row_plus:{}".format(x_row_plus))
-    print("x_col_plus:{}".format(x_col_plus))
+    send_message_callback("x_row_plus:{}".format(x_row_plus))
+    send_message_callback("x_col_plus:{}".format(x_col_plus))
     x_row_plus = np.array(x_row_plus)
     x_col_plus = np.array(x_col_plus)
     x_diagonal = np.array(x_diagonal)
     x_total = sum(x_row_plus)
     OA_acc = oa / (sum(x_row_plus))
-    print("\nOA:{:.3f}".format(OA_acc))
+    send_message_callback("\nOA:{:.3f}".format(OA_acc))
     tmp = x_col_plus * x_row_plus
     kappa = (x_total * sum(x_diagonal) - sum(x_col_plus * x_row_plus)) / np.float(
         x_total * x_total - sum(x_col_plus * x_row_plus))
 
-    print("Kappa:{:.3f}".format(kappa))
+    send_message_callback("Kappa:{:.3f}".format(kappa))
 
     for i in range(n_class):
         i = i
         prec = x_diagonal[i] / (x_row_plus[i]+SMOOTH)
-        print("\nForground of {}".format(i))
-        print("precision= {:.3f}".format(prec))
+        send_message_callback("\nForground of {}".format(i))
+        send_message_callback("precision= {:.3f}".format(prec))
         recall = x_diagonal[i] / (x_col_plus[i]+SMOOTH)
-        print("recall= {:.3f}".format(recall))
+        send_message_callback("recall= {:.3f}".format(recall))
         F1_score = (2*recall*prec)/(recall+prec)
-        print("F1_score= {:.3f}".format(F1_score))
+        send_message_callback("F1_score= {:.3f}".format(F1_score))
         iou = x_diagonal[i] / (x_row_plus[i] + x_col_plus[i] - x_diagonal[i]+SMOOTH)
-        print("iou= {:.3f}".format(iou))
+        send_message_callback("iou= {:.3f}".format(iou))
 

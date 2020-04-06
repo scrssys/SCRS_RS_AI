@@ -4,10 +4,10 @@ import gdal,os, sys
 from tqdm import tqdm
 import numpy as np
 import matplotlib.pyplot as plt
-from ulitities.base_functions import get_file, load_img_by_gdal
+from ulitities.base_functions import get_file, load_img_by_gdal,send_message_callback
 
 
-def image_normalize(input_dict):
+def image_normalize(send_message_callback,input_dict):
     input_dir = input_dict["input_dir"]
     output_dir = input_dict["output_dir"]
     nodata = input_dict["NoData"]
@@ -28,8 +28,8 @@ def image_normalize(input_dict):
     else:
         pass
 
-    for file in tqdm(src_files):
-
+    for file in src_files:#tqdm(src_files):
+        send_message_callback("Dealing : " +file)
         absname = os.path.split(file)[1]
         # absname = absname.split('.')[0]
         # absname = ''.join([absname, '.tif'])
@@ -115,16 +115,16 @@ def image_normalize(input_dict):
     return 0
 
 
-def image_clip(input_dict):
+def image_clip(send_message_callback,input_dict):
 
     input_src_file = input_dict['input_file']
     if not os.path.isfile(input_src_file):
-        print("input file is not existing!")
+        send_message_callback("input file is not existing!")
         sys.exit(-1)
-
+    send_message_callback("Open file {}".format(input_src_file))
     dataset = gdal.Open(input_src_file)
     if dataset == None:
-        print("Open file failed:{}".format(input_src_file))
+        send_message_callback("Open file failed:{}".format(input_src_file))
         sys.exit(-1)
 
     Yheight = dataset.RasterYSize

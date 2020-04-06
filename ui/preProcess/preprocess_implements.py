@@ -116,7 +116,7 @@ class child_samplecrop(QDialog,Ui_Dialog_samplecrop,base_message):
             self.pushButton_process.setEnabled(True)
 
 
-class child_image_stretch(QDialog, Ui_Dialog_image_stretch):
+class child_image_stretch(QDialog, Ui_Dialog_image_stretch,base_message):
     def __init__(self):
         super(child_image_stretch,self).__init__()
 
@@ -136,6 +136,7 @@ class child_image_stretch(QDialog, Ui_Dialog_image_stretch):
 
     def slot_ok(self):
         self.setWindowModality(Qt.ApplicationModal)
+        self.buttonBox.setEnabled(False)
         imgStretch_dict['input_dir'] = self.lineEdit_input.text()
         imgStretch_dict['output_dir'] = self.lineEdit_output.text()
         # nodata = self.spinBox_nodata.value()
@@ -149,11 +150,13 @@ class child_image_stretch(QDialog, Ui_Dialog_image_stretch):
         ''' save parameters into xml '''
 
         ret =0
-        ret = image_normalize(imgStretch_dict)
+        ret = image_normalize(self.send,imgStretch_dict)
         if ret !=0:
+            self.send("Error: failed to normalize images")
             print("Error: failed to normalize images")
         else:
             QMessageBox.information(self, 'Prompt', self.tr("Images stretched !"))
+        self.buttonBox.setEnabled(True)
         self.setWindowModality(Qt.NonModal)
 
         # xmlfile = '../../metadata/image_stretch_inputs.xml'
@@ -372,7 +375,7 @@ class ImageStretch():
 """
 for ui label_check
 """
-class child_label(QDialog, Ui_Dialog_label_check):
+class child_label(QDialog, Ui_Dialog_label_check,base_message):
     def __init__(self):
         super(child_label, self).__init__()
         self.setupUi(self)
@@ -383,6 +386,7 @@ class child_label(QDialog, Ui_Dialog_label_check):
         # QDir.setCurrent(dir_tmp)
 
     def slot_ok(self):
+        self.buttonBox.setEnabled(False)
         self.setWindowModality(Qt.ApplicationModal)
         # QDir.setCurrent(QCoreApplication.applicationDirPath())  # change current dir to "venv/bin/"
         min =self.spinBox_min.value()
@@ -392,12 +396,12 @@ class child_label(QDialog, Ui_Dialog_label_check):
         input_path = self.lineEdit_input.text()
         if not os.path.isdir(input_path):
             QMessageBox.warning(self, "Warning", self.tr("input path is not exist!"))
-            sys.exit(-1)
-
+        self.send("checking......")
         instance = DataCheck_and_modify(valid_labels)
         instance.select_invalid_values(input_path)
-
+        self.send("Checked ")
         QMessageBox.information(self, 'Prompt', self.tr("Check completely !"))
+        self.buttonBox.setEnabled(True)
         self.setWindowModality(Qt.NonModal)
 
 class DataCheck_and_modify():
@@ -458,7 +462,7 @@ class DataCheck_and_modify():
 """
 for ui image_clip
 """
-class child_ImageClip(QDialog, Ui_Dialog_image_clip):
+class child_ImageClip(QDialog, Ui_Dialog_image_clip,base_message):
     def __init__(self):
         super(child_ImageClip, self).__init__()
         self.setupUi(self)
@@ -478,6 +482,7 @@ class child_ImageClip(QDialog, Ui_Dialog_image_clip):
 
     def slot_ok(self):
         self.setWindowModality(Qt.ApplicationModal)
+        self.buttonBox.setEnabled(False)
         inputDict = imgClip_dict
         inputDict['input_file']=self.lineEdit_input.text()
         inputDict['output_file']=self.lineEdit_output.text()
@@ -489,11 +494,13 @@ class child_ImageClip(QDialog, Ui_Dialog_image_clip):
         # QDir.setCurrent(QCoreApplication.applicationDirPath())  # change current dir to "venv/bin/"
 
         ret =0
-        ret = image_clip(inputDict)
+        self.send("Dealing : " + inputDict['input_file'])
+        ret = image_clip(self.send,inputDict)
         if ret !=0:
-            print("Error: failed to clip images")
+            self.send("Error: failed to clip images")
         else:
             QMessageBox.information(self, 'Prompt', self.tr("Images cliped !"))
+        self.buttonBox.setEnabled(True)
         self.setWindowModality(Qt.NonModal)
 
         # xmlFileName = '../../metadata/image_clip_inputs.xml'

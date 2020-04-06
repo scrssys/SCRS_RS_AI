@@ -168,8 +168,8 @@ class SampleGenerate():
 
         return xb, yb
 
-    def produce_training_samples_binary(self):
-        print('\ncreating dataset...')
+    def produce_training_samples_binary(self,send_message_callback):
+        send_message_callback('\ncreating dataset...')
         in_path = self.input_dict['input_dir']
         out_path = self.input_dict['output_dir']
         valid_labels = list(range(int(self.input_dict['min']), int(self.input_dict['max']+1)))
@@ -186,11 +186,11 @@ class SampleGenerate():
 
         print("\n[INFO] produce samples---------------------")
         g_count = 0
-        for label_file in tqdm(label_files):
-
+        for label_file in label_files:#tqdm(label_files):
+            send_message_callback("Dealing : " +label_file)
             src_file = os.path.join(in_path, 'src/') + os.path.split(label_file)[1]
             if not os.path.isfile(src_file):
-                print("Have no file:".format(src_file))
+                send_message_callback("Have no file:".format(src_file))
                 continue
 
             print("src file:{}".format(os.path.split(src_file)[1]))
@@ -203,13 +203,13 @@ class SampleGenerate():
 
             dataset = gdal.Open(src_file)
             if dataset == None:
-                print("open failed!\n")
+                send_message_callback("open failed!\n")
                 continue
 
             Y_height = dataset.RasterYSize
             X_width = dataset.RasterXSize
             if (X_width != x and Y_height != y):
-                print("label and source image have different size:".format(label_file))
+                send_message_callback("label and source image have different size:".format(label_file))
                 continue
 
             im_bands = dataset.RasterCount
@@ -286,8 +286,8 @@ class SampleGenerate():
                 count += 1
                 g_count += 1
 
-    def produce_training_samples_multiclass(self):
-        print('\ncreating dataset...')
+    def produce_training_samples_multiclass(self,send_message_callback):
+        send_message_callback('creating dataset...')
         in_path = self.input_dict['input_dir']
         out_path = self.input_dict['output_dir']
         valid_labels = list(range(int(self.input_dict['min']), int(self.input_dict['max'] + 1)))
@@ -303,11 +303,11 @@ class SampleGenerate():
         img_h = int(self.input_dict['window_size'])
 
         g_count = 0
-        for label_file in tqdm(label_files):
-
+        for label_file in label_files:#tqdm(label_files):
+            send_message_callback("Dealing : " + label_file)
             src_file = os.path.join(in_path, 'src/') + os.path.split(label_file)[1]
             if not os.path.isfile(src_file):
-                print("Have no file:".format(src_file))
+                send_message_callback("Have no file:".format(src_file))
                 continue
                 # sys.exit(-1)
 
@@ -319,7 +319,7 @@ class SampleGenerate():
 
             dataset = gdal.Open(src_file)
             if dataset == None:
-                print("open failed!\n")
+                send_message_callback("open failed!\n")
                 continue
 
             X_height = dataset.RasterYSize
@@ -332,7 +332,7 @@ class SampleGenerate():
             print("Heigh, width of label is :{}, {}".format(x, y))
             print("Heigh, width of src is :{}, {}".format(X_height, X_width))
             if x != X_height or y != X_width:
-                print("Warning: src and label have different size!")
+                send_message_callback("Warning: src and label have different size!")
                 continue
 
             src_img = dataset.ReadAsArray(0, 0, X_width, X_height)
@@ -388,7 +388,7 @@ class SampleGenerate():
                 count += 1
                 g_count += 1
 
-    def produce_training_samples_binary_selfAdapt(self):
+    def produce_training_samples_binary_selfAdapt(self,send_message_callback):
         print('\ncreating dataset...')
         in_path = self.input_dict['input_dir']
         out_path = self.input_dict['output_dir']
@@ -406,7 +406,8 @@ class SampleGenerate():
 
         print("\n[INFO] produce samples---------------------")
         g_count = 0
-        for label_file in tqdm(label_files):
+        for label_file in label_files:#tqdm(label_files):
+            send_message_callback("Dealing : " +label_file)
             absname = os.path.split(label_file)[1]
             absname = absname.split('.')[0]
             # src_file = os.path.join(in_path, 'src/') + os.path.split(label_file)[1]
@@ -543,8 +544,9 @@ class SampleGenerate():
             """validate the target labels"""
             print(np.unique(label_roi))
 
-    def produce_training_samples_multiclass_selfAdapt(self):
-        print('\ncreating dataset...')
+    def produce_training_samples_multiclass_selfAdapt(self,send_message_callback):
+
+        send_message_callback('\ncreating dataset...')
         in_path = self.input_dict['input_dir']
         out_path = self.input_dict['output_dir']
         valid_labels = list(range(int(self.input_dict['min']), int(self.input_dict['max'] + 1)))
@@ -560,7 +562,8 @@ class SampleGenerate():
         img_h = int(self.input_dict['window_size'])
 
         g_count = 0
-        for label_file in tqdm(label_files):
+        for label_file in label_files:#tqdm(label_files):
+            send_message_callback("Dealing : " + label_file)
             absname = os.path.split(label_file)[1]
             absname = absname.split('.')[0]
             # src_file = os.path.join(in_path, 'src/') + os.path.split(label_file)[1]

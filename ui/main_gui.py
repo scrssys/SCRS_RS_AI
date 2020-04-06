@@ -7,7 +7,11 @@ from ui.train.Train_implement import *
 from ui.about import Ui_Dialog_about
 from ui.open import matplot_Figure,qgis_plotRaster,qgis_plotVector
 from PyQt5.QtCore import QEventLoop
-from qgis.gui import QgsMapCanvas
+try:
+    from qgis.gui import QgsMapCanvas
+except:
+    pass
+
 import platform
 sysinfo=platform.system()
 
@@ -94,7 +98,6 @@ class mywindow(QMainWindow, Ui_MainWindow):
         self.actionAbout.setText(_translate("MainWindow", "关于"))
         self.actionOpen.setText(_translate("MainWindow", "影像打开"))
         self.actionOpen_Vector.setText(_translate("MainWindow", "矢量打开"))
-
         self.actionExit.setText(_translate("MainWindow", "退出"))
         self.actionCombineSingleModelReults.setText(_translate("MainWindow", "多类别合成"))
         self.action_VoteMultiModelResults.setText(_translate("MainWindow", "多模型集成"))
@@ -148,37 +151,44 @@ class mywindow(QMainWindow, Ui_MainWindow):
 
     def slot_train(self):
         child = child_train()
+        child.message_sig.connect(self.OutputWritten)
         child.show()
         child.exec()
 
     def slot_action_rasterToPolygon(self):
         child =child_raster_to_polygon()
+        child.message_sig.connect(self.OutputWritten)
         child.show()
         child.exec_()
 
     def slot_action_sampleGenSelfAdapt(self):
         child = child_sampleGenSelfAdapt()
+        child.message_sig.connect(self.OutputWritten)
         child.show()
         child.exec_()
 
 
     def slot_action_binarization(self):
         child = child_Binarization()
+        child.message_sig.connect(self.OutputWritten)
         child.show()
         child.exec_()
 
     def for_action_label_check(self):
         child = child_label()
+        child.message_sig.connect(self.OutputWritten)
         child.show()
         child.exec_()
 
     def for_action_image_stretch(self):
         child = child_image_stretch()
+        child.message_sig.connect(self.OutputWritten)
         child.show()
         child.exec_()
 
     def slot_actiong_image_clip(self):
         child = child_ImageClip()
+        child.message_sig.connect(self.OutputWritten)
         child.show()
         child.exec_()
 
@@ -196,6 +206,7 @@ class mywindow(QMainWindow, Ui_MainWindow):
 
     def slot_action_sampleGenCommon(self):
         child = child_sampleGenCommon()
+        child.message_sig.connect(self.OutputWritten)
         child.show()
         child.exec_()
 
@@ -252,16 +263,19 @@ class mywindow(QMainWindow, Ui_MainWindow):
 
     def slot_action_combineMulticlassFromSingleModel(self):
         child = child_CombineMulticlassFromSingleModelResults()
+        child.message_sig.connect(self.OutputWritten)
         child.show()
         child.exec_()
 
     def slot_action_VoteMultimodleResults(self):
         child = child_VoteMultimodleResults()
+        child.message_sig.connect(self.OutputWritten)
         child.show()
         child.exec_()
 
     def slot_action_accuracyEvaluate(self):
         child = child_AccuacyEvaluate()
+        child.message_sig.connect(self.OutputWritten)
         child.show()
         child.exec_()
 

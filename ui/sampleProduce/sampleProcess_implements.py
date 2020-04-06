@@ -17,13 +17,13 @@ from ui.sampleProduce.SampleGenCommon import Ui_Dialog_sampleGenCommon
 from ui.sampleProduce.SampleGenSelfAdapt import Ui_Dialog_sampleGenSelfAdapt
 
 from ulitities.base_functions import get_file, load_img_by_gdal
-from ui.sampleProduce.sampleProcess_backend import SampleGenerate
+from ui.sampleProduce.sampleProcess_backend import SampleGenerate,base_message
 
 sampleGen_dict={'input_dir':'', 'output_dir':'', 'window_size':256, 'min':0, 'max':2, 'target_label':1, 'sample_num':5000, 'mode':'augment'}
 sampleGenSelfAdapt_dict={'input_dir':'', 'output_dir':'', 'window_size':256, 'min':0, 'max':2, 'target_label':1, 'sample_scaleRate':1.0, 'mode':'augment', 'imgmode':"normalize"}
 
 
-class child_sampleGenCommon(QDialog, Ui_Dialog_sampleGenCommon):
+class child_sampleGenCommon(QDialog, Ui_Dialog_sampleGenCommon,base_message):
     def __init__(self):
         super(child_sampleGenCommon,self).__init__()
         # self.label_targetLabel.setVisible(self, False)
@@ -51,6 +51,7 @@ class child_sampleGenCommon(QDialog, Ui_Dialog_sampleGenCommon):
         self.spinBox_targetLabel.setVisible(False)
 
     def slot_ok(self):
+        self.buttonBox.setEnabled(False)
         self.setWindowModality(Qt.ApplicationModal)
 
         self.Flag_binary = self.radioButton_binary.isChecked()
@@ -72,16 +73,19 @@ class child_sampleGenCommon(QDialog, Ui_Dialog_sampleGenCommon):
 
         instance = SampleGenerate(input_dict)
         if self.radioButton_binary.isChecked():
-            instance.produce_training_samples_binary()
+            self.send("produce_training_samples_binary")
+
+            instance.produce_training_samples_binary(self.send)
         else:
-            instance.produce_training_samples_multiclass()
+            self.send("produce_training_samples_multiclass")
+            instance.produce_training_samples_multiclass(self.send)
 
         QMessageBox.information(self, "Prompt", self.tr("Sample produced!"))
-
+        self.buttonBox.setEnabled(True)
         self.setWindowModality(Qt.NonModal)
 
 
-class child_sampleGenSelfAdapt(QDialog, Ui_Dialog_sampleGenSelfAdapt):
+class child_sampleGenSelfAdapt(QDialog, Ui_Dialog_sampleGenSelfAdapt,base_message):
     def __init__(self):
         super(child_sampleGenSelfAdapt,self).__init__()
         # self.label_targetLabel.setVisible(self, False)
@@ -135,12 +139,15 @@ class child_sampleGenSelfAdapt(QDialog, Ui_Dialog_sampleGenSelfAdapt):
             input_dict['imgmode'] = 'original'
 
         instance = SampleGenerate(input_dict)
+        self.buttonBox.setEnabled(False)
         if self.radioButton_binary.isChecked():
-            instance.produce_training_samples_binary_selfAdapt()
+            self.send("Produce_training_samples_binary_selfAdapt")
+            instance.produce_training_samples_binary_selfAdapt(self.send)
         else:
-            instance.produce_training_samples_multiclass_selfAdapt()
+            self.send("Produce_training_samples_multiclass_selfAdapt")
+            instance.produce_training_samples_multiclass_selfAdapt(self.send)
 
         QMessageBox.information(self, "Prompt", self.tr("Sample produced!"))
 
         self.setWindowModality(Qt.NonModal)
-
+        self.buttonBox.setEnabled(True)

@@ -22,7 +22,7 @@ binarization_dict = {'grayscale_mask':'', 'binary_mask':'', 'threshold':127}
 binarybatch_dict = {'inputdir':'', 'outputdir':'', 'threshold':127}
 
 
-class child_raster_to_polygon(QDialog, Ui_Dialog_raster_to_polygon):
+class child_raster_to_polygon(QDialog, Ui_Dialog_raster_to_polygon,base_message):
     def __init__(self):
         super(child_raster_to_polygon,self).__init__()
         self.setupUi(self)
@@ -40,6 +40,8 @@ class child_raster_to_polygon(QDialog, Ui_Dialog_raster_to_polygon):
         # QDir.setCurrent(dir_tmp)
 
     def slot_ok(self):
+        self.send("begin : ")
+        self.pushButton_ok.setEnabled(False)
         self.setWindowModality(Qt.ApplicationModal)
         input_dir = self.lineEdit_input.text()
         if not os.path.isdir(input_dir):
@@ -55,24 +57,26 @@ class child_raster_to_polygon(QDialog, Ui_Dialog_raster_to_polygon):
             if nb ==0:
                 QMessageBox.warning(self, "Prompt", self.tr("No image found!"))
                 sys.exit(-2)
-
-            for file in tqdm(files):
+            print(files)
+            for file in files:#tqdm(files):
+                self.send("Polygonize : " +file)
                 abs_filename = os.path.split(file)[1]
                 abs_filename= abs_filename.split('.')[0]
                 shp_file = ''.join([output_dir, '/', abs_filename, '.shp'])
                 polygonize(file, shp_file)
         except:
+            self.pushButton_ok.setEnabled(True)
             QMessageBox.warning(self, "Prompt", self.tr("Failed!"))
         else:
             QMessageBox.information(self, "Prompt", self.tr("successfully!"))
 
-
+        self.pushButton_ok.setEnabled(True)
         self.setWindowModality(Qt.NonModal)
 
 
 
 
-class child_Binarization(QDialog, Ui_Dialog_binarization):
+class child_Binarization(QDialog, Ui_Dialog_binarization,base_message):
 
     def __init__(self):
         super(child_Binarization, self).__init__()
@@ -117,24 +121,24 @@ class child_Binarization(QDialog, Ui_Dialog_binarization):
         # self.setWindowModality(Qt.NonModal)
 
         self.setWindowModality(Qt.ApplicationModal)
+        self.buttonBox.setEnabled(False )
         input_dict = binarybatch_dict
         input_dict['inputdir'] = self.lineEdit_grayscale_mask.text()
         input_dict['outputdir'] = self.lineEdit_binary_mask.text()
         input_dict['threshold'] = self.spinBox_forground.value()
 
         ret = -1
-        ret = batchbinarize_masks(input_dict)
-
+        ret = batchbinarize_masks(self.send,input_dict)
         if ret == 0:
             QMessageBox.information(self, "Prompt", self.tr("successfully!"))
         else:
             QMessageBox.warning(self, "Prompt", self.tr("Failed!"))
-
+        self.buttonBox.setEnabled(True)
         self.setWindowModality(Qt.NonModal)
 
 
 
-class child_CombineMulticlassFromSingleModelResults(QDialog, Ui_Dialog_combine_multiclas_fromsinglemodel):
+class child_CombineMulticlassFromSingleModelResults(QDialog, Ui_Dialog_combine_multiclas_fromsinglemodel,base_message):
     def __init__(self):
         super(child_CombineMulticlassFromSingleModelResults, self).__init__()
         self.setupUi(self)
@@ -166,9 +170,10 @@ class child_CombineMulticlassFromSingleModelResults(QDialog, Ui_Dialog_combine_m
         if not '.png' in input_dict['save_mask']:
             input_dict['save_mask'] =''.join([input_dict['save_mask'], '.png'])
         input_dict['foreground'] = self.spinBox_forground.value()
-
+        self.send("Begin")
         ret =-1
-        ret = combine_masks(input_dict)
+
+        ret = combine_masks(self.send,input_dict)
 
         if ret ==0:
             QMessageBox.information(self,"Prompt", self.tr("successfully!"))
@@ -176,7 +181,7 @@ class child_CombineMulticlassFromSingleModelResults(QDialog, Ui_Dialog_combine_m
         self.setWindowModality(Qt.NonModal)
 
 
-class child_VoteMultimodleResults(QDialog, Ui_Dialog_vote_multimodels):
+class child_VoteMultimodleResults(QDialog, Ui_Dialog_vote_multimodels,base_message):
     def __init__(self):
         super(child_VoteMultimodleResults, self).__init__()
         self.setupUi(self)
@@ -206,6 +211,7 @@ class child_VoteMultimodleResults(QDialog, Ui_Dialog_vote_multimodels):
 
 
     def slot_ok(self):
+        self.buttonBox.setEnabled(False)
         self.setWindowModality(Qt.ApplicationModal)
         input_dict = vote_dict
         input_dict['input_files'] = self.lineEdit_inputs.text()
@@ -218,11 +224,11 @@ class child_VoteMultimodleResults(QDialog, Ui_Dialog_vote_multimodels):
         input_dict['target_values'] = list(range(min, max+1))
 
         ret =-1
-        ret = vote_masks(input_dict)
+        ret = vote_masks(self.send,input_dict)
 
         if ret ==0:
             QMessageBox.information(self, "Prompt", self.tr("successfully!"))
-
+        self.buttonBox.setEnabled(True)
         self.setWindowModality(Qt.NonModal)
 
 
@@ -247,6 +253,8 @@ class child_AccuacyEvaluate(QDialog, Ui_Dialog_accuracy_evaluate):
 
     def slot_ok(self):
         self.setWindowModality(Qt.ApplicationModal)
+        self.send("Begin")
+        self.buttonBox.setEnabled(False)
         input_dict = accEvaluate_dict
         input_dict['gt_file'] = self.lineEdit_gt.text()
         input_dict['mask_file'] = self.lineEdit_mask.text()
@@ -255,13 +263,12 @@ class child_AccuacyEvaluate(QDialog, Ui_Dialog_accuracy_evaluate):
         input_dict['valid_values'] = list(range(min, max+1))
         input_dict['check_rate'] = self.doubleSpinBox_rate.value()
         # input_dict['GPUID'] = self.comboBox_gupid.currentText()
-
         ret =-1
-        ret = accuracy_evalute(input_dict)
+        ret = accuracy_evalute(self.send,input_dict)
 
         if ret == 0:
             QMessageBox.information(self, "Prompt", self.tr("successfully!"))
-
+        self.buttonBox.setEnabled(True)
         self.setWindowModality(Qt.NonModal)
 
 class child_removesmallobject(QDialog, Ui_Dialog_removeSmallPolygon,base_message):
