@@ -86,8 +86,6 @@ def check_predict_input(dict_para):
         print("Error: para output is not a directory\n")
         return -3
 
-
-
     if os.path.isfile(dict_para["model"]) and ('.h5' in dict_para["model"]):
         curr_model=dict_para["model"]
     elif os.path.isfile(config.model_path):
@@ -105,7 +103,7 @@ def check_predict_input(dict_para):
     return out
 
 @echoRuntime
-def predict(send_massage_callback, configs=None,gpu=0, input='',output='',model=''):
+def predict(send_massage_callback=send_message_callback, configs=None,gpu=0, input='',output='',model=''):
     send_massage_callback("predict >>>")
     # return 0
     dict_in = {"configs": configs, "gpu":gpu, "input":input,"output":output, "model":model}
@@ -119,7 +117,7 @@ def predict(send_massage_callback, configs=None,gpu=0, input='',output='',model=
         #     send_massage_callback("message 2")
         out=check_predict_input(dict_in)
     except:
-        out=0
+        out=-998
     if isinstance(out, int):
         send_massage_callback("Fault! check input parameter ")
         return out

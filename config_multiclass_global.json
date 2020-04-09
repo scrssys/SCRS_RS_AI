@@ -10,8 +10,8 @@
   "augment":true,
   "label_nodata":255,
 
-  "network":"pspnet",
-  "BACKBONE":"senet154",
+  "network":"unet",
+  "BACKBONE":"resnet34",
   "activation":"softmax",
   "encoder_weights":null,
   "dropout":0.5,

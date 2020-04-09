@@ -65,7 +65,7 @@ class mywindow(QMainWindow, Ui_MainWindow):
         """
         send massage to main window
         :param str:
-        :return:
+        :return: send massage box to main window convas
         """
         QCoreApplication.processEvents()
         curr_time = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
