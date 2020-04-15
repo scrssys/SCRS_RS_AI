@@ -210,56 +210,6 @@ class mywindow(QMainWindow, Ui_MainWindow):
         child.show()
         child.exec_()
 
-    def slot_action_trainBinaryJaccCross(self):
-        child = child_trainBinaryJaccardCross()
-        child.show()
-        child.exec_()
-
-    def slot_action_trainBinaryOnehot(self):
-        child = child_trainBinaryOnehot()
-        child.show()
-        child.exec_()
-
-    def slot_action_trainBinaryJaccard(self):
-        child = child_trainBinaryJaccardOnly()
-        child.show()
-        child.exec_()
-
-    def slot_action_trainBinaryCrossentropy(self):
-        child = child_trainBinaryCrossentropy()
-        child.show()
-        child.exec_()
-
-    def slot_action_trainBinaryNew(self):
-        child = child_trainBinaryCommon()
-        child.show()
-        child.exec_()
-
-
-    def slot_action_trainMulticlass(self):
-        child = child_trainMulticlass()
-        child.show()
-        child.exec_()
-
-    def slot_action_predictBinarySingleImg(self):
-        child = child_predictBinaryForSingleImage()
-        child.show()
-        child.exec_()
-
-    def slot_action_predictMulticlassSingleImg(self):
-        child = child_predictMulticlassForSingleImage()
-        child.show()
-        child.exec_()
-
-    def slot_action_predictBinaryBatch(self):
-        child = child_predictBinaryBatch()
-        child.show()
-        child.exec_()
-
-    def slot_action_predictMulticlassBatch(self):
-        child = child_predictMulticlassBatch()
-        child.show()
-        child.exec_()
 
     def slot_action_combineMulticlassFromSingleModel(self):
         child = child_CombineMulticlassFromSingleModelResults()

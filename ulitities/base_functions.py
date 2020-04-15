@@ -64,6 +64,7 @@ def send_message_callback(text):
 class base_message():
     message_sig = pyqtSignal(str)
     def send(self,text):
+        print(text)
         self.message_sig.emit(text)
 
 def load_img_by_cv2(path, grayscale=False):
@@ -336,7 +337,7 @@ def load_img_bybandlist(path, bandlist=[]):
     return 0, out_img
 
 
-def get_file(file_dir, file_type=["png",'.png', '.PNG', '.tif', '.img','.IMG']):
+def get_file(file_dir, file_type=[".jpg",'.png', '.tif', '.tiff','.img']):
     """
 
     :param file_dir: directory of input files, it may have sub_folders
@@ -351,7 +352,7 @@ def get_file(file_dir, file_type=["png",'.png', '.PNG', '.tif', '.img','.IMG']):
     L=[]
     for root,dirs,files in os.walk(file_dir):
         for file in files:
-            if (os.path.splitext(file)[1] in im_type):
+            if (str.lower(os.path.splitext(file)[1]) in im_type):
                 L.append(os.path.join(root,file))
     num = len(L)
     return L, num

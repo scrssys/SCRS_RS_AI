@@ -222,8 +222,11 @@ def accuracy_evalute(send_message_callback,input_dict):
     send_message_callback("[INFO] Calculate confusion matrix..\n")
 
     ref_img = np.array(ref_img)
+    if len(ref_img.shape)>2:
+        print("Error: you have chosen wrong referenced label file\n")
+        return -2
     height, width = ref_img.shape
-    send_message_callback(height, width)
+    # send_message_callback(height, width)
     if height != pred_img.shape[0] or width != pred_img.shape[1]:
         send_message_callback("image sizes of reference and predicted are not equal!\n")
 
@@ -276,7 +279,7 @@ def accuracy_evalute(send_message_callback,input_dict):
     # confus_matrix = tf.contrib.metrics.confusion_matrix(valid_pred, valid_ref, n_class)
     # with tf.Session() as sess:
     #     confus_matrix = sess.run(confus_matrix)
-    send_message_callback(confus_matrix)
+    # send_message_callback(str(confus_matrix))
 
     confus_matrix = np.array(confus_matrix)
 

@@ -167,7 +167,7 @@ def resample_data(img, dst_h, dst_w, mode = Image.ANTIALIAS, bits=8):
 
 
 # data for training
-def train_data_generator(config, sample_url):
+def train_data_generator(config, sampth, sample_url):
     # print 'generateData...'
     norm_value =255.0
     bits_num=8
@@ -181,15 +181,15 @@ def train_data_generator(config, sample_url):
         pass
     label_list,img_list = [], []
     for pic in sample_url:
-        _,t_img = load_img_normalization(1,config.train_data_path+'/label/'+pic)
+        _,t_img = load_img_normalization(1,sampth+'/label/'+pic)
         tp = np.unique(t_img)
         if len(tp) < 2:
-            print("Only one value {} in {}".format(tp, config.train_data_path+'/label/'+pic))
+            print("Only one value {} in {}".format(tp, sampth+'/label/'+pic))
             if tp[0] == 0:
-                print("no target value in {}".format(config.train_data_path+'/label/'+pic))
+                print("no target value in {}".format(sampth+'/label/'+pic))
                 continue
 
-        ret, s_img = load_img_bybandlist((config.train_data_path + '/src/' + pic), bandlist=config.band_list)
+        ret, s_img = load_img_bybandlist((sampth + '/src/' + pic), bandlist=config.band_list)
         if ret!=0:
             continue
 
@@ -261,21 +261,21 @@ def train_data_generator(config, sample_url):
                 batch = 0
 
 
-def val_data_generator(config, sample_url):
+def val_data_generator(config,sampth, sample_url):
     # print 'generate validating Data...'
     norm_value = 255.0
     w=config.img_w
     h=config.img_h
     label_list, img_list = [],[]
     for pic in sample_url:
-        _, t_img = load_img_normalization(1, config.train_data_path + '/label/' + pic)
+        _, t_img = load_img_normalization(1, sampth + '/label/' + pic)
         tp = np.unique(t_img)
         if len(tp) < 2:
-            print("Only one value {} in {}".format(tp, config.train_data_path + '/label/' + pic))
+            print("Only one value {} in {}".format(tp, sampth + '/label/' + pic))
             if tp[0] == 0:
-                print("no target value in {}".format(config.train_data_path + '/label/' + pic))
+                print("no target value in {}".format(sampth + '/label/' + pic))
                 continue
-        ret, s_img = load_img_bybandlist((config.train_data_path + '/src/' + pic), bandlist=config.band_list)
+        ret, s_img = load_img_bybandlist((sampth + '/src/' + pic), bandlist=config.band_list)
         if ret!=0:
             continue
         s_img = img_to_array(s_img)

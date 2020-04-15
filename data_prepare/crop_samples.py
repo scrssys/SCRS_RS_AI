@@ -7,7 +7,7 @@ from tqdm import tqdm
 from ulitities.base_functions import get_file, load_img_by_gdal, find_file,send_message_callback
 
 
-def Simple_Crop(send_message_callback,inputdir,outputdir,patch_size=3000):
+def Simple_Crop(send_message_callback=send_message_callback,inputdir="",outputdir="",patch_size=3000):
     if not os.path.isdir(inputdir):
         send_message_callback("Error: input directory is not existed")
         sys.exit(-1)

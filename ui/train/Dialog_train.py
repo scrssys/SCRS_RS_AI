@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
+
 # Form implementation generated from reading ui file 'Dialog_train.ui'
 #
-# Created by: PyQt5 UI code generator 5.13.0
+# Created by: PyQt5 UI code generator 5.5.1
 #
 # WARNING! All changes made in this file will be lost!
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 class Ui_Dialog_train(object):
     def setupUi(self, Dialog_train):
         Dialog_train.setObjectName("Dialog_train")
@@ -22,7 +25,6 @@ class Ui_Dialog_train(object):
         self.layoutWidget.setFont(font)
         self.layoutWidget.setObjectName("layoutWidget")
         self.horizontalLayout_5 = QtWidgets.QHBoxLayout(self.layoutWidget)
-        self.horizontalLayout_5.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_5.setObjectName("horizontalLayout_5")
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
@@ -69,15 +71,14 @@ class Ui_Dialog_train(object):
         self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName("buttonBox")
         self.horizontalLayout_5.addWidget(self.buttonBox)
-        self.widget = QtWidgets.QWidget(Dialog_train)
-        self.widget.setGeometry(QtCore.QRect(31, 20, 411, 171))
-        self.widget.setObjectName("widget")
-        self.verticalLayout = QtWidgets.QVBoxLayout(self.widget)
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        self.layoutWidget1 = QtWidgets.QWidget(Dialog_train)
+        self.layoutWidget1.setGeometry(QtCore.QRect(31, 20, 411, 171))
+        self.layoutWidget1.setObjectName("layoutWidget1")
+        self.verticalLayout = QtWidgets.QVBoxLayout(self.layoutWidget1)
         self.verticalLayout.setObjectName("verticalLayout")
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.label = QtWidgets.QLabel(self.widget)
+        self.label = QtWidgets.QLabel(self.layoutWidget1)
         self.label.setEnabled(True)
         self.label.setMinimumSize(QtCore.QSize(45, 0))
         self.label.setMaximumSize(QtCore.QSize(333333, 16777215))
@@ -90,7 +91,7 @@ class Ui_Dialog_train(object):
         self.label.setFont(font)
         self.label.setObjectName("label")
         self.horizontalLayout.addWidget(self.label)
-        self.lineEdit_sample = QtWidgets.QLineEdit(self.widget)
+        self.lineEdit_sample = QtWidgets.QLineEdit(self.layoutWidget1)
         font = QtGui.QFont()
         font.setFamily("Times New Roman")
         font.setPointSize(10)
@@ -100,7 +101,7 @@ class Ui_Dialog_train(object):
         self.lineEdit_sample.setFont(font)
         self.lineEdit_sample.setObjectName("lineEdit_sample")
         self.horizontalLayout.addWidget(self.lineEdit_sample)
-        self.pushButton = QtWidgets.QPushButton(self.widget)
+        self.pushButton = QtWidgets.QPushButton(self.layoutWidget1)
         font = QtGui.QFont()
         font.setFamily("Times New Roman")
         font.setPointSize(10)
@@ -113,7 +114,7 @@ class Ui_Dialog_train(object):
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.label_2 = QtWidgets.QLabel(self.widget)
+        self.label_2 = QtWidgets.QLabel(self.layoutWidget1)
         self.label_2.setEnabled(True)
         self.label_2.setMinimumSize(QtCore.QSize(45, 0))
         self.label_2.setMaximumSize(QtCore.QSize(44444, 16777215))
@@ -126,7 +127,7 @@ class Ui_Dialog_train(object):
         self.label_2.setFont(font)
         self.label_2.setObjectName("label_2")
         self.horizontalLayout_2.addWidget(self.label_2)
-        self.lineEdit_config = QtWidgets.QLineEdit(self.widget)
+        self.lineEdit_config = QtWidgets.QLineEdit(self.layoutWidget1)
         self.lineEdit_config.setMaximumSize(QtCore.QSize(265, 16777215))
         font = QtGui.QFont()
         font.setFamily("Times New Roman")
@@ -137,7 +138,7 @@ class Ui_Dialog_train(object):
         self.lineEdit_config.setFont(font)
         self.lineEdit_config.setObjectName("lineEdit_config")
         self.horizontalLayout_2.addWidget(self.lineEdit_config)
-        self.pushButton_2 = QtWidgets.QPushButton(self.widget)
+        self.pushButton_2 = QtWidgets.QPushButton(self.layoutWidget1)
         font = QtGui.QFont()
         font.setFamily("Times New Roman")
         font.setPointSize(10)
@@ -150,9 +151,9 @@ class Ui_Dialog_train(object):
         self.verticalLayout.addLayout(self.horizontalLayout_2)
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        self.label_3 = QtWidgets.QLabel(self.widget)
+        self.label_3 = QtWidgets.QLabel(self.layoutWidget1)
         self.label_3.setEnabled(True)
-        self.label_3.setMinimumSize(QtCore.QSize(45, 0))
+        self.label_3.setMinimumSize(QtCore.QSize(55, 0))
         self.label_3.setMaximumSize(QtCore.QSize(40, 16777215))
         font = QtGui.QFont()
         font.setFamily("Times New Roman")
@@ -163,7 +164,7 @@ class Ui_Dialog_train(object):
         self.label_3.setFont(font)
         self.label_3.setObjectName("label_3")
         self.horizontalLayout_3.addWidget(self.label_3)
-        self.lineEdit_modelpath = QtWidgets.QLineEdit(self.widget)
+        self.lineEdit_modelpath = QtWidgets.QLineEdit(self.layoutWidget1)
         self.lineEdit_modelpath.setMaximumSize(QtCore.QSize(265, 16777215))
         font = QtGui.QFont()
         font.setFamily("Times New Roman")
@@ -174,7 +175,7 @@ class Ui_Dialog_train(object):
         self.lineEdit_modelpath.setFont(font)
         self.lineEdit_modelpath.setObjectName("lineEdit_modelpath")
         self.horizontalLayout_3.addWidget(self.lineEdit_modelpath)
-        self.pushButton_4 = QtWidgets.QPushButton(self.widget)
+        self.pushButton_4 = QtWidgets.QPushButton(self.layoutWidget1)
         font = QtGui.QFont()
         font.setFamily("Times New Roman")
         font.setPointSize(10)
@@ -210,5 +211,6 @@ class Ui_Dialog_train(object):
         self.pushButton.setText(_translate("Dialog_train", "open"))
         self.label_2.setText(_translate("Dialog_train", "Config"))
         self.pushButton_2.setText(_translate("Dialog_train", "open"))
-        self.label_3.setText(_translate("Dialog_train", "Model"))
+        self.label_3.setText(_translate("Dialog_train", "ModelSave"))
         self.pushButton_4.setText(_translate("Dialog_train", "open"))
+

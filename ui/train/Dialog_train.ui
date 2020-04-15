@@ -150,7 +150,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>31</x>
@@ -303,7 +303,7 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>45</width>
+          <width>55</width>
           <height>0</height>
          </size>
         </property>
@@ -323,7 +323,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Model</string>
+         <string>ModelSave</string>
         </property>
        </widget>
       </item>

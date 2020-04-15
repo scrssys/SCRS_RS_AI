@@ -209,14 +209,15 @@ if __name__ == '__main__':
         print("Error: band_list should not be empty!")
         sys.exit(-2)
     input_layer = (config.img_w,config.img_h, len(config.band_list))
+    input_bands=len(config.band_list)
 
     #test classical_unet
     if "unet" in config.network:
-        model = classical_unet(config.img_w,config.img_h,3,config.nb_classes)
+        model = classical_unet(config.img_w,config.img_h,input_bands,config.nb_classes)
     elif "fcns" in config.network:
-        model = classical_fcnnet(config.img_w,config.img_h,3,config.nb_classes)
+        model = classical_fcnnet(config.img_w,config.img_h,input_bands,config.nb_classes)
     else:
-        model = classical_segnet(config.img_w, config.img_h, 3, config.nb_classes)
+        model = classical_segnet(config.img_w, config.img_h, input_bands, config.nb_classes)
 
 
     print(model.summary())

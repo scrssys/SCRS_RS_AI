@@ -232,7 +232,7 @@ class child_VoteMultimodleResults(QDialog, Ui_Dialog_vote_multimodels,base_messa
         self.setWindowModality(Qt.NonModal)
 
 
-class child_AccuacyEvaluate(QDialog, Ui_Dialog_accuracy_evaluate):
+class child_AccuacyEvaluate(QDialog, Ui_Dialog_accuracy_evaluate,base_message):
     def __init__(self):
         super(child_AccuacyEvaluate, self).__init__()
         self.setupUi(self)
@@ -253,7 +253,7 @@ class child_AccuacyEvaluate(QDialog, Ui_Dialog_accuracy_evaluate):
 
     def slot_ok(self):
         self.setWindowModality(Qt.ApplicationModal)
-        self.send("Begin")
+        # self.send("Begin")
         self.buttonBox.setEnabled(False)
         input_dict = accEvaluate_dict
         input_dict['gt_file'] = self.lineEdit_gt.text()

@@ -89,12 +89,12 @@ def check_predict_input(dict_para):
 
 """get the train file name and divide to train and val parts"""
 def get_train_val(sample_path, val_rate):
-    file_type = ['.png', '.PNG', '.tif', '.img', '.IMG']
+    file_type = ['.jpg','.png', '.tif', '.img']
     train_url = []
     train_set = []
     val_set = []
     for pic in os.listdir(sample_path + '/label'):
-        if (os.path.splitext(pic)[1] in file_type):
+        if (str.lower(os.path.splitext(pic)[1]) in file_type):
             train_url.append(pic)
     random.shuffle(train_url)
     total_num = len(train_url)
@@ -110,7 +110,7 @@ def get_train_val(sample_path, val_rate):
 
 
 def train(send_massage_callback=send_message_callback, configs=None,gpu=0, samples='',outdir='',baseModel=''):
-    send_massage_callback("predict >>>")
+    send_massage_callback("training >>>")
     # return 0
     dict_in = {"configs": configs, "gpu":gpu, "sampleDir":samples,"outDir":outdir, "baseModel":baseModel}
     try:
@@ -145,7 +145,7 @@ def train(send_massage_callback=send_message_callback, configs=None,gpu=0, sampl
 
     date_time = time.strftime("%Y-%m-%d_%H-%M-%S", time.localtime())
     print("date and time: {}".format(date_time))
-    print("traindata from: {}".format(config.train_data_path))
+    # print("traindata from: {}".format(config.train_data_path))
     band_name = ''
     if len(config.band_list) == 0:
         band_name = 'fullbands'
@@ -187,12 +187,12 @@ def train(send_massage_callback=send_message_callback, configs=None,gpu=0, sampl
     else:
         print("Error:")
 
-    print(model.summary())
-    from keras.utils import plot_model
-    plot_model(model, to_file='model.png')
-    # from keras import  layers.UpSampling2D
-
+    # print(model.summary())
+    # from keras.utils import plot_model
+    # plot_model(model, to_file='model.png')
+    """\n**************************************"""
     print("Train by : {}_{}".format(config.network, config.BACKBONE))
+    """\n**************************************\n"""
     if os.path.isfile(out['baseModel']):
         try:
             model.load_weights(out["baseModel"])
@@ -270,31 +270,32 @@ def train(send_massage_callback=send_message_callback, configs=None,gpu=0, sampl
     finally:
         print("Compile model successfully!")
 
-    H = model.fit_generator(generator=train_data_generator(config, train_set),
+    H = model.fit_generator(generator=train_data_generator(config, out["sampleDir"], train_set),
                             steps_per_epoch=train_numb // config.batch_size,
                             epochs=config.epochs,
                             verbose=1,
-                            validation_data=val_data_generator(config, val_set),
+                            validation_data=val_data_generator(config, out["sampleDir"], val_set),
                             validation_steps=valid_numb // config.batch_size,
                             callbacks=callable,
                             max_q_size=1,
                             class_weight='auto')
 
     # model.save(last_model)
+    print("Training finished!")
 
 
 
 
 import fire
 if __name__ == '__main__':
-    train(
-        send_massage_callback=send_message_callback,
-        configs='config_multiclass_global.json',
-        gpu=0,
-        samples='',
-        outdir='',
-        baseModel=''
-    )
+    # train(
+    #     send_massage_callback=send_message_callback,
+    #     configs='config_multiclass_global.json',
+    #     gpu=0,
+    #     samples='',
+    #     outdir='',
+    #     baseModel=''
+    # )
 
     fire.Fire()
 

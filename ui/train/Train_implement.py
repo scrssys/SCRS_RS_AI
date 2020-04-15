@@ -1,10 +1,12 @@
 import subprocess
 from ui.train.Dialog_train import Ui_Dialog_train
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
+from train_fire import train
+from ulitities.base_functions import base_message
 from PyQt5 import QtCore
 # QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
 
-class child_train(QDialog,Ui_Dialog_train):
+class child_train(QDialog,Ui_Dialog_train,base_message):
     def __init__(self):
         super(child_train,self).__init__()
         self.setWindowTitle("train")
@@ -34,7 +36,8 @@ class child_train(QDialog,Ui_Dialog_train):
 
         cmd =['python','../train_yp.py','--gpu',gpu_id, '--sample', sample,"--model",model, '--config',  config]
         try:
-            subprocess.call(cmd)
+            train(self.send,config,gpu_id,sample,model)
+            # subprocess.call(cmd)
         except:
             QMessageBox.information(self, '错误', "Error occurred")
         QMessageBox.information(self, '提示', "Finished")

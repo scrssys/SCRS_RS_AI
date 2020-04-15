@@ -13,3 +13,6 @@ class myThread(QThread):
         # bAns =False
         imgt=HapImg(self.canvas)
         imgt.load(self.fileName)
+
+
+import PyInstaller

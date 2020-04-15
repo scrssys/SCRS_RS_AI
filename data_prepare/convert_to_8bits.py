@@ -78,7 +78,7 @@ def convert_8bit_histspecification():
     pass
 
 
-def batch_convert_8bit(send_massage_callback,inputdir,outputdir):
+def batch_convert_8bit(send_massage_callback=send_message_callback,inputdir="",outputdir=""):
     if not os.path.isdir(inputdir):
         send_massage_callback("Please check input directory:{}".format(inputdir))
 

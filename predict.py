@@ -182,22 +182,22 @@ def predict(send_massage_callback=send_message_callback, configs=None,gpu=0, inp
     out_bands = target_class
 
     try:
-        if "deeplab" in config.model_path:
+        if "deeplab" in out["model"]:
             print("For deeplab V3+, load model with parameters of custom_objects\n")
-            model = load_model(config.model_path,
+            model = load_model(out["model"],
                                custom_objects={'relu6': relu6, 'BilinearUpsampling': BilinearUpsampling}, compile=False)
         else:
-            model = load_model(config.model_path, compile=False)
+            model = load_model(out["model"], compile=False)
 
     except Exception:
         print("Error: failde to load model!\n")
         sys.exit(-1)
-    else:
-        print("model is not deeplab V3+!\n")
+    finally:
+        print("Load model successfully!\n")
     # print(model.summary())
 
     for img_file in input_files:#tqdm(input_files):
-        send_massage_callback(" ClassFicating : "+file)
+        send_massage_callback(" ClassFicating : "+img_file)
         # print("\n[INFO] opening image:{}...".format(img_file))
         abs_filename = os.path.split(img_file)[1]
         H, W, C, geoinf,projinf = load_img_by_gdal_info(img_file)
@@ -344,10 +344,11 @@ if __name__=="__main__":
     # predict(configs='/home/omnisky/PycharmProjects/data/rice/samples_uav1_crop_classical/config_binary_global_classical.json',
     #         gpu=3)
 
-    # predict(configs='/home/omnisky/PycharmProjects/data/rice/samples_uav1_crop_fpn/config_binary_global.json',
-    #         gpu=3,
-    #         input="/home/omnisky/PycharmProjects/data/rice/test/all0.1/image",
-    #         output = "/home/omnisky/PycharmProjects/data/rice/test/pred/fpn",
-    #         model = "/home/omnisky/PycharmProjects/data/rice/models/fpn/rice_uav1_null_fpn_seresnet34_binary_crossentropy_adam_480_012bands_2020-03-25_15-49-16best.h5")
+    predict(
+            configs='/home/omnisky/PycharmProjects/data/samples/isprs/config_multiclass_isprs.json',
+            gpu=0,
+            input="/home/omnisky/PycharmProjects/data/samples/isprs/test/img/top_potsdam_2_13.tif",
+            output = "/home/omnisky/PycharmProjects/data/samples/isprs/test/pred",
+            model = "/home/omnisky/PycharmProjects/data/samples/isprs/model/isprs_deeplabv3plus_xception_categorical_crossentropy_adam_480_01234bands_2020-04-10_11-26-59best.h5")
     fire.Fire()
 
