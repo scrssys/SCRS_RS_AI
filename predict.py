@@ -182,22 +182,22 @@ def predict(send_massage_callback=send_message_callback, configs=None,gpu=0, inp
     out_bands = target_class
 
     try:
+        send_massage_callback("loading models...")
         if "deeplab" in out["model"]:
-            print("For deeplab V3+, load model with parameters of custom_objects\n")
+            send_massage_callback("For deeplab V3+, load model with parameters of custom_objects\n")
             model = load_model(out["model"],
                                custom_objects={'relu6': relu6, 'BilinearUpsampling': BilinearUpsampling}, compile=False)
         else:
             model = load_model(out["model"], compile=False)
-
     except Exception:
-        print("Error: failde to load model!\n")
+        send_massage_callback("Error: failde to load model!\n")
         sys.exit(-1)
     finally:
-        print("Load model successfully!\n")
+        send_massage_callback("Load model successfully!\n")
     # print(model.summary())
 
     for img_file in input_files:#tqdm(input_files):
-        send_massage_callback(" ClassFicating : "+img_file)
+        send_massage_callback(" Classify : "+img_file)
         # print("\n[INFO] opening image:{}...".format(img_file))
         abs_filename = os.path.split(img_file)[1]
         H, W, C, geoinf,projinf = load_img_by_gdal_info(img_file)
@@ -324,14 +324,14 @@ def predict(send_massage_callback=send_message_callback, configs=None,gpu=0, inp
         outdataset.SetGeoTransform(geoinf)
         outdataset.SetProjection(projinf)
         if outdataset == None:
-            print("create dataset failed!\n")
+            send_massage_callback("create dataset failed!\n")
             sys.exit(-2)
         outdataset.GetRasterBand(1).WriteArray(result_mask)
         del outdataset
         # result_mask[nodata_indx] = 255
         del result_mask
         gc.collect()
-        print("Saved to:{}".format(output_file))
+        send_massage_callback("Saved to:{}".format(output_file))
 
         # output vector file from raster file
         if config.tovector:

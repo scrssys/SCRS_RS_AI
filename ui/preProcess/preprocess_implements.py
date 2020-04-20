@@ -18,7 +18,7 @@ from ui.preProcess.samplecrop import Ui_Dialog_samplecrop
 from ulitities.xml_prec import generate_xml_from_dict, parse_xml_to_dict
 from ulitities.base_functions import get_file, load_img_by_gdal,base_message
 from .preprocess_backend import image_normalize, image_clip
-from data_prepare.convert_to_8bits import batch_convert_8bit
+from data_prepare.convert_to_8bits import batch_convert_8bit,batch_convert_8bit_minmax
 from data_prepare.crop_samples import Simple_Crop
 
 from PyQt5.QtCore import *
@@ -46,6 +46,7 @@ class child_convert_8bit(QDialog,Ui_Dialog_convert8bit,base_message):
     def slot_ok(self):
         dir_input = self.lineEdit_imagpath.text()
         dir_output = self.lineEdit_outputpath.text()
+        nodata = self.spinBox.value()
 
         # QMessageBox.information(self, '提示',
         #                         "input:{}\n output :{}".format(dir_sample, dir_output)
@@ -58,9 +59,16 @@ class child_convert_8bit(QDialog,Ui_Dialog_convert8bit,base_message):
         #     QMessageBox.information(self, '提示', "Error occurred")
         # QMessageBox.information(self, '提示', "Finished")
         # print("dir_input is " + dir_output+ "\n")
+        convert_func = self.comboBox_scale.currentText()
         self.buttonBox.setEnabled(False)
         try:
-            batch_convert_8bit(self.send,dir_input, dir_output)
+            if convert_func in "Percent clip":
+                self.send("Using Percent Clip Streth")
+                batch_convert_8bit(self.send,dir_input, dir_output, nodata)
+            else:
+                self.send("Using Max Min Streth")
+                batch_convert_8bit_minmax(self.send, dir_input, dir_output, nodata)
+
             QMessageBox.information(self, '提示', "Finished")
         except:
             QMessageBox.information(self, '提示', "Error occurred")
@@ -90,6 +98,7 @@ class child_samplecrop(QDialog,Ui_Dialog_samplecrop,base_message):
         dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
         self.lineEdit_outputdir.setText(dir_tmp)
     def slot_ok(self):
+        self.setWindowModality(Qt.ApplicationModal)
         cropsize = self.lineEdit_cropsize.text()
         sample_dir = self.lineEdit_inputdir.text()
         output_dir = self.lineEdit_outputdir.text()
@@ -114,6 +123,7 @@ class child_samplecrop(QDialog,Ui_Dialog_samplecrop,base_message):
             QMessageBox.information(self, '错误', "Error occurred")
         finally:
             self.pushButton_process.setEnabled(True)
+        self.setWindowModality(Qt.NonModal)
 
 
 class child_image_stretch(QDialog, Ui_Dialog_image_stretch,base_message):
@@ -157,7 +167,7 @@ class child_image_stretch(QDialog, Ui_Dialog_image_stretch,base_message):
         else:
             QMessageBox.information(self, 'Prompt', self.tr("Images stretched !"))
         self.buttonBox.setEnabled(True)
-        self.setWindowModality(Qt.NonModal)
+        # self.setWindowModality(Qt.NonModal)
 
         # xmlfile = '../../metadata/image_stretch_inputs.xml'
         # generate_xml_from_dict(imgStretch_dict, xmlfile)

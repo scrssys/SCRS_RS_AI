@@ -1,41 +1,34 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'D:\coding\Dev_yp\SCRS_RS_AI\ui\MainWin.ui'
+# Form implementation generated from reading ui file 'MainWin.ui'
 #
-# Created by: PyQt5 UI code generator 5.13.0
+# Created by: PyQt5 UI code generator 5.5.1
 #
 # WARNING! All changes made in this file will be lost!
 
-
 from PyQt5 import QtCore, QtGui, QtWidgets
-
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(532, 409)
+        MainWindow.resize(524, 384)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setEnabled(False)
         self.centralwidget.setObjectName("centralwidget")
         self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
         self.tabWidget.setGeometry(QtCore.QRect(0, 220, 521, 80))
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(20)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.tabWidget.sizePolicy().hasHeightForWidth())
-        self.tabWidget.setSizePolicy(sizePolicy)
         self.tabWidget.setMinimumSize(QtCore.QSize(500, 80))
-        self.tabWidget.setMaximumSize(QtCore.QSize(16777215, 120))
+        self.tabWidget.setMaximumSize(QtCore.QSize(16777215, 80))
         self.tabWidget.setObjectName("tabWidget")
         self.tab = QtWidgets.QWidget()
         self.tab.setObjectName("tab")
         self.textBrowser = QtWidgets.QTextBrowser(self.tab)
-        self.textBrowser.setGeometry(QtCore.QRect(0, 0, 511, 61))
+        self.textBrowser.setGeometry(QtCore.QRect(0, 20, 501, 151))
         self.textBrowser.setObjectName("textBrowser")
         self.tabWidget.addTab(self.tab, "")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 532, 23))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 524, 18))
         self.menubar.setDefaultUp(True)
         self.menubar.setNativeMenuBar(False)
         self.menubar.setObjectName("menubar")
@@ -59,11 +52,6 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
         self.dockWidget_4 = QtWidgets.QDockWidget(MainWindow)
         self.dockWidget_4.setEnabled(False)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.dockWidget_4.sizePolicy().hasHeightForWidth())
-        self.dockWidget_4.setSizePolicy(sizePolicy)
         self.dockWidget_4.setObjectName("dockWidget_4")
         self.dockWidgetContents_4 = QtWidgets.QWidget()
         self.dockWidgetContents_4.setObjectName("dockWidgetContents_4")
@@ -170,6 +158,7 @@ class Ui_MainWindow(object):
         self.actionImage_strech.triggered.connect(MainWindow.for_action_image_stretch)
         self.actionImage_Clip.triggered.connect(MainWindow.slot_actiong_image_clip)
         self.actionSampleGenCommon.triggered.connect(MainWindow.slot_action_sampleGenCommon)
+        # self.actionTrain_Binary_Cross_entropy.triggered.connect(MainWindow.slot_action_trainBinaryCrossentropy)
         self.actionCombineSingleModelReults.triggered.connect(MainWindow.slot_action_combineMulticlassFromSingleModel)
         self.action_VoteMultiModelResults.triggered.connect(MainWindow.slot_action_VoteMultimodleResults)
         self.actionAccuracyEvaluation.triggered.connect(MainWindow.slot_action_accuracyEvaluate)
@@ -204,20 +193,10 @@ class Ui_MainWindow(object):
         self.actionSampleGenByCV2.setText(_translate("MainWindow", "SampleGenByCV2"))
         self.actionImage_Clip.setText(_translate("MainWindow", "Image Clip"))
         self.actionMismatch_Analyze.setText(_translate("MainWindow", "Mismatch Analyze"))
-        self.actionTrain_Binary_Jaccard.setText(_translate("MainWindow", "Train Binary Jaccard"))
-        self.actionTrain_Binary_JaccCross.setText(_translate("MainWindow", "Train Binary JaccCross"))
-        self.actionTrain_Binary_Cross_entropy.setText(_translate("MainWindow", "Train Binary Cross-entropy"))
-        self.actionTrain_Multiclass.setText(_translate("MainWindow", "Train Multiclass"))
-        self.actionTrain_Binary_Onehot_Cross.setText(_translate("MainWindow", "Train Binary Onehot Cross"))
-        self.actionPredict_Binary_Single.setText(_translate("MainWindow", "Predict Binary Single"))
-        self.actionPredict_Multiclass_Single.setText(_translate("MainWindow", "Predict Multiclass Single"))
-        self.actionPredict_Binary_Batch.setText(_translate("MainWindow", "Predict Binary Batch"))
-        self.actionPredict_Multiclass_Batch.setText(_translate("MainWindow", "Predict Multiclass Batch"))
-        self.actionPredict_Multiclass.setText(_translate("MainWindow", "Predict Multiclass"))
         self.actionAbout.setText(_translate("MainWindow", "About"))
         self.actionOpen.setText(_translate("MainWindow", "Open Raster"))
         self.actionExit.setText(_translate("MainWindow", "Exit"))
-        self.actionTrain_Binary_new.setText(_translate("MainWindow", "Train Binary new"))
+        # self.actionTrain_Binary_new.setText(_translate("MainWindow", "Train Binary new"))
         self.actionBinarization.setText(_translate("MainWindow", "Binarization"))
         self.actionSample_gen_Self_adapt.setText(_translate("MainWindow", "Sample_gen Self_adapt"))
         self.actionRasterToPolygon.setText(_translate("MainWindow", "RasterToPolygon"))
@@ -227,3 +206,4 @@ class Ui_MainWindow(object):
         self.actionlabel_crop.setText(_translate("MainWindow", "label crop"))
         self.actionremove_small_object.setText(_translate("MainWindow", "Remove small object"))
         self.actionOpen_Vector.setText(_translate("MainWindow", "Open Vector"))
+

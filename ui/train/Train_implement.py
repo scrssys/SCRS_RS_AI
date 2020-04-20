@@ -34,9 +34,11 @@ class child_train(QDialog,Ui_Dialog_train,base_message):
 
         # excute program
 
-        cmd =['python','../train_yp.py','--gpu',gpu_id, '--sample', sample,"--model",model, '--config',  config]
+        # cmd =['python','../train_yp.py','--gpu',gpu_id, '--sample', sample,"--model",model, '--config',  config]
+        train(self.send, config, gpu_id, sample, model)
         try:
-            train(self.send,config,gpu_id,sample,model)
+            # train(self.send,config,gpu_id,sample,model)
+            pass
             # subprocess.call(cmd)
         except:
             QMessageBox.information(self, '错误', "Error occurred")
