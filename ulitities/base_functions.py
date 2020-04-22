@@ -317,10 +317,14 @@ def load_img_bybandlist(path, bandlist=[]):
 
     """transpose format to: band last"""
     img = np.array(img, dtype="float")
+    print("original img shape:{}".format(img.shape))
+    a,_,_= img.shape
     if im_bands==1:
         img = np.expand_dims(img,axis=-1)
     else:
-        img = np.transpose(img, (1, 2, 0))
+        if im_bands==a:
+            img = np.transpose(img, (1, 2, 0))
+    print("new img shape:{}".format(img.shape))
 
     out_img=np.zeros((y_height,x_width,len(bandlist)), np.uint16)
     try:

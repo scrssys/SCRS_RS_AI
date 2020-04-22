@@ -121,7 +121,6 @@ def train(send_massage_callback=send_message_callback, configs=None,gpu=0, sampl
         send_massage_callback("Fault! check input parameter ")
         return out
 
-
     os.environ["CUDA_VISIBLE_DEVICES"] = str(out["gpu"])
     with open(configs, 'r') as f:
         cfgl = json.load(f)
@@ -187,7 +186,7 @@ def train(send_massage_callback=send_message_callback, configs=None,gpu=0, sampl
     else:
         print("Error:")
 
-    # print(model.summary())
+    print(model.summary())
     # from keras.utils import plot_model
     # plot_model(model, to_file='model.png')
     """\n**************************************"""
@@ -221,21 +220,24 @@ def train(send_massage_callback=send_message_callback, configs=None,gpu=0, sampl
         patience=config.patience,
         verbose=0,
         mode=config.mode,
-        epsilon=config.epsilon,
+        min_delta=config.epsilon,
         cooldown=config.cooldown,
         min_lr=config.min_lr
     )
 
     model_history = History()
-
-    logdir = ''.join(
-        [config.log_dir, '/log', config.target_name, "_", config.network, "_", config.BACKBONE, "_", config.loss,
-         date_time])
+    logdir = os.path.split(out["configs"])[0]+'/log/'
     if not os.path.isdir(logdir):
-        print("Warning: ")
+        print("warning: log dir is not exit")
         os.mkdir(logdir)
-
-    tb_log = TensorBoard(log_dir=logdir)
+    #     return -6
+    # else:
+    #     if not os.path.isdir(os.path.split(out["configs"])[0], '/log/')
+    #     os.mkdir((os.path.split(out["configs"])[0], '/log/'))
+    logpath = ''.join(
+        [logdir, config.target_name, "_", config.network, "_", config.BACKBONE, "_", config.loss, date_time])
+    
+    tb_log = TensorBoard(log_dir=logpath)
     callable = [model_checkpoint, model_earlystop, model_reduceLR, model_history, tb_log]
 
     train_set, val_set = get_train_val(out["sampleDir"],config.val_rate)

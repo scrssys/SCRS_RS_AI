@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'convert_8bit.ui'
+# Form implementation generated from reading ui file 'D:\coding\Dev_yp\SCRS_RS_AI\ui\preProcess\convert_8bit.ui'
 #
 # Created by: PyQt5 UI code generator 5.13.0
 #
@@ -44,12 +44,17 @@ class Ui_Dialog_convert8bit(object):
         self.pushButton_outputpath.setObjectName("pushButton_outputpath")
         self.horizontalLayout_2.addWidget(self.pushButton_outputpath)
         self.verticalLayout.addLayout(self.horizontalLayout_2)
+        self.buttonBox = QtWidgets.QDialogButtonBox(Dialog_convert8bit)
+        self.buttonBox.setGeometry(QtCore.QRect(300, 230, 156, 23))
+        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
+        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
+        self.buttonBox.setObjectName("buttonBox")
         self.widget = QtWidgets.QWidget(Dialog_convert8bit)
-        self.widget.setGeometry(QtCore.QRect(31, 190, 433, 30))
+        self.widget.setGeometry(QtCore.QRect(32, 190, 401, 24))
         self.widget.setObjectName("widget")
-        self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.widget)
-        self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+        self.horizontalLayout_5 = QtWidgets.QHBoxLayout(self.widget)
+        self.horizontalLayout_5.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_5.setObjectName("horizontalLayout_5")
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.label_3 = QtWidgets.QLabel(self.widget)
@@ -62,12 +67,20 @@ class Ui_Dialog_convert8bit(object):
         self.comboBox_scale.addItem("")
         self.comboBox_scale.addItem("")
         self.horizontalLayout_3.addWidget(self.comboBox_scale)
-        self.horizontalLayout_4.addLayout(self.horizontalLayout_3)
-        self.buttonBox = QtWidgets.QDialogButtonBox(self.widget)
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName("buttonBox")
-        self.horizontalLayout_4.addWidget(self.buttonBox)
+        self.horizontalLayout_5.addLayout(self.horizontalLayout_3)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_5.addItem(spacerItem)
+        self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+        self.label_4 = QtWidgets.QLabel(self.widget)
+        self.label_4.setObjectName("label_4")
+        self.horizontalLayout_4.addWidget(self.label_4)
+        self.spinBox = QtWidgets.QSpinBox(self.widget)
+        self.spinBox.setMaximum(1000000000)
+        self.spinBox.setProperty("value", 65535)
+        self.spinBox.setObjectName("spinBox")
+        self.horizontalLayout_4.addWidget(self.spinBox)
+        self.horizontalLayout_5.addLayout(self.horizontalLayout_4)
 
         self.retranslateUi(Dialog_convert8bit)
         self.buttonBox.accepted.connect(Dialog_convert8bit.slot_ok)
@@ -89,3 +102,4 @@ class Ui_Dialog_convert8bit(object):
         self.comboBox_scale.setItemText(1, _translate("Dialog_convert8bit", "Min Maxinum"))
         self.comboBox_scale.setItemText(2, _translate("Dialog_convert8bit", "Hist specification"))
         self.comboBox_scale.setItemText(3, _translate("Dialog_convert8bit", "Stand deviation"))
+        self.label_4.setText(_translate("Dialog_convert8bit", "Nodata"))

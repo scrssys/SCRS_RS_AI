@@ -38,19 +38,24 @@ class mywindow(QMainWindow, Ui_MainWindow):
         self.setFont(QFont('SansSerif',12))
         # self.m_thread = main_thread()
         self.newlay = QGridLayout(self.centralwidget)
-        self.canvas = QgsMapCanvas()
-        self.canvas.setCanvasColor(Qt.white)
-        # self.canvas.show()
-        self.newlay.addWidget(self.canvas,0,0)
-        '''display img by matplotlib.figure'''
+        from PyQt5.QtWidgets import QVBoxLayout
+        if sysinfo in "Linux":
+            self.canvas = QgsMapCanvas()
+            self.canvas.setCanvasColor(Qt.white)
+            # self.canvas.show()
+            self.newlay.addWidget(self.canvas,0,0)
+            '''display img by matplotlib.figure'''
         self.newlay.addWidget(self.dockWidget_4,0,0)
+        self.tabWidget.hide()
+        self.textBrowser.setMaximumHeight(80)
+        self.textBrowser.setMinimumHeight(60)
+        self.newlay.addWidget(self.textBrowser, 1, 0)
         self.doc = QGridLayout(self.dockWidgetContents_4)
+        # self.output=QGridLayout(self.textBrowser)
 
-        self.newlay.addWidget(self.tabWidget, 1, 0)
-        self.output=QGridLayout(self.tabWidget)
-
-        self.output.addWidget(self.textBrowser)
-        self.textBrowser.setText("Runtime message:\n")
+        # self.output.addWidget(self.textEdit,1,0)
+        # self.plainTextEdit.appendPlainText("Runtime message:\ne:\ne:\ne:\ne:\ne:\ne:\ne:\ne:\nednnd:\n")
+        # self.textEdit.setText("Runtime message:\ne:\ne:\ne:\ne:\ne:\ne:\ne:\ne:\ne:\n")
 
         self.main_message_sig.connect(self.OutputWritten)
     """

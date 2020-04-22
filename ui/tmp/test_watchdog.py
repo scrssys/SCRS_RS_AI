@@ -1,50 +1,43 @@
-import sys,time
-import numpy as np
-from matplotlib.backends.qt_compat import QtCore, QtWidgets, is_pyqt5
-if is_pyqt5():
-    from matplotlib.backends.backend_qt5agg import (
-        FigureCanvas, NavigationToolbar2QT as NavigationToolbar)
-else:
-    from matplotlib.backends.backend_qt4agg import (
-        FigureCanvas, NavigationToolbar2QT as NavigationToolbar)
-from matplotlib.figure import Figure
+import sys
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QTextEdit, QTextBrowser, QHBoxLayout, QVBoxLayout
 
 
-class ApplicationWindow(QtWidgets.QMainWindow):
+class Demo(QWidget):
     def __init__(self):
-        super().__init__()
-        self._main = QtWidgets.QWidget()
-        self.setCentralWidget(self._main)
-        layout = QtWidgets.QVBoxLayout(self._main)
+        super(Demo, self).__init__()
+        self.edit_label = QLabel('QTextEdit', self)
+        self.browser_label = QLabel('QTextBrowser', self)
+        self.text_edit = QTextEdit(self)
+        self.text_browser = QTextBrowser(self)
 
-        static_canvas = FigureCanvas(Figure(figsize=(5, 3)))
-        layout.addWidget(static_canvas)
-        self.addToolBar(NavigationToolbar(static_canvas, self))
+        self.edit_v_layout = QVBoxLayout()
+        self.browser_v_layout = QVBoxLayout()
+        self.all_h_layout = QHBoxLayout()
 
-        dynamic_canvas = FigureCanvas(Figure(figsize=(5, 3)))
-        layout.addWidget(dynamic_canvas)
-        self.addToolBar(QtCore.Qt.BottomToolBarArea,
-                        NavigationToolbar(dynamic_canvas, self))
+        self.layout_init()
+        self.text_edit_init()
 
-        self._static_ax = static_canvas.figure.subplots()
-        t = np.linspace(0, 10, 501)
-        self._static_ax.plot(t, np.tan(t), ".")
+    def layout_init(self):
+        self.edit_v_layout.addWidget(self.edit_label)
+        self.edit_v_layout.addWidget(self.text_edit)
 
-        self._dynamic_ax = dynamic_canvas.figure.subplots()
-        self._timer = dynamic_canvas.new_timer(
-            100, [(self._update_canvas, (), {})])
-        self._timer.start()
+        self.browser_v_layout.addWidget(self.browser_label)
+        self.browser_v_layout.addWidget(self.text_browser)
 
-    def _update_canvas(self):
-        self._dynamic_ax.clear()
-        t = np.linspace(0, 10, 101)
-        # Shift the sinusoid as a function of time.
-        self._dynamic_ax.plot(t, np.sin(t + time.time()))
-        self._dynamic_ax.figure.canvas.draw()
+        self.all_h_layout.addLayout(self.edit_v_layout)
+        self.all_h_layout.addLayout(self.browser_v_layout)
+
+        self.setLayout(self.all_h_layout)
+
+    def text_edit_init(self):
+        self.text_edit.textChanged.connect(self.show_text_func)  # 1
+
+    def show_text_func(self):
+        self.text_browser.setText(self.text_edit.toPlainText())  # 2
 
 
-if __name__ == "__main__":
-    qapp = QtWidgets.QApplication(sys.argv)
-    app = ApplicationWindow()
-    app.show()
-    qapp.exec_()
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    demo = Demo()
+    demo.show()
+    sys.exit(app.exec_())
