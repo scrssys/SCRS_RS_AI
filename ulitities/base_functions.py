@@ -359,6 +359,8 @@ def get_file(file_dir, file_type=[".jpg",'.png', '.tif', '.tiff','.img']):
             if (str.lower(os.path.splitext(file)[1]) in im_type):
                 L.append(os.path.join(root,file))
     num = len(L)
+    if num==0:
+        L = ""
     return L, num
 
 def get_file_absname(file_dir, file_type=['.png', '.PNG', '.tif', '.img','.IMG']):
@@ -397,9 +399,9 @@ def find_file(dir, str):
             continue
         else:
             temp=file
-    if len(temp.strip())==0:
-        # raise FError('No file in diretotry')
-        return None
+    # if len(temp.strip())==0:
+    #     # raise FError('No file in diretotry')
+    #     return None
     else:
         return temp
 
