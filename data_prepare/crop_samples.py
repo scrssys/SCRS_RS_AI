@@ -5,7 +5,7 @@ import gdal
 # import gc
 gdal.UseExceptions()
 from tqdm import tqdm
-from ulitities.base_functions import get_file, load_img_by_gdal, find_file,send_message_callback
+from ulitities.base_functions import get_file, load_img_by_gdal, find_file,send_message_callback,load_label
 
 def Simple_Crop(send_message_callback=send_message_callback,inputdir="",outputdir="",patch_size=3000):
     if not os.path.isdir(inputdir):
@@ -32,8 +32,8 @@ def Simple_Crop(send_message_callback=send_message_callback,inputdir="",outputdi
         if not os.path.isfile(src_file):
             print("src file does not exist:{}".format(os.path.split(label_file)[1]))
             continue
-        label_data = load_img_by_gdal(label_file,grayscale=True)
-        if len(label_data)==0:
+        label_data = load_label(label_file)
+        if isinstance(label_data,int):
             print("label can not be loaded:{}".format(os.path.split(label_file)[1]))
             continue
         src_data = load_img_by_gdal(src_file)
@@ -64,7 +64,7 @@ def Simple_Crop(send_message_callback=send_message_callback,inputdir="",outputdi
             crop_img = img
 
             ret = cv2.imwrite(out_label_dir + absname + '.png', crop_label)
-            if ret==None:
+            if ret==False:
                 ret = cv2.imencode('.png', crop_label)[1].tofile(out_label_dir + absname + '.png')
             if ret==False:
                 print("Warning: saving label failed")
@@ -108,7 +108,7 @@ def Simple_Crop(send_message_callback=send_message_callback,inputdir="",outputdi
                     t_h, t_w = crop_label.shape
                     newName = absname + '_' + str(i) + '_' + str(j) + '.png'
                     ret = cv2.imwrite(out_label_dir + newName, crop_label)
-                    if ret == None:
+                    if ret == False:
                         ret=cv2.imencode('.png',crop_label)[1].tofile(out_label_dir + newName)
                     if ret==False:
                         print("saving label failed")

@@ -94,7 +94,17 @@ def load_img_normalization_by_cv2(path, grayscale=False):
         img = np.array(img, dtype="float")/255.0
     return 0, img
 
-
+def load_label(path):
+    if not os.path.isfile(path):
+        print("input path is not a file!")
+        return -1
+    img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+    if img is None:
+        img=cv2.imdecode(np.fromfile(path,dtype=np.uint8),0)
+        if img is None:
+            print("read label image failed")
+            return -2
+    return img
 
 def load_img_by_gdal(path, grayscale=False):
     try:
