@@ -17,7 +17,11 @@ def random_crop(img1, img2, crop_H, crop_W):
 
     # assert  img1.size[:2] ==  img2.size[:2]
     # print(img1.shape[:2])
-    assert(img1.shape[:2] == img2.shape[:2])
+    img1=np.asarray(img1,np.uint16)
+    img2 = np.asarray(img2, np.uint16)
+    if img1.shape[:2] != img2.shape[:2]:
+        print("sizes of img1 and img2 are not equal")
+        return -2
     h, w = img1.shape[:2]
 
     # 裁剪宽度不可超过原图可裁剪宽度

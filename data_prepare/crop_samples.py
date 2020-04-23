@@ -63,8 +63,9 @@ def Simple_Crop(send_message_callback=send_message_callback,inputdir="",outputdi
             crop_label = label
             crop_img = img
 
-            # cv2.imwrite(out_label_dir + absname + '.png', crop_label)
-            ret = cv2.imencode('.png', crop_label)[1].tofile(out_label_dir + absname + '.png')
+            ret = cv2.imwrite(out_label_dir + absname + '.png', crop_label)
+            if ret==None:
+                ret = cv2.imencode('.png', crop_label)[1].tofile(out_label_dir + absname + '.png')
             if ret==False:
                 print("Warning: saving label failed")
                 continue
@@ -106,8 +107,9 @@ def Simple_Crop(send_message_callback=send_message_callback,inputdir="",outputdi
                         continue
                     t_h, t_w = crop_label.shape
                     newName = absname + '_' + str(i) + '_' + str(j) + '.png'
-                    # cv2.imwrite(out_label_dir + absname + '_' + str(i) + '_' + str(j) + '.png', crop_label)
-                    ret=cv2.imencode('.png',crop_label)[1].tofile(out_label_dir + newName)
+                    ret = cv2.imwrite(out_label_dir + newName, crop_label)
+                    if ret == None:
+                        ret=cv2.imencode('.png',crop_label)[1].tofile(out_label_dir + newName)
                     if ret==False:
                         print("saving label failed")
                         continue

@@ -230,8 +230,12 @@ def load_img_normalization(input_bands, path, data_type=UINT8):
         return -1, None
     if input_bands==1 and data_type==UINT8:
         img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+        if img==None:
+            img=cv2.imdecode(np.fromfile(path,dtype=np.uint8),0)
     elif input_bands ==3 and data_type==UINT8:
         img = cv2.imread(path)
+        if img==None:
+            img=cv2.imdecode(np.fromfile(path,dtype=np.uint16),1)
         img = np.array(img, dtype="float") / 255.0
     else:
         img = load_img_by_gdal(path)

@@ -51,7 +51,11 @@ def check_predict_input(dict_para):
 
     with open(config_file, 'r') as f:
         cfgl = json.load(f)
-    config = Config(**cfgl)
+    try:
+        config = Config(**cfgl)
+    except:
+        print("parsing config file failed")
+        return -5
     print(type(config))
     if os.path.isdir(dict_para["sampleDir"]):
         ult_input=dict_para["sampleDir"]
@@ -67,7 +71,7 @@ def check_predict_input(dict_para):
     elif os.path.isdir(config.model_dir):
         output_dir=config.model_dir
     else:
-        print("Error: para model output is not a directory\n")
+        print("warning: para model output is not a directory\n")
         return -3
 
     if os.path.isfile(dict_para["baseModel"]) and ('.h5' in dict_para["baseModel"]):
@@ -75,13 +79,13 @@ def check_predict_input(dict_para):
     elif os.path.isfile(config.model_path):
         base_model=config.base_model
     else:
-        print("Error: para base model is not a h5 file")
+        print("warning: para base model is not a h5 file")
         base_model=''
-    print("Following parameters will be used:\n")
-    print("gpu: {}\n".format(gpu_id))
-    print("input: {}\n".format(ult_input))
-    print("output: {}\n".format(output_dir))
-    print("model: {}\n".format(base_model))
+    print("Following parameters will be used:")
+    print("gpu: {}".format(gpu_id))
+    print("input: {}".format(ult_input))
+    print("output: {}".format(output_dir))
+    print("baseModel: {}\n".format(base_model))
     out = {"configs": config_file, "gpu":gpu_id, "sampleDir":ult_input,
            "outDir":output_dir, "baseModel":base_model}
     return out
@@ -118,7 +122,7 @@ def train(send_massage_callback=send_message_callback, configs=None,gpu=0, sampl
     except:
         out=-999
     if isinstance(out, int):
-        send_massage_callback("Fault! check input parameter ")
+        send_massage_callback("Fault! check input parameter:{} ".format(out))
         return out
 
     os.environ["CUDA_VISIBLE_DEVICES"] = str(out["gpu"])
