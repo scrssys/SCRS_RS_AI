@@ -63,8 +63,11 @@ def Simple_Crop(send_message_callback=send_message_callback,inputdir="",outputdi
             crop_label = label
             crop_img = img
 
-            cv2.imwrite(out_label_dir + absname + '.png', crop_label)
-            newname = absname + '.png'
+            # cv2.imwrite(out_label_dir + absname + '.png', crop_label)
+            ret = cv2.imencode('.png', crop_label)[1].tofile(out_label_dir + absname + '.png')
+            if ret==False:
+                print("Warning: saving label failed")
+                continue
             driver = gdal.GetDriverByName("GTiff")
             try:
                 outdataset = driver.Create(out_src_dir + absname + '.png', w, h, c, d_type)
@@ -96,12 +99,21 @@ def Simple_Crop(send_message_callback=send_message_callback,inputdir="",outputdi
                         crop_label = label[i * patch_size:(i + 1) * patch_size, j * patch_size:(j + 1) * patch_size]
                         crop_img = img[i * patch_size:(i + 1) * patch_size, j * patch_size:(j + 1) * patch_size, :]
 
+                    crop_label=np.asarray(crop_label, np.uint8)
+                    uniq_value = np.unique(crop_label)
+                    if len(uniq_value)< 2 and ((0 in uniq_value) or (255 in uniq_value)):
+                        print("Warning: no target in this patch")
+                        continue
                     t_h, t_w = crop_label.shape
-                    cv2.imwrite(out_label_dir + absname + '_' + str(i) + '_' + str(j) + '.png', crop_label)
+                    newName = absname + '_' + str(i) + '_' + str(j) + '.png'
+                    # cv2.imwrite(out_label_dir + absname + '_' + str(i) + '_' + str(j) + '.png', crop_label)
+                    ret=cv2.imencode('.png',crop_label)[1].tofile(out_label_dir + newName)
+                    if ret==False:
+                        print("saving label failed")
+                        continue
                     driver = gdal.GetDriverByName("GTiff")
                     try:
-                        outdataset = driver.Create(out_src_dir + absname + '_' + str(i) + '_' + str(j) + '.png', t_w, t_h,
-                                               c, d_type)
+                        outdataset = driver.Create(out_src_dir + newName, t_w, t_h, c, d_type)
                     except:
                         print("create gdal dataset failed for :{}".format(absname))
                         continue
