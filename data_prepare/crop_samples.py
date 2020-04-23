@@ -64,6 +64,7 @@ def Simple_Crop(send_message_callback=send_message_callback,inputdir="",outputdi
             crop_img = img
 
             cv2.imwrite(out_label_dir + absname + '.png', crop_label)
+            newname = absname + '.png'
             driver = gdal.GetDriverByName("GTiff")
             try:
                 outdataset = driver.Create(out_src_dir + absname + '.png', w, h, c, d_type)
