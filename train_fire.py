@@ -50,12 +50,12 @@ def check_predict_input(dict_para):
         return -4
 
     with open(config_file, 'r') as f:
-        cfgl = json.load(f)
-    try:
-        config = Config(**cfgl)
-    except:
-        print("parsing config file failed")
-        return -5
+        try:
+            cfgl = json.load(f)
+            config = Config(**cfgl)
+        except:
+            print("parsing config file failed")
+            return -5
     print(type(config))
     if os.path.isdir(dict_para["sampleDir"]):
         ult_input=dict_para["sampleDir"]
