@@ -106,6 +106,52 @@ def load_label(path):
             return -2
     return img
 
+def load_src(path, bandlist=[]):
+    if not os.path.isfile(path):
+        print("no file:{}".format(path))
+        return -1
+    dataset = gdal.Open(path)
+    if dataset is None:
+        print("Open file failed:{}".format(path))
+        return -2
+        # sys.exit(-1)
+    y_height = dataset.RasterYSize
+    x_width = dataset.RasterXSize
+    im_bands = dataset.RasterCount
+    img = dataset.ReadAsArray(0, 0, x_width, y_height)
+    if len(bandlist) == 0:
+        bandlist = range(im_bands)
+    if len(bandlist)>im_bands or max(bandlist)>=im_bands:
+        print("input bands should not be bigger than image bands!")
+        # sys.exit(-2)
+        return -3
+
+    """transpose format to: band last"""
+    img = np.asarray(img, np.float16)
+    # print("original img shape:{}".format(img.shape))
+    a,_,_= img.shape
+    if im_bands==1:
+        img = np.expand_dims(img,axis=-1)
+    else:
+        if im_bands==a:
+            img = np.transpose(img, (1, 2, 0))
+    # print("new img shape:{}".format(img.shape))
+
+    out_img=np.zeros((y_height,x_width,len(bandlist)), np.uint16)
+    try:
+        for i in range(len(bandlist)):
+            out_img[:,:,i]=img[:,:,bandlist[i]]
+    except:
+        print("Error: could not get correct list of data from image")
+        return -4
+        # sys.exit(-5)
+    else:
+        pass
+
+    del dataset
+    return out_img
+
+
 def load_img_by_gdal(path, grayscale=False):
     try:
         dataset = gdal.Open(path)
@@ -240,11 +286,11 @@ def load_img_normalization(input_bands, path, data_type=UINT8):
         return -1, None
     if input_bands==1 and data_type==UINT8:
         img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
-        if img==None:
+        if img is None:
             img=cv2.imdecode(np.fromfile(path,dtype=np.uint8),0)
     elif input_bands ==3 and data_type==UINT8:
         img = cv2.imread(path)
-        if img==None:
+        if img is None:
             img=cv2.imdecode(np.fromfile(path,dtype=np.uint16),1)
         img = np.array(img, dtype="float") / 255.0
     else:
@@ -314,7 +360,7 @@ def load_img_bybandlist(path, bandlist=[]):
         print("no file:{}".format(path))
         return -1, []
     dataset = gdal.Open(path)
-    if dataset == None:
+    if dataset is None:
         print("Open file failed:{}".format(path))
         return -1, []
         # sys.exit(-1)
@@ -331,14 +377,14 @@ def load_img_bybandlist(path, bandlist=[]):
 
     """transpose format to: band last"""
     img = np.array(img, dtype="float")
-    print("original img shape:{}".format(img.shape))
+    # print("original img shape:{}".format(img.shape))
     a,_,_= img.shape
     if im_bands==1:
         img = np.expand_dims(img,axis=-1)
     else:
         if im_bands==a:
             img = np.transpose(img, (1, 2, 0))
-    print("new img shape:{}".format(img.shape))
+    # print("new img shape:{}".format(img.shape))
 
     out_img=np.zeros((y_height,x_width,len(bandlist)), np.uint16)
     try:

@@ -263,7 +263,7 @@ def predict(send_massage_callback=send_message_callback, configs=None,gpu=0, inp
             if FLAG_APPROACH_PREDICT == 0:
                 print("[INFO] predict image by orignal approach ...")
                 # a,b,c=input_img.shape
-                num_of_bands = min(a,b,c)
+                num_of_bands = min(input_img.shape)
                 result = core_orignal_predict(input_img, num_of_bands, model, config.window_size, config.img_w, mask_bands=config.nb_classes)
                 result_mask[start:end,:]=result[:this_h,:]
 

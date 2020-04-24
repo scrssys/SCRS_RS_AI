@@ -24,7 +24,7 @@ np.random.seed(seed)
 import segmentation_models as sm
 
 from deeplab.model import Deeplabv3
-from data_prepare.data_generater import train_data_generator,val_data_generator
+from data_prepare.data_generater import train_data_generator,val_data_generator, train_data_generator_files
 from config import Config
 
 
@@ -276,7 +276,7 @@ def train(send_massage_callback=send_message_callback, configs=None,gpu=0, sampl
     finally:
         print("Compile model successfully!")
 
-    H = model.fit_generator(generator=train_data_generator(config, out["sampleDir"], train_set),
+    H = model.fit_generator(generator=train_data_generator_files(config, out["sampleDir"], train_set),
                             steps_per_epoch=train_numb // config.batch_size,
                             epochs=config.epochs,
                             verbose=1,
