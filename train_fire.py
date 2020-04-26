@@ -24,8 +24,9 @@ np.random.seed(seed)
 import segmentation_models as sm
 
 from deeplab.model import Deeplabv3
-from data_prepare.data_generater import train_data_generator,val_data_generator, train_data_generator_files
+from data_prepare.data_generater import train_data_generator,val_data_generator, train_data_generator_files,train_data_generator_h5,val_data_generator_h5
 from config import Config
+import h5py
 
 
 def check_predict_input(dict_para):
@@ -57,9 +58,9 @@ def check_predict_input(dict_para):
             print("parsing config file failed")
             return -5
     print(type(config))
-    if os.path.isdir(dict_para["sampleDir"]):
+    if os.path.isdir(dict_para["sampleDir"]) or os.path.isfile(dict_para["sampleDir"]):
         ult_input=dict_para["sampleDir"]
-    elif os.path.isdir(config.train_data_path):
+    elif os.path.isdir(config.train_data_path)or os.path.isfile(config.train_data_pat):
         print("Default input in config file will be used")
         ult_input = config.train_data_path
     else:
@@ -114,6 +115,7 @@ def get_train_val(sample_path, val_rate):
 
 
 def train(send_massage_callback=send_message_callback, configs=None,gpu=0, samples='',outdir='',baseModel=''):
+
     send_massage_callback("training >>>")
     # return 0
     dict_in = {"configs": configs, "gpu":gpu, "sampleDir":samples,"outDir":outdir, "baseModel":baseModel}
@@ -157,7 +159,7 @@ def train(send_massage_callback=send_message_callback, configs=None,gpu=0, sampl
             band_name += str(config.band_list[i])
         band_name += "bands"
     print("band_name:{}".format(band_name))
-    if not os.path.isdir(out["sampleDir"]):
+    if not os.path.isdir(out["outDir"]):
         print("Warning: model saveing directory is empty!")
         os.mkdir(config.model_dir)
     model_save_path = ''.join(
@@ -276,7 +278,7 @@ def train(send_massage_callback=send_message_callback, configs=None,gpu=0, sampl
     finally:
         print("Compile model successfully!")
 
-    H = model.fit_generator(generator=train_data_generator_files(config, out["sampleDir"], train_set),
+    H = model.fit_generator(generator=train_data_generator(config, out["sampleDir"], train_set),
                             steps_per_epoch=train_numb // config.batch_size,
                             epochs=config.epochs,
                             verbose=1,
@@ -290,7 +292,191 @@ def train(send_massage_callback=send_message_callback, configs=None,gpu=0, sampl
     print("Training finished!")
 
 
+def train_h5(send_massage_callback=send_message_callback, configs=None, gpu=0, samples='', outdir='', baseModel=''):
+    send_massage_callback("training >>>")
+    # return 0
+    dict_in = {"configs": configs, "gpu": gpu, "sampleDir": samples, "outDir": outdir, "baseModel": baseModel}
+    try:
+        out = check_predict_input(dict_in)
+    except:
+        out = -999
+    if isinstance(out, int):
+        send_massage_callback("Fault! check input parameter:{} ".format(out))
+        return out
 
+    os.environ["CUDA_VISIBLE_DEVICES"] = str(out["gpu"])
+    with open(configs, 'r') as f:
+        cfgl = json.load(f)
+    config = Config(**cfgl)
+
+    im_type = UINT8
+    if "10" in config.im_type:
+        im_type = UINT10
+    elif "16" in config.im_type:
+        im_type = UINT16
+    else:
+        pass
+
+    target_class = config.nb_classes
+    if target_class > 1:  # multiclass, target class = total class -1
+        if target_class == 2:
+            print("Warning: target classes should not be 2, this must be binary classification!")
+            target_class = 1
+        else:
+            target_class -= 1
+
+    date_time = time.strftime("%Y-%m-%d_%H-%M-%S", time.localtime())
+    print("date and time: {}".format(date_time))
+    # print("traindata from: {}".format(config.train_data_path))
+    band_name = ''
+    if len(config.band_list) == 0:
+        band_name = 'fullbands'
+    else:
+        for i in range(len(config.band_list)):
+            band_name += str(config.band_list[i])
+        band_name += "bands"
+    print("band_name:{}".format(band_name))
+    if not os.path.isdir(out["outDir"]):
+        print("Warning: model saveing directory is empty!")
+        os.mkdir(config.model_dir)
+    model_save_path = ''.join(
+        [out["outDir"], '/', config.target_name, '_', config.network, '_', config.BACKBONE, '_', config.loss, '_',
+         config.optimizer, '_', str(config.img_w), '_', band_name, '_', date_time, 'best.h5'])
+    print("model save as to: {}".format(model_save_path))
+
+    input_layer = (config.img_w, config.img_h, len(config.band_list))
+
+    if 'unet' in config.network:
+        model = sm.Unet(backbone_name=config.BACKBONE, input_shape=input_layer,
+                        classes=config.nb_classes, activation=config.activation,
+                        encoder_weights=config.encoder_weights)
+    elif 'pspnet' in config.network:
+        model = sm.PSPNet(backbone_name=config.BACKBONE, input_shape=input_layer,
+                          classes=config.nb_classes, activation=config.activation,
+                          encoder_weights=config.encoder_weights, psp_dropout=config.dropout)
+    elif 'fpn' in config.network:
+        model = sm.FPN(backbone_name=config.BACKBONE, input_shape=input_layer,
+                       classes=config.nb_classes, activation=config.activation,
+                       encoder_weights=config.encoder_weights, pyramid_dropout=config.dropout)
+    elif 'linknet' in config.network:
+        model = sm.Linknet(backbone_name=config.BACKBONE, input_shape=input_layer,
+                           classes=config.nb_classes, activation=config.activation,
+                           encoder_weights=config.encoder_weights)
+    elif 'deeplabv3plus' in config.network:
+        model = Deeplabv3(weights=config.encoder_weights, input_shape=input_layer,
+                          classes=config.nb_classes, backbone=config.BACKBONE, activation=config.activation)
+
+    else:
+        print("Error:")
+
+    print(model.summary())
+    # from keras.utils import plot_model
+    # plot_model(model, to_file='model.png')
+    """\n**************************************"""
+    print("Train by : {}_{}".format(config.network, config.BACKBONE))
+    """\n**************************************\n"""
+    if os.path.isfile(out['baseModel']):
+        try:
+            model.load_weights(out["baseModel"])
+        except ValueError:
+            print("Can not load weights from base model: {}".format(config.base_model))
+        else:
+            print("loaded weights from base model:{}".format(config.base_model))
+    model_checkpoint = ModelCheckpoint(
+        model_save_path,
+        monitor=config.monitor,
+        save_best_only=config.save_best_only,
+        mode=config.mode
+    )
+
+    model_earlystop = EarlyStopping(
+        monitor=config.monitor,
+        patience=config.patience + 10,
+        verbose=0,
+        mode=config.mode
+    )
+
+    # """自动调整学习率"""
+    model_reduceLR = ReduceLROnPlateau(
+        monitor=config.monitor,
+        factor=config.factor,
+        patience=config.patience,
+        verbose=0,
+        mode=config.mode,
+        min_delta=config.epsilon,
+        cooldown=config.cooldown,
+        min_lr=config.min_lr
+    )
+
+    model_history = History()
+    logdir = os.path.split(out["configs"])[0] + '/log/'
+    if not os.path.isdir(logdir):
+        print("warning: log dir is not exit")
+        os.mkdir(logdir)
+    #     return -6
+    # else:
+    #     if not os.path.isdir(os.path.split(out["configs"])[0], '/log/')
+    #     os.mkdir((os.path.split(out["configs"])[0], '/log/'))
+    logpath = ''.join(
+        [logdir, config.target_name, "_", config.network, "_", config.BACKBONE, "_", config.loss, date_time])
+
+    tb_log = TensorBoard(log_dir=logpath)
+    callable = [model_checkpoint, model_earlystop, model_reduceLR, model_history, tb_log]
+
+    # train_set, val_set = get_train_val(out["sampleDir"], config.val_rate)
+    # train_numb = len(train_set) * config.sample_per_img
+    # valid_numb = len(val_set) * config.sample_per_img
+    # print("the number of train data is", train_numb)
+    # print("the number of val data is", valid_numb)
+
+    # if isinstance(gpu_id, int):
+    #     print("using single gpu {}".format(gpu_id))
+    #     pass
+    # elif isinstance(gpu_id, list):
+    #     print("using multi gpu {}".format(gpu_id))
+    #     if len(gpu_id) > 1:
+    #         model = multi_gpu_model(model, gpus=len(gpu_id))
+
+    self_optimizer = SGD(lr=config.lr, decay=1e-6, momentum=0.9, nesterov=True)
+    if 'adagrad' in config.optimizer:
+        self_optimizer = Adagrad(lr=config.lr, decay=1e-6)
+    elif 'adam' in config.optimizer:
+        self_optimizer = Adam(lr=config.lr, decay=1e-6, beta_1=0.9, beta_2=0.999, epsilon=1e-8)
+    else:
+        pass
+
+    try:
+        my_loss = eval("sm.losses." + config.loss)
+        my_metrics = eval("sm.metrics." + config.metrics)
+        model.compile(self_optimizer, loss=my_loss, metrics=['accuracy', my_metrics])
+    except:
+        print("model compile error")
+        exit(-5)
+    finally:
+        print("Compile model successfully!")
+
+    train_h5_file = out["sampleDir"]
+    try:
+        with h5py.File(train_h5_file, 'r') as f:
+            print("trainVal file:{}".format(train_h5_file))
+            Y = f['Y_train']
+            V=f['Y_val']
+            train_numb = len(Y)*config.sample_per_img
+            valid_numb = len(V)*config.sample_per_img
+            H = model.fit_generator(generator=train_data_generator_h5(config, f),
+                                    steps_per_epoch=train_numb // config.batch_size,
+                                    epochs=config.epochs,
+                                    verbose=1,
+                                    validation_data=val_data_generator_h5(config, f),
+                                    validation_steps=valid_numb // config.batch_size,
+                                    callbacks=callable,
+                                    max_q_size=1,
+                                    class_weight='auto')
+            # model.save(last_model)
+            print("Training finished!")
+    except:
+        print("opening {} failed or train error".format(train_h5_file))
+        return -4
 
 import fire
 if __name__ == '__main__':

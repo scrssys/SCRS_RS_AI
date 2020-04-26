@@ -103,6 +103,7 @@
      <string>Train</string>
     </property>
     <addaction name="action_Train"/>
+    <addaction name="action_Train_h5"/>
    </widget>
    <widget class="QMenu" name="menuClassify">
     <property name="title">
@@ -122,6 +123,7 @@
     </property>
     <addaction name="actionSampleGenCommon"/>
     <addaction name="actionSample_gen_Self_adapt"/>
+    <addaction name="actionconvert_sample_to_h5"/>
    </widget>
    <widget class="QMenu" name="menuPostproc">
     <property name="title">
@@ -316,6 +318,16 @@
   <action name="actionOpen_Vector">
    <property name="text">
     <string>Open Vector</string>
+   </property>
+  </action>
+  <action name="action_Train_h5">
+   <property name="text">
+    <string>train_h5</string>
+   </property>
+  </action>
+  <action name="actionconvert_sample_to_h5">
+   <property name="text">
+    <string>convert_sample_to_h5</string>
    </property>
   </action>
  </widget>
@@ -625,17 +637,44 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_Train_h5</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slot_train_h5()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>265</x>
+     <y>204</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionconvert_sample_to_h5</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slot_convert_samples_to_h5()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>265</x>
+     <y>204</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>for_action_label_check()</slot>
   <slot>for_action_image_stretch()</slot>
   <slot>slot_actiong_image_clip()</slot>
   <slot>slot_action_sampleGenCommon()</slot>
-  <slot>slot_action_trainBinaryJaccCross()</slot>
-  <slot>slot_action_trainBinaryJaccard()</slot>
-  <slot>slot_action_trainBinaryCrossentropy()</slot>
-  <slot>slot_action_trainMulticlass()</slot>
-  <slot>slot_action_trainBinaryOnehot()</slot>
   <slot>slot_action_predictBinarySingleImg()</slot>
   <slot>slot_action_predictMulticlassSingleImg()</slot>
   <slot>slot_action_predictBinaryBatch()</slot>
@@ -656,5 +695,7 @@
   <slot>slot_action_samplecrop()</slot>
   <slot>slot_action_removesmallobject()</slot>
   <slot>slot_action_openvector()</slot>
+  <slot>slot_train_h5()</slot>
+  <slot>slot_convert_samples_to_h5()</slot>
  </slots>
 </ui>

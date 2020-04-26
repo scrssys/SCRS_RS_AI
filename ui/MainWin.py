@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'D:\coding\Dev_yp\SCRS_RS_AI\ui\MainWin.ui'
+# Form implementation generated from reading ui file 'MainWin.ui'
 #
 # Created by: PyQt5 UI code generator 5.13.0
 #
@@ -136,6 +136,10 @@ class Ui_MainWindow(object):
         self.actionremove_small_object.setObjectName("actionremove_small_object")
         self.actionOpen_Vector = QtWidgets.QAction(MainWindow)
         self.actionOpen_Vector.setObjectName("actionOpen_Vector")
+        self.action_Train_h5 = QtWidgets.QAction(MainWindow)
+        self.action_Train_h5.setObjectName("action_Train_h5")
+        self.actionconvert_sample_to_h5 = QtWidgets.QAction(MainWindow)
+        self.actionconvert_sample_to_h5.setObjectName("actionconvert_sample_to_h5")
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionOpen_Vector)
         self.menuFile.addAction(self.actionExit)
@@ -146,10 +150,12 @@ class Ui_MainWindow(object):
         self.menuPrepocess.addAction(self.actionconvert_8bit)
         self.menuPrepocess.addAction(self.actionlabel_crop)
         self.menuTrain.addAction(self.action_Train)
+        self.menuTrain.addAction(self.action_Train_h5)
         self.menuClassify.addAction(self.actionPredict)
         self.menuHelp.addAction(self.actionAbout)
         self.menuSampleProduce.addAction(self.actionSampleGenCommon)
         self.menuSampleProduce.addAction(self.actionSample_gen_Self_adapt)
+        self.menuSampleProduce.addAction(self.actionconvert_sample_to_h5)
         self.menuPostproc.addAction(self.actionCombineSingleModelReults)
         self.menuPostproc.addAction(self.action_VoteMultiModelResults)
         self.menuPostproc.addAction(self.actionAccuracyEvaluation)
@@ -185,6 +191,8 @@ class Ui_MainWindow(object):
         self.actionlabel_crop.triggered.connect(MainWindow.slot_action_samplecrop)
         self.actionremove_small_object.triggered.connect(MainWindow.slot_action_removesmallobject)
         self.actionOpen_Vector.triggered.connect(MainWindow.slot_action_openvector)
+        self.action_Train_h5.triggered.connect(MainWindow.slot_train_h5)
+        self.actionconvert_sample_to_h5.triggered.connect(MainWindow.slot_convert_samples_to_h5)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -227,3 +235,5 @@ class Ui_MainWindow(object):
         self.actionlabel_crop.setText(_translate("MainWindow", "label crop"))
         self.actionremove_small_object.setText(_translate("MainWindow", "Remove small object"))
         self.actionOpen_Vector.setText(_translate("MainWindow", "Open Vector"))
+        self.action_Train_h5.setText(_translate("MainWindow", "train_h5"))
+        self.actionconvert_sample_to_h5.setText(_translate("MainWindow", "convert_sample_to_h5"))

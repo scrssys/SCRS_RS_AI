@@ -108,7 +108,8 @@ class mywindow(QMainWindow, Ui_MainWindow):
         self.action_VoteMultiModelResults.setText(_translate("MainWindow", "多模型集成"))
         self.actionAccuracyEvaluation.setText(_translate("MainWindow", "精度评估"))
         self.actionBinarization.setText(_translate("MainWindow", "掩膜二值化"))
-        self.action_Train.setText(_translate("MainWindow", "训练"))
+        self.action_Train.setText(_translate("MainWindow", "训练（内存mode）"))
+        self.action_Train_h5.setText(_translate("MainWindow", "训练（H5mode）"))
         self.actionremove_small_object.setText(_translate("MainWindow","消除小面"))
         self.actionRasterToPolygon.setText(_translate("MainWindow","栅格转矢量"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "输出"))
@@ -156,6 +157,12 @@ class mywindow(QMainWindow, Ui_MainWindow):
 
     def slot_train(self):
         child = child_train()
+        child.message_sig.connect(self.OutputWritten)
+        child.show()
+        child.exec()
+
+    def slot_train_h5(self):
+        child = child_train_h5()
         child.message_sig.connect(self.OutputWritten)
         child.show()
         child.exec()

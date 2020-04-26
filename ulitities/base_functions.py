@@ -106,7 +106,14 @@ def load_label(path):
             return -2
     return img
 
-def load_src(path, bandlist=[]):
+def load_src(path, bandlist=[], mode=0):
+    """
+
+    :param path: sample direcotry containing two dir label and src
+    :param bandlist: a list such as [0,1,2]
+    :param mode: src image load mode, 0-uint8, 1-uint16
+    :return:
+    """
     if not os.path.isfile(path):
         print("no file:{}".format(path))
         return -1
@@ -118,6 +125,7 @@ def load_src(path, bandlist=[]):
     y_height = dataset.RasterYSize
     x_width = dataset.RasterXSize
     im_bands = dataset.RasterCount
+    im_type = dataset.GetRasterBand(1).DataType
     img = dataset.ReadAsArray(0, 0, x_width, y_height)
     if len(bandlist) == 0:
         bandlist = range(im_bands)
@@ -136,8 +144,13 @@ def load_src(path, bandlist=[]):
         if im_bands==a:
             img = np.transpose(img, (1, 2, 0))
     # print("new img shape:{}".format(img.shape))
-
-    out_img=np.zeros((y_height,x_width,len(bandlist)), np.uint16)
+    if mode==0:
+        out_img=np.zeros((y_height,x_width,len(bandlist)), np.uint8)
+    elif mode==1:
+        out_img = np.zeros((y_height, x_width, len(bandlist)), np.uint16)
+    else:
+        print("src mode should be 0 or 1")
+        return -4
     try:
         for i in range(len(bandlist)):
             out_img[:,:,i]=img[:,:,bandlist[i]]
