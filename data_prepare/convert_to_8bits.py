@@ -26,6 +26,7 @@ def convert_to_8Bit_percentclip(inputRaster, outputRaster,
     im_bands = srcRaster.RasterCount
 
     geotransform = srcRaster.GetGeoTransform()
+    projinf = srcRaster.GetProjectionRef()
     # del srcRaster
     result = []
     for bandId in range(srcRaster.RasterCount):
@@ -66,6 +67,7 @@ def convert_to_8Bit_percentclip(inputRaster, outputRaster,
     driver = gdal.GetDriverByName("GTiff")
     outdataset = driver.Create(outputRaster, width, height, im_bands, gdal.GDT_Byte)
     outdataset.SetGeoTransform(geotransform)
+    outdataset.SetProjection(projinf)
     for i in range(im_bands):
         outdataset.GetRasterBand(i + 1).WriteArray(result[i])
 
@@ -80,6 +82,7 @@ def convert_8bit_minMaxium(inputRaster, outputRaster,nodata=65535):
     im_bands = srcRaster.RasterCount
 
     geotransform = srcRaster.GetGeoTransform()
+    projinf=srcRaster.GetProjectionRef()
     result = []
     for bandId in range(srcRaster.RasterCount):
         bandId = bandId + 1
@@ -123,6 +126,7 @@ def convert_8bit_minMaxium(inputRaster, outputRaster,nodata=65535):
     driver = gdal.GetDriverByName("GTiff")
     outdataset = driver.Create(outputRaster, width, height, im_bands, gdal.GDT_Byte)
     outdataset.SetGeoTransform(geotransform)
+    outdataset.SetProjection(projinf)
     for i in range(im_bands):
         outdataset.GetRasterBand(i + 1).WriteArray(result[i])
     del outdataset
