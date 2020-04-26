@@ -39,9 +39,11 @@ def create_h5_from_samples(sampleDir, h5SavingPath, val_rate=0.25, mode=0):
         label_data = load_label(sampleDir + '/label/'+url)
         if isinstance(label_data,int):
             continue
-        src_data = load_src(sampleDir + '/src/'+url, mode)
+        src_data = load_src(sampleDir + '/src/'+url, mode=mode)
         if isinstance(src_data,int):
             continue
+        else:
+            print("loading:{}".format(url))
         X.append(src_data)
         Y.append(label_data)
 
@@ -49,9 +51,11 @@ def create_h5_from_samples(sampleDir, h5SavingPath, val_rate=0.25, mode=0):
         label_val = load_label(sampleDir + '/label/' + url)
         if isinstance(label_val, int):
             continue
-        src_val = load_src(sampleDir + '/src/' + url, mode)
+        src_val = load_src(sampleDir + '/src/' + url, mode=mode)
         if isinstance(src_val, int):
             continue
+        else:
+            print("loading:{}".format(url))
         W.append(src_val)
         V.append(label_val)
 

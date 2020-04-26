@@ -3,7 +3,7 @@ from PyQt5.QtCore import QTimer,QEventLoop,pyqtSignal
 from PyQt5.QtWidgets import QApplication
 from ulitities.base_functions import echoRuntime
 from predict import predict
-from ui.main_gui import mywindow,Signal
+from main_gui import mywindow,Signal
 import logging,time
 
 class main_thread(QThread):

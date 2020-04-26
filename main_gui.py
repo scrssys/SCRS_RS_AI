@@ -102,6 +102,7 @@ class mywindow(QMainWindow, Ui_MainWindow):
         self.actionlabel_crop.setText(_translate("MainWindow", "样本裁切"))
         self.actionSampleGenCommon.setText(_translate("MainWindow", "样本制作(默认)"))
         self.actionSample_gen_Self_adapt.setText(_translate("MainWindow", "样本制作(自适应)"))
+        self.actionconvert_sample_to_h5.setText(_translate("MainWindow", "样本转存H5文件"))
         self.actionSampleGenByCV2.setText(_translate("MainWindow", "SampleGenByCV2"))
         self.actionImage_Clip.setText(_translate("MainWindow", "图像裁剪"))
         self.actionMismatch_Analyze.setText(_translate("MainWindow", "Mismatch Analyze"))
@@ -172,7 +173,7 @@ class mywindow(QMainWindow, Ui_MainWindow):
         child.message_sig.connect(self.OutputWritten)
         child.show()
         child.exec()
-    def actionconvert_sample_to_h5(self):
+    def slot_convert_samples_to_h5(self):
         child = child_sample2H5()
         child.message_sig.connect(self.OutputWritten)
         child.show()

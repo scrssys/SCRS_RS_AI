@@ -183,7 +183,7 @@ class child_sample2H5(QDialog, Ui_Dialog_sample2H5,base_message):
         self.buttonBox.setEnabled(False)
         self.setWindowModality(Qt.ApplicationModal)
 
-        self.Flag_binary = self.radioButton_binary.isChecked()
+        # self.Flag_binary = self.radioButton_binary.isChecked()
 
         # input_dict = sample2H5_dict
         input_dir = self.lineEdit_input.text()
@@ -214,7 +214,7 @@ class child_sample2H5(QDialog, Ui_Dialog_sample2H5,base_message):
         if ret !=0:
             QMessageBox.information(self, "Error", self.tr("Converting h5 file failed!"))
         else:
-            QMessageBox.information(self, "Prompt", self.tr("Sample produced!"))
+            QMessageBox.information(self, "Prompt", self.tr("H5 converted!"))
         self.buttonBox.setEnabled(True)
         self.setWindowModality(Qt.NonModal)
 

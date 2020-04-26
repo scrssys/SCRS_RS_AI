@@ -344,11 +344,11 @@ if __name__=="__main__":
     # predict(configs='/home/omnisky/PycharmProjects/data/rice/samples_uav1_crop_classical/config_binary_global_classical.json',
     #         gpu=3)
 
-    predict(
-            configs='/home/omnisky/PycharmProjects/data/samples/isprs/config_multiclass_isprs.json',
-            gpu=0,
-            input="/home/omnisky/PycharmProjects/data/samples/isprs/test/img/top_potsdam_2_13.tif",
-            output = "/home/omnisky/PycharmProjects/data/samples/isprs/test/pred",
-            model = "/home/omnisky/PycharmProjects/data/samples/isprs/model/isprs_deeplabv3plus_xception_categorical_crossentropy_adam_480_01234bands_2020-04-10_11-26-59best.h5")
+    # predict(
+    #         configs='/home/omnisky/PycharmProjects/data/samples/isprs/config_multiclass_isprs.json',
+    #         gpu=0,
+    #         input="/home/omnisky/PycharmProjects/data/samples/isprs/test/img/top_potsdam_2_13.tif",
+    #         output = "/home/omnisky/PycharmProjects/data/samples/isprs/test/pred",
+    #         model = "/home/omnisky/PycharmProjects/data/samples/isprs/model/isprs_deeplabv3plus_xception_categorical_crossentropy_adam_480_01234bands_2020-04-10_11-26-59best.h5")
     fire.Fire()
 
