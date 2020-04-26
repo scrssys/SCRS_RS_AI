@@ -92,15 +92,24 @@ def convert_8bit_minMaxium(inputRaster, outputRaster,nodata=65535):
         if bmin is None or bmax is None:
             (bmin, bmax) = band.ComputeRasterMinMax(1)
         band_arr_tmp = band.ReadAsArray()
+        if band_arr_tmp is None:
+            print("load image failed")
+            return -1
 
         index = np.where(band_arr_tmp == nodata)
         new_data = np.asarray(band_arr_tmp, dtype=np.float32)
-        # mmmm =np.min(new_data)
-        new_data[index] = np.nan
-        t_min = np.nanargmin(new_data)
-        t_max=np.nanargmax(new_data)
-        bmin= (new_data.flatten())[t_min]
-        bmax=(new_data.flatten())[t_max]
+        if len(index)<2:
+            print("no nodata")
+            bmin = new_data.min()
+            bmax=new_data.max()
+            # continue
+        else:
+            # mmmm =np.min(new_data)
+            new_data[index] = np.nan
+            t_min = np.nanargmin(new_data)
+            t_max=np.nanargmax(new_data)
+            bmin= (new_data.flatten())[t_min]
+            bmax=(new_data.flatten())[t_max]
 
         temp = 255.0 * (new_data - bmin) / (bmax - bmin + 0.000001)
         temp[temp < 0.00001] = 0

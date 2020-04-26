@@ -3,11 +3,11 @@
 block_cipher = None
 
 
-a = Analysis(['main_gui.py'],
-             pathex=['D:\\coding\\qiaozh\\SCRS_RS_AI'],
+a = Analysis(['ui\\main_gui.py'],
+             pathex=['D:\\coding\\Dev_yp\\SCRS_RS_AI'],
              binaries=[],
-             datas=[('C:/Program Files/Anaconda3/envs/tfpy35/Lib/site-packages/tensorflow/python/_pywrap_tensorflow_internal.pyd', 'tensorflow/python')],
-             hiddenimports=["pywt","pywt._extensions._cwt"],
+             datas=[],
+             hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
              excludes=[],
