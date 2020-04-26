@@ -1,3 +1,9 @@
+#encoding:utf-8
+import sys,os
+sys.path.append(os.path.abspath('.'))
+if os.path.abspath('.')!=os.getcwd():
+    sys.path.append(os.getcwd())
+
 from ui.MainWin import Ui_MainWindow
 from ui.sampleProduce.sampleProcess_implements import*
 from ui.preProcess.preprocess_implements import *
@@ -166,7 +172,11 @@ class mywindow(QMainWindow, Ui_MainWindow):
         child.message_sig.connect(self.OutputWritten)
         child.show()
         child.exec()
-
+    def actionconvert_sample_to_h5(self):
+        child = child_sample2H5()
+        child.message_sig.connect(self.OutputWritten)
+        child.show()
+        child.exec()
     def slot_action_rasterToPolygon(self):
         child =child_raster_to_polygon()
         child.message_sig.connect(self.OutputWritten)
