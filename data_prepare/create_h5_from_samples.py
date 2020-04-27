@@ -4,11 +4,12 @@ import h5py
 import os,sys
 from ulitities.base_functions import load_label, load_src, find_file
 import fire
+import numpy as np
 
 
 def create_h5_from_samples(sampleDir, h5SavingPath, val_rate=0.25, mode=0):
     # Create a new file
-    f = h5py.File(h5SavingPath, 'w')
+    # f = h5py.File(h5SavingPath, 'w')
     file_type = ['.jpg', '.png', '.tif', '.img']
     sample_url = []
     train_url = []
@@ -35,9 +36,14 @@ def create_h5_from_samples(sampleDir, h5SavingPath, val_rate=0.25, mode=0):
     Y=[]
     W=[]
     V=[]
+    tmp = load_label(sampleDir + '/label/'+sample_url[0])
+    a,b=tmp.shape
     for url in train_set:
         label_data = load_label(sampleDir + '/label/'+url)
         if isinstance(label_data,int):
+            continue
+        if tmp.shape!=label_data.shape:
+            print("Warining:data dimension is not equal:{}".format(url))
             continue
         src_data = load_src(sampleDir + '/src/'+url, mode=mode)
         if isinstance(src_data,int):
@@ -51,6 +57,9 @@ def create_h5_from_samples(sampleDir, h5SavingPath, val_rate=0.25, mode=0):
         label_val = load_label(sampleDir + '/label/' + url)
         if isinstance(label_val, int):
             continue
+        if tmp.shape!=label_val.shape:
+            print("Warining:data dimension is not equal:{}".format(url))
+            continue
         src_val = load_src(sampleDir + '/src/' + url, mode=mode)
         if isinstance(src_val, int):
             continue
@@ -58,16 +67,21 @@ def create_h5_from_samples(sampleDir, h5SavingPath, val_rate=0.25, mode=0):
             print("loading:{}".format(url))
         W.append(src_val)
         V.append(label_val)
-
-    f.create_dataset('X_train', data=X)
-    f.create_dataset('Y_train', data=Y)
-    f.create_dataset('X_val', data=W)
-    f.create_dataset('Y_val', data=V)
-    f.close()
+    # X = np.array(X)
+    # Y=np.array(Y)
+    # W=np.array(W)
+    # V=np.array(V)
+    with h5py.File(h5SavingPath,'r') as f:
+        f = h5py.File(h5SavingPath, 'w')
+        f.create_dataset('X_train', data=X)
+        f.create_dataset('Y_train', data=Y)
+        f.create_dataset('X_val', data=W)
+        f.create_dataset('Y_val', data=V)
+    # f.close()
     return 0
 
 if __name__=='__main__':
-    create_h5_from_samples(r'H:\20200423\train', r'D:\data\samples\tuitiantu\tainval.h5', mode=0)
+    # create_h5_from_samples(r'H:\20200423\train', r'D:\data\samples\tuitiantu\tainval.h5', mode=0)
 
     fire.Fire()
 
