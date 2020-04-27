@@ -2,7 +2,8 @@ import os, sys,subprocess, fire
 import numpy as np
 from tqdm import tqdm
 from ulitities.base_functions import get_file,echoRuntime,send_message_callback
-
+import gdal
+gdal.SetCacheMax(1000000000000)
 
 @echoRuntime
 def convert_to_8Bit_percentclip(inputRaster, outputRaster,
@@ -96,6 +97,7 @@ def convert_8bit_minMaxium(inputRaster, outputRaster,nodata=65535):
             (bmin, bmax) = band.ComputeRasterMinMax(1)
         band_arr_tmp = band.ReadAsArray()
         if band_arr_tmp is None:
+            band_arr_tmp = srcRaster.ReadRaster1(0,0,width,height)
             print("load image failed")
             return -1
 
@@ -178,7 +180,8 @@ def batch_convert_8bit_minmax(send_massage_callback=send_message_callback,inputd
         convert_8bit_minMaxium(file,outputfile,nd)
 
 if __name__=='__main__':
-    # convert_8bit_minMaxium(r"D:\data\16b.tif",r"D:\data\8b.tif")
+    convert_8bit_minMaxium(r"/home/omnisky/PycharmProjects/data/water/test2/F/ZY306314304112720190606F.IMG",
+                           r"/home/omnisky/PycharmProjects/data/water/test2/Untitled Folder/ZY306314304112720190606F.IMG")
     # convert_8bit_minMaxium(r"D:\data\16b.tif", r"D:\data\8b_percent3.tif")
     fire.Fire()
 
