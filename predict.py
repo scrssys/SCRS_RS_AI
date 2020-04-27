@@ -123,7 +123,7 @@ def predict(send_massage_callback=send_message_callback, configs=None,gpu=0, inp
         return out
 
 
-    os.environ["CUDA_VISIBLE_DEVICES"] = str(out["gpu"])
+    # os.environ["CUDA_VISIBLE_DEVICES"] = str(out["gpu"])
     with open(configs, 'r') as f:
         cfgl = json.load(f)
     config = Config(**cfgl)

@@ -46,6 +46,7 @@ class child_predict(QDialog, Ui_Dialog_predict,base_message):
         # output = "/home/omnisky/PycharmProjects/data/rice/test/pred/fpn"
         # model = "/home/omnisky/PycharmProjects/data/rice/models/fpn/rice_uav1_null_fpn_seresnet34_binary_crossentropy_adam_480_012bands_2020-03-25_15-49-16best.h5"
         self.buttonBox.setEnabled(False)
+        os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
         try:
             predict(self.send,config,gpu_id,input,output,model)
             QMessageBox.information(self, 'Prompt', "Finished")
