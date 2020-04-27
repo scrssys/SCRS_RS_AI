@@ -295,7 +295,7 @@ def train_data_generator_files(config, sampth, sample_url):
                 continue
             tp = np.unique(label_img)
             if len(tp) < 2:
-                print("Only one value {} in {}".format(tp, sampth + '/label/' + pic))
+                # print("Only one value {} in {}".format(tp, sampth + '/label/' + pic))
                 if tp[0] == 0 or tp[0]==255:
                     print("no target value in {}".format(sampth + '/label/' + pic))
                     continue

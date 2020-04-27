@@ -278,7 +278,7 @@ def train(send_massage_callback=send_message_callback, configs=None,gpu=0, sampl
     finally:
         print("Compile model successfully!")
 
-    H = model.fit_generator(generator=train_data_generator(config, out["sampleDir"], train_set),
+    H = model.fit_generator(generator=train_data_generator_files(config, out["sampleDir"], train_set),
                             steps_per_epoch=train_numb // config.batch_size,
                             epochs=config.epochs,
                             verbose=1,
