@@ -38,6 +38,12 @@ def create_h5_from_samples(sampleDir, h5SavingPath, val_rate=0.25, mode=0):
     V=[]
     tmp = load_label(sampleDir + '/label/'+sample_url[0])
     a,b=tmp.shape
+    ts=load_label(sampleDir + '/label/'+sample_url[1])
+    c,d=ts.shape
+
+    """选更大的图像作为样本的参考尺寸"""
+    if c>a and d>b:
+        tmp=ts
     for url in train_set:
         label_data = load_label(sampleDir + '/label/'+url)
         if isinstance(label_data,int):
