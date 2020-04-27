@@ -1,4 +1,5 @@
-import subprocess
+# import subprocess
+import os
 from ui.train.Dialog_train import Ui_Dialog_train
 from ui.train.Dialog_train_h5 import Ui_Dialog_train_h5
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
@@ -78,7 +79,7 @@ class child_train_h5(QDialog,Ui_Dialog_train_h5,base_message):
         ,QMessageBox.Yes | QMessageBox.No,QMessageBox.Yes)
 
         # excute program
-
+        os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
         # cmd =['python','../train_yp.py','--gpu',gpu_id, '--sample', sample,"--model",model, '--config',  config]
         train_h5(self.send, config, gpu_id, sample, model)
         try:
