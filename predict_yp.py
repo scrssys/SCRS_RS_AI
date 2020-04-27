@@ -36,6 +36,12 @@ from deeplab.model import relu6, BilinearUpsampling
 NDVI=True
 eps=0.00001
 
+def rescale_2_255(nd_arry,value_nodata):
+    scale = 0
+    nd_arry=nd_arry*scale
+    return nd_arry
+
+
 def check_predict_input(dict_para):
     print(dict_para)
     if dict_para["gpu"]==None:
@@ -103,7 +109,7 @@ def check_predict_input(dict_para):
     return out
 
 @echoRuntime
-def predict(send_massage_callback=send_message_callback, configs=None,gpu=0, input='',output='',model=''):
+def predict(send_massage_callback=send_message_callback, configs=None,gpu=0, input='',output='',model='',bit_mode=0):
     send_massage_callback("predict >>>")
     # return 0
     dict_in = {"configs": configs, "gpu":gpu, "input":input,"output":output, "model":model}
@@ -123,7 +129,7 @@ def predict(send_massage_callback=send_message_callback, configs=None,gpu=0, inp
         return out
 
 
-    # os.environ["CUDA_VISIBLE_DEVICES"] = str(out["gpu"])
+    os.environ["CUDA_VISIBLE_DEVICES"] = str(out["gpu"])
     with open(configs, 'r') as f:
         cfgl = json.load(f)
     config = Config(**cfgl)
@@ -223,6 +229,7 @@ def predict(send_massage_callback=send_message_callback, configs=None,gpu=0, inp
             # b_img = load_img_by_gdal_blocks(img_file,0,start,W,this_h)
             b_img = load_img_by_gdal_blocks(img_file, 0, start, W, this_h+config.window_size)
 
+
             if i ==nb_blocks-1:
                 tmp_img = np.zeros((this_h+config.window_size, W, C), np.uint16)
                 tmp_img[:this_h,:,:] = b_img
@@ -235,6 +242,7 @@ def predict(send_massage_callback=send_message_callback, configs=None,gpu=0, inp
             # plt.show()
             # sys.exit(-3)
             """get data in bands of band_list"""
+
             band_list = config.band_list
             if len(band_list) == 0:
                 band_list = range(C)
@@ -243,24 +251,40 @@ def predict(send_massage_callback=send_message_callback, configs=None,gpu=0, inp
                 sys.exit(-2)
 
             a, b, c = tmp_img.shape
+
+
             if im_type == UINT8:
                 # input_img = input_img / 255.0
                 TScale=255.0
-                input_img = np.zeros((a, b, len(band_list)), np.uint8)
+                input_img = np.zeros((a, b, len(band_list)), np.uint16)
             elif im_type == UINT10:
                 # input_img = input_img / 1024.0
                 TScale=1024.0
-                input_img = np.zeros((a, b, len(band_list)), np.float16)
+                input_img = np.zeros((a, b, len(band_list)), np.uint16)
             elif im_type == UINT16:
                 # input_img = input_img / 25535.0
                 TScale=65535.0
-                input_img = np.zeros((a, b, len(band_list)), np.float16)
+                input_img = np.zeros((a, b, len(band_list)), np.uint16)
 
             # input_img = np.zeros((a,b,len(band_list)), np.float16)
             for i in range(len(band_list)):
                 input_img[:,:,i] = tmp_img[:,:,band_list[i]]
-
+                if bit_mode == 1:
+                    index = np.where(input_img[:,:,i] == config.nodata)
+                    new_data=np.asarray(input_img[:,:,i],np.float32)
+                    new_data[index] = np.nan
+                    t_min = np.nanargmin(new_data)
+                    t_max = np.nanargmax(new_data)
+                    bmin = (new_data.flatten())[t_min]
+                    bmax = (new_data.flatten())[t_max]
+                    temp = 255.0 * (new_data - bmin) / (bmax - bmin + 0.000001)
+                    temp[temp < 0.00001] = 0
+                    temp[temp > 253.99999] = 254
+                    temp[index] = 255
+                    temp = np.asarray(temp, np.uint8)
+                    input_img[:, :, i]=temp
             if FLAG_APPROACH_PREDICT == 0:
+
                 print("[INFO] predict image by orignal approach ...")
                 # a,b,c=input_img.shape
                 num_of_bands = min(input_img.shape)
@@ -347,15 +371,11 @@ if __name__=="__main__":
     predict(
             configs=r'D:\data\water\config_binary_water4bands.json',
             gpu=0,
-            input=r"D:\data\water\img_8bit",
+            input=r"D:\222222",
             output = r"D:\data",
-            model = r"D:\data\water\water_imagenet_unet_efficientnetb5_bce_dice_loss_adam_480_123bands_2020-04-27_16-45-36best.h5")
+            model = r"D:\data\water\water_imagenet_unet_efficientnetb5_bce_dice_loss_adam_480_123bands_2020-04-27_16-45-36best.h5",
+            bit_mode = 1)
 
-    # predict(
-    #         configs='/home/omnisky/PycharmProjects/data/samples/isprs/config_multiclass_isprs.json',
-    #         gpu=0,
-    #         input="/home/omnisky/PycharmProjects/data/samples/isprs/test/img/top_potsdam_2_13.tif",
-    #         output = "/home/omnisky/PycharmProjects/data/samples/isprs/test/pred",
-    #         model = "/home/omnisky/PycharmProjects/data/samples/isprs/model/isprs_deeplabv3plus_xception_categorical_crossentropy_adam_480_01234bands_2020-04-10_11-26-59best.h5")
+
     fire.Fire()
 

@@ -258,7 +258,7 @@ def load_img_by_gdal_info(path, grayscale=False):
     # img = dataset.ReadAsArray(0,0,x_width,y_height)
     geotransform = dataset.GetGeoTransform()
     projectInfo = dataset.GetProjectionRef()
-    print(projectInfo)
+    # print(projectInfo)
 
     del dataset
 
