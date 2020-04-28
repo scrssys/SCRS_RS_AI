@@ -373,7 +373,7 @@ if __name__=="__main__":
             gpu=0,
             input=r"D:\222222",
             output = r"D:\data",
-            model = r"D:\data\water\water_imagenet_unet_efficientnetb5_bce_dice_loss_adam_480_123bands_2020-04-27_16-45-36best.h5",
+            model = r"D:\data\water\20200428\water_imagenet_unet_vgg16_bce_dice_loss_adam_480_123bands_2020-04-27_04-09-37best.h5",
             bit_mode = 1)
 
 

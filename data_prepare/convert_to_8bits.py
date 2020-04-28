@@ -121,6 +121,7 @@ def convert_8bit_minMaxium(inputRaster, outputRaster,nodata=65535):
         temp[temp > 253.99999] = 254
         temp[index] = 255
         temp=np.asarray(temp, np.uint8)
+        temp[index]=0
         result.append(temp)
         # plt.imshow(temp, cmap='gray')
         # plt.show()
