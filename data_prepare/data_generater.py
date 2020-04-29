@@ -296,7 +296,7 @@ def train_data_generator_files(config, sampth, sample_url):
             tp = np.unique(label_img)
             if len(tp) < 2:
                 # print("Only one value {} in {}".format(tp, sampth + '/label/' + pic))
-                if tp[0]==127:
+                if tp[0]==config.label_nodata:
                     # print("only nodata value in {}".format(sampth + '/label/' + pic))
                     continue
 
@@ -308,7 +308,7 @@ def train_data_generator_files(config, sampth, sample_url):
             random_size = random.randrange(config.img_w, config.img_w*2+1, config.img_w)
             # random_size = config.img_w
             img, label = random_crop(src_img, label_img, random_size, random_size)
-
+            """ignore nodata img"""
             if config.label_nodata in np.unique(label):
                 continue
             """ignore pure background area"""
