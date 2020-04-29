@@ -259,13 +259,18 @@ def predict(send_massage_callback=send_message_callback, configs=None,gpu=0, inp
             # input_img = np.zeros((a,b,len(band_list)), np.float16)
             for i in range(len(band_list)):
                 input_img[:,:,i] = tmp_img[:,:,band_list[i]]
+                if i==0:
+                    nodata_indx= np.where(input_img[:,:,i]==config.nodata)
+
 
             if FLAG_APPROACH_PREDICT == 0:
                 print("[INFO] predict image by orignal approach ...")
                 # a,b,c=input_img.shape
                 num_of_bands = min(input_img.shape)
                 result = core_orignal_predict(input_img, num_of_bands, model, config.window_size, config.img_w, mask_bands=config.nb_classes)
+                result[nodata_indx] = 0
                 result_mask[start:end,:]=result[:this_h,:]
+
 
             elif FLAG_APPROACH_PREDICT == 1:
                 print("[INFO] predict image by smooth approach... ")
@@ -304,9 +309,10 @@ def predict(send_massage_callback=send_message_callback, configs=None,gpu=0, inp
                     output_mask[indx] = 1
                     # del result
                     gc.collect()
-
+                output_mask[nodata_indx]=0
                 result_mask[start:end, :] = output_mask[:this_h, :]
                 # del output_mask
+
                 gc.collect()
 
             del b_img
@@ -341,21 +347,12 @@ def predict(send_massage_callback=send_message_callback, configs=None,gpu=0, inp
     return 0
 
 if __name__=="__main__":
-    # predict(configs='/home/omnisky/PycharmProjects/data/rice/samples_uav1_crop_classical/config_binary_global_classical.json',
-    #         gpu=3)
-
-    predict(
-            configs=r'D:\data\water\config_binary_water4bands.json',
-            gpu=0,
-            input=r"D:\data\water\img_8bit",
-            output = r"D:\data",
-            model = r"D:\data\water\water_imagenet_unet_efficientnetb5_bce_dice_loss_adam_480_123bands_2020-04-27_16-45-36best.h5")
-
     # predict(
-    #         configs='/home/omnisky/PycharmProjects/data/samples/isprs/config_multiclass_isprs.json',
-    #         gpu=0,
-    #         input="/home/omnisky/PycharmProjects/data/samples/isprs/test/img/top_potsdam_2_13.tif",
-    #         output = "/home/omnisky/PycharmProjects/data/samples/isprs/test/pred",
-    #         model = "/home/omnisky/PycharmProjects/data/samples/isprs/model/isprs_deeplabv3plus_xception_categorical_crossentropy_adam_480_01234bands_2020-04-10_11-26-59best.h5")
+    #     configs=r'D:\data\water\config_binary_water4bands_8bit.json',
+    #     gpu=0,
+    #     input=r"D:\data\water\img_8bit",
+    #     output = r"D:\data\pred",
+    #     model = r"D:\data\water\20200428\water_imagenet_unet_vgg16_bce_dice_loss_adam_480_123bands_2020-04-27_04-09-37best.h5")
+
     fire.Fire()
 
