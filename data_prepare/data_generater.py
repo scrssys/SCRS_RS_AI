@@ -296,8 +296,8 @@ def train_data_generator_files(config, sampth, sample_url):
             tp = np.unique(label_img)
             if len(tp) < 2:
                 # print("Only one value {} in {}".format(tp, sampth + '/label/' + pic))
-                if tp[0] == 0 or tp[0]==255:
-                    # print("no target value in {}".format(sampth + '/label/' + pic))
+                if tp[0]==127:
+                    # print("only nodata value in {}".format(sampth + '/label/' + pic))
                     continue
 
             src_img = load_src((sampth + '/src/' + pic), bandlist=config.band_list)
@@ -443,8 +443,8 @@ def val_data_generator(config,sampth, sample_url):
         tp = np.unique(t_img)
         if len(tp) < 2:
             print("Only one value {} in {}".format(tp, sampth + '/label/' + pic))
-            if tp[0] == 0:
-                print("no target value in {}".format(sampth + '/label/' + pic))
+            if tp[0] == 127:
+                print("Ignore:nodata value in {}".format(sampth + '/label/' + pic))
                 continue
         ret, s_img = load_img_bybandlist((sampth + '/src/' + pic), bandlist=config.band_list)
         if ret!=0:
