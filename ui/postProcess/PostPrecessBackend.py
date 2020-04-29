@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 # import tensorflow as tf
 from sklearn.metrics import confusion_matrix
 
-from ulitities.base_functions import load_img_by_cv2,get_file,load_img_by_gdal,send_message_callback
+from ulitities.base_functions import load_img_by_cv2,get_file,load_img_by_gdal,send_message_callback, load_label
 
 ROAD_VALUE=127
 BUILDING_VALUE=255
@@ -65,7 +65,13 @@ def batchbinarize_masks(send_message_callback,inputdict):
     for file in files:#tqdm(files):
         send_message_callback("Dealing : "+file)
         img = cv2.imread(file, cv2.IMREAD_GRAYSCALE)
-
+        if img is None:
+            img = cv2.imdecode(np.fromfile(file, dtype=np.uint8), 0)
+            if img is None:
+                print("read label image failed")
+                return -2
+        # label_data = load_label(file)
+        #
         result = np.zeros(img.shape, np.uint8)
         ind_foreground = np.where(img > threshold)
         result[ind_foreground] = 1

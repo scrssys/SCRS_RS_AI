@@ -325,7 +325,11 @@ def predict_img_with_smooth_windowing(input_img, model, window_size,
     """
 
     pad = _pad_img(input_img, window_size, subdivisions)
-    pads = _rotate_mirror_do(pad,slices)
+    # pads = _rotate_mirror_do(pad, slices)
+    if slices >1:
+        pads = _rotate_mirror_do(pad,slices)
+    else:
+        pads = [pad]
 
     # Note that the implementation could be more memory-efficient by merging
     # the behavior of `_windowed_subdivs` and `_recreate_from_subdivs` into
@@ -512,6 +516,7 @@ def core_smooth_predict_binary(small_img_patches, model, real_classes,QuanScale=
     patches,row,column,input_channels = small_img_patches.shape
 
     mask_output = []
+    # small_img_patches = small_img_patches/QuanScale
     for p in list(range(patches)):
         crop = small_img_patches[p,:,:,:]
         if len(np.unique(crop.astype(np.uint)))<2:
@@ -532,7 +537,7 @@ def core_smooth_predict_binary(small_img_patches, model, real_classes,QuanScale=
 
         mask_output.append(res_pred)
 
-    mask_result = np.array(mask_output, np.float16)
+    mask_result = np.asarray(mask_output, np.float16)
     del mask_output, small_img_patches, crop, res_pred
     gc.collect()
 

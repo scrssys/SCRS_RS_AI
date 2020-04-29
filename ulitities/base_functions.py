@@ -98,7 +98,11 @@ def load_label(path):
     if not os.path.isfile(path):
         print("input path is not a file!")
         return -1
-    img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+    try:
+        img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+    except:
+        print("please check label format")
+        return -2
     if img is None:
         img=cv2.imdecode(np.fromfile(path,dtype=np.uint8),0)
         if img is None:

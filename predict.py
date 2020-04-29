@@ -347,12 +347,12 @@ def predict(send_massage_callback=send_message_callback, configs=None,gpu=0, inp
     return 0
 
 if __name__=="__main__":
-    # predict(
-    #     configs=r'D:\data\water\config_binary_water4bands_8bit.json',
-    #     gpu=0,
-    #     input=r"D:\data\water\img_8bit",
-    #     output = r"D:\data\pred",
-    #     model = r"D:\data\water\20200428\water_imagenet_unet_vgg16_bce_dice_loss_adam_480_123bands_2020-04-27_04-09-37best.h5")
+    predict(
+        configs=r'D:\data\water\config_binary_water4bands_8bit.json',
+        gpu=0,
+        input=r"H:\water\samples_0428\src\test",
+        output = r"D:\data\pred",
+        model = r"D:\data\water\20200429\all\water4_imagenet_unet_efficientnetb5_binary_crossentropy_adam_480_123bands_2020-04-29_00-46-11best.h5")
 
     fire.Fire()
 
