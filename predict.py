@@ -197,7 +197,7 @@ def predict(send_massage_callback=send_message_callback, configs=None,gpu=0, inp
     # print(model.summary())
 
     for img_file in input_files:#tqdm(input_files):
-        if os.path.isfile(img_file):
+        if not os.path.isfile(img_file):
             print("Warning: file does not exist:{}".format(img_file))
             continue
         send_massage_callback(" Classify : "+img_file)
