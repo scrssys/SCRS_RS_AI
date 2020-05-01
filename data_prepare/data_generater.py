@@ -497,6 +497,87 @@ def val_data_generator(config,sampth, sample_url):
                         train_label = []
                         batch = 0
 
+def val_data_generator_files(config,sampth, sample_url):
+    # print 'generate validating Data...'
+    norm_value = 255.0
+    w=config.img_w
+    h=config.img_h
+    label_list, img_list = [],[]
+    # for pic in sample_url:
+    #     _, t_img = load_img_normalization(1, sampth + '/label/' + pic)
+    #     tp = np.unique(t_img)
+    #     if len(tp) < 2:
+    #         print("Only one value {} in {}".format(tp, sampth + '/label/' + pic))
+    #         if tp[0] == 127:
+    #             print("Ignore:nodata value in {}".format(sampth + '/label/' + pic))
+    #             continue
+    #     ret, s_img = load_img_bybandlist((sampth + '/src/' + pic), bandlist=config.band_list)
+    #     if ret!=0:
+    #         continue
+    #     s_img = img_to_array(s_img)
+    #     img_list.append(s_img)
+    #     label_list.append(t_img)
+    #
+    # assert len(label_list) == len(img_list)
+
+    train_data = []
+    train_label = []
+    batch = 0
+    while True:
+        if batch==0:
+            train_data = []
+            train_label = []
+        # batch = 0
+
+        for pic in sample_url:
+            label = load_label(sampth + '/label/' + pic)
+            if isinstance(label, int):
+                print("load label failed:{}".fomat(pic))
+                continue
+            tp = np.unique(label)
+            if len(tp) < 2:
+                # print("Only one value {} in {}".format(tp, sampth + '/label/' + pic))
+                if tp[0] == config.label_nodata:
+                    # print("only nodata value in {}".format(sampth + '/label/' + pic))
+                    continue
+
+            img = load_src((sampth + '/src/' + pic), bandlist=config.band_list)
+            if isinstance(img, int):
+                print("load src failed:{}".format(pic))
+                continue
+            if img.shape[0:2] != label.shape[0:2]:
+                print("Warning: dimensions of label and src are not equal:{}".format(pic))
+                continue
+
+            for i in range(img.shape[0] // h):
+                for j in range(img.shape[1] // w):
+                    x = img[i * h:(i + 1) * h, (j * w):(j + 1) * w, :]
+                    y = label[i * h:(i + 1) * h, (j * w):(j + 1) * w]
+
+                    if config.label_nodata in np.unique(y):
+                        continue
+                    """ignore pure background area"""
+                    if len(np.unique(y)) < 2:
+                        if (0 in np.unique(y)) and (np.random.random() < 0.75):
+                            continue
+                    x = img_to_array(x)
+                    y = img_to_array(y)
+                    train_data.append(x)
+                    train_label.append(y)
+
+                    batch += 1
+                    if batch % config.batch_size == 0:
+                        train_data = np.array(train_data)
+                        train_label = np.array(train_label)
+                        if config.nb_classes > 2:
+                            train_label = to_categorical(train_label, num_classes=config.nb_classes)
+                        yield (train_data, train_label)
+                        train_data = []
+                        train_label = []
+                        batch = 0
+
+
+
 def val_data_generator_h5(config,f):
     # print 'generate validating Data...'
     norm_value = 255.0
