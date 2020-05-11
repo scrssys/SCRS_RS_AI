@@ -388,7 +388,7 @@ def predict_img_with_smooth_windowing(input_img, model, window_size,
     return prd  # probabilities for each target: [0,255]
 
 
-def core_orignal_predict(image,bands, model,window_size,img_w=256, mask_bands=1):
+def core_orignal_predict(image,bands, model,window_size,img_w=256, mask_bands=1, QuanScale=255.0):
     stride = window_size
 
     h, w, _ = image.shape
@@ -398,7 +398,7 @@ def core_orignal_predict(image,bands, model,window_size,img_w=256, mask_bands=1)
     padding_img = np.zeros((padding_h, padding_w, bands))
     padding_img[0:h, 0:w, :] = image[:, :, :]
 
-    padding_img = img_to_array(padding_img)
+    padding_img = img_to_array(padding_img)/QuanScale
 
     mask_whole = np.zeros((padding_h, padding_w), dtype=np.float32)
     for i in list(range(padding_h // stride)):#tqdm(list(range(padding_h // stride))):

@@ -3,7 +3,7 @@ from __future__ import print_function
 import os
 import numpy as np
 from tqdm import tqdm
-from model import Deeplabv3
+from deeplab.model import Deeplabv3
 
 MODEL_DIR = 'models'
 

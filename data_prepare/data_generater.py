@@ -188,11 +188,14 @@ def train_data_generator(config, sampth, sample_url):
     for pic in sample_url:
         _,t_img = load_img_normalization(1,sampth+'/label/'+pic)
         tp = np.unique(t_img)
-        if len(tp) < 2:
-            print("Only one value {} in {}".format(tp, sampth+'/label/'+pic))
-            if tp[0] == 0:
-                print("no target value in {}".format(sampth+'/label/'+pic))
-                continue
+        if config.label_nodata in tp:
+            print("Warning: contain nodata in label of {}".format(pic))
+            continue
+        # if len(tp) < 2:
+        #     print("Only one value {} in {}".format(tp, sampth+'/label/'+pic))
+        #     if tp[0] == 0:
+        #         print("no target value in {}".format(sampth+'/label/'+pic))
+        #         continue
 
         ret, s_img = load_img_bybandlist((sampth + '/src/' + pic), bandlist=config.band_list)
         if ret!=0:
@@ -245,7 +248,7 @@ def train_data_generator(config, sampth, sample_url):
             if config.augment:
                 img, label = data_augment(img,label,config.img_w,config.img_h)
 
-            img = np.asarray(img).astype(np.float32)/norm_value
+            img = np.asarray(img,np.float16)/norm_value
             img = np.clip(img, 0.0, 1.0)
 
             batch +=1
@@ -294,11 +297,14 @@ def train_data_generator_files(config, sampth, sample_url):
                 print("load label failed:{}".fomat(pic))
                 continue
             tp = np.unique(label_img)
-            if len(tp) < 2:
-                # print("Only one value {} in {}".format(tp, sampth + '/label/' + pic))
-                if tp[0]==config.label_nodata:
-                    # print("only nodata value in {}".format(sampth + '/label/' + pic))
-                    continue
+            if config.label_nodata in tp:
+                print("Warning: contain nodata in label of {}".format(pic))
+                continue
+            # if len(tp) < 2:
+            #     # print("Only one value {} in {}".format(tp, sampth + '/label/' + pic))
+            #     if tp[0]==config.label_nodata:
+            #         # print("only nodata value in {}".format(sampth + '/label/' + pic))
+            #         continue
 
             src_img = load_src((sampth + '/src/' + pic), bandlist=config.band_list)
             if isinstance(src_img, int):
@@ -309,8 +315,8 @@ def train_data_generator_files(config, sampth, sample_url):
             # random_size = config.img_w
             img, label = random_crop(src_img, label_img, random_size, random_size)
             """ignore nodata img"""
-            if config.label_nodata in np.unique(label):
-                continue
+            # if config.label_nodata in np.unique(label):
+            #     continue
             """ignore pure background area"""
             if len(np.unique(label)) < 2:
                 if (0 in np.unique(label)) and (np.random.random() < 0.75):
@@ -327,7 +333,7 @@ def train_data_generator_files(config, sampth, sample_url):
             if config.augment:
                 img, label = data_augment(img,label,config.img_w,config.img_h)
 
-            img = np.asarray(img).astype(np.float32)/norm_value
+            img = np.asarray(img, np.float16)/norm_value
             img = np.clip(img, 0.0, 1.0)
 
             batch +=1
@@ -387,12 +393,17 @@ def train_data_generator_h5(config, f):
 
         label_img=f['Y_train'][idx]
 
+        tp = np.unique(label_img)
+        if config.label_nodata in tp:
+            print("Warning: contain nodata in label of {}".format(pic))
+            continue
+
         random_size = random.randrange(config.img_w, config.img_w*2+1, config.img_w)
         # random_size = config.img_w
         img, label = random_crop(src_img, label_img, random_size, random_size)
 
-        if config.label_nodata in np.unique(label):
-            continue
+        # if config.label_nodata in np.unique(label):
+        #     continue
         """ignore pure background area"""
         if len(np.unique(label)) < 2:
             if (0 in np.unique(label)) and (np.random.random() < 0.75):
@@ -409,7 +420,7 @@ def train_data_generator_h5(config, f):
         if config.augment:
             img, label = data_augment(img,label,config.img_w,config.img_h)
 
-        img = np.asarray(img).astype(np.float32)/norm_value
+        img = np.asarray(img, np.float16)/norm_value
         img = np.clip(img, 0.0, 1.0)
 
         batch +=1
@@ -435,17 +446,28 @@ def train_data_generator_h5(config, f):
 def val_data_generator(config,sampth, sample_url):
     # print 'generate validating Data...'
     norm_value = 255.0
+    if '10' in config.im_type:
+        norm_value = 1024.0
+    elif '16' in config.im_type:
+        norm_value = 25535.0
+    else:
+        pass
     w=config.img_w
     h=config.img_h
     label_list, img_list = [],[]
     for pic in sample_url:
         _, t_img = load_img_normalization(1, sampth + '/label/' + pic)
         tp = np.unique(t_img)
-        if len(tp) < 2:
-            print("Only one value {} in {}".format(tp, sampth + '/label/' + pic))
-            if tp[0] == 127:
-                print("Ignore:nodata value in {}".format(sampth + '/label/' + pic))
-                continue
+
+        if config.label_nodata in tp:
+            print("Warning: contain nodata in label of {}".format(pic))
+            continue
+
+        # if len(tp) < 2:
+        #     print("Only one value {} in {}".format(tp, sampth + '/label/' + pic))
+        #     if tp[0] == 127:
+        #         print("Ignore:nodata value in {}".format(sampth + '/label/' + pic))
+        #         continue
         ret, s_img = load_img_bybandlist((sampth + '/src/' + pic), bandlist=config.band_list)
         if ret!=0:
             continue
@@ -466,7 +488,9 @@ def val_data_generator(config,sampth, sample_url):
         for i in (range(len(img_list))):
             img = img_list[i]
             label = label_list[i]
-            img = np.asarray(img).astype("float") / norm_value
+            img = np.asarray(img, np.float16)/ norm_value
+            img = np.clip(img, 0.0, 1.0)
+
             label = np.asarray(label)
             assert img.shape[0:2] == label.shape[0:2]
 
@@ -481,6 +505,10 @@ def val_data_generator(config,sampth, sample_url):
                     if len(np.unique(y)) < 2:
                         if (0 in np.unique(y)) and (np.random.random() < 0.75):
                             continue
+
+                    # x = np.asarray(x).astype(np.float32) / norm_value
+                    # x = np.clip(x, 0.0, 1.0)
+
                     x = img_to_array(x)
                     y = img_to_array(y)
                     train_data.append(x)
@@ -500,6 +528,12 @@ def val_data_generator(config,sampth, sample_url):
 def val_data_generator_files(config,sampth, sample_url):
     # print 'generate validating Data...'
     norm_value = 255.0
+    if '10' in config.im_type:
+        norm_value = 1024.0
+    elif '16' in config.im_type:
+        norm_value = 25535.0
+    else:
+        pass
     w=config.img_w
     h=config.img_h
     label_list, img_list = [],[]
@@ -535,11 +569,15 @@ def val_data_generator_files(config,sampth, sample_url):
                 print("load label failed:{}".fomat(pic))
                 continue
             tp = np.unique(label)
-            if len(tp) < 2:
-                # print("Only one value {} in {}".format(tp, sampth + '/label/' + pic))
-                if tp[0] == config.label_nodata:
-                    # print("only nodata value in {}".format(sampth + '/label/' + pic))
-                    continue
+            if config.label_nodata in tp:
+                print("Warning: contain nodata in label of {}".format(pic))
+                continue
+
+            # if len(tp) < 2:
+            #     # print("Only one value {} in {}".format(tp, sampth + '/label/' + pic))
+            #     if tp[0] == config.label_nodata:
+            #         # print("only nodata value in {}".format(sampth + '/label/' + pic))
+            #         continue
 
             img = load_src((sampth + '/src/' + pic), bandlist=config.band_list)
             if isinstance(img, int):
@@ -549,6 +587,9 @@ def val_data_generator_files(config,sampth, sample_url):
                 print("Warning: dimensions of label and src are not equal:{}".format(pic))
                 continue
 
+            img=np.asarray(img, np.float16)/norm_value
+            img = np.clip(img, 0.0, 1.0)
+
             for i in range(img.shape[0] // h):
                 for j in range(img.shape[1] // w):
                     x = img[i * h:(i + 1) * h, (j * w):(j + 1) * w, :]
@@ -557,9 +598,9 @@ def val_data_generator_files(config,sampth, sample_url):
                     if config.label_nodata in np.unique(y):
                         continue
                     """ignore pure background area"""
-                    if len(np.unique(y)) < 2:
-                        if (0 in np.unique(y)) and (np.random.random() < 0.75):
-                            continue
+                    # if len(np.unique(y)) < 2:
+                    #     if (0 in np.unique(y)) and (np.random.random() < 0.75):
+                    #         continue
                     x = img_to_array(x)
                     y = img_to_array(y)
                     train_data.append(x)
@@ -581,6 +622,12 @@ def val_data_generator_files(config,sampth, sample_url):
 def val_data_generator_h5(config,f):
     # print 'generate validating Data...'
     norm_value = 255.0
+    if '10' in config.im_type:
+        norm_value = 1024.0
+    elif '16' in config.im_type:
+        norm_value = 25535.0
+    else:
+        pass
     w=config.img_w
     h=config.img_h
 
@@ -617,6 +664,8 @@ def val_data_generator_h5(config,f):
         #     img = img_list[i]
         #     label = label_list[i]
         img = np.asarray(src_img, np.float16) / norm_value
+        img = np.clip(img, 0.0, 1.0)
+
         label = np.asarray(label_img)
         assert img.shape[0:2] == label.shape[0:2]
 

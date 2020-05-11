@@ -270,7 +270,7 @@ def predict(send_massage_callback=send_message_callback, configs=None,gpu=0, inp
                 print("[INFO] predict image by orignal approach ...")
                 # a,b,c=input_img.shape
                 num_of_bands = min(input_img.shape)
-                result = core_orignal_predict(input_img, num_of_bands, model, config.window_size, config.img_w, mask_bands=config.nb_classes)
+                result = core_orignal_predict(input_img, num_of_bands, model, config.window_size, config.img_w, mask_bands=config.nb_classes, QuanScale=TScale)
                 result[nodata_indx] = 0
                 result_mask[start:end,:]=result[:this_h,:]
 
