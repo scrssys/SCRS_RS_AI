@@ -21,7 +21,7 @@ from ulitities.base_functions import UINT16, UINT8, UINT10
 
 seed = 4
 np.random.seed(seed)
-from data_prepare.data_generater import train_data_generator,val_data_generator
+from data_prepare.data_generater import train_data_generator,val_data_generator,train_data_generator_files,val_data_generator_files
 from config import Config
 
 from palaeoild_models.classical_models import classical_unet, classical_fcnnet,classical_segnet
@@ -187,11 +187,11 @@ def train(model):
     finally:
         print("Compile model successfully!")
 
-    H = model.fit_generator(generator=train_data_generator(config, train_set),
+    H = model.fit_generator(generator=train_data_generator_files(config, config.train_data_path, train_set),
                             steps_per_epoch=train_numb // config.batch_size,
                             epochs=config.epochs,
                             verbose=1,
-                            validation_data=val_data_generator(config, val_set),
+                            validation_data=val_data_generator_files(config, config.train_data_path, val_set),
                             validation_steps=valid_numb // config.batch_size,
                             callbacks=callable,
                             max_q_size=1,

@@ -88,17 +88,24 @@ def gamma_tansform(xb, g=2.0):
     return xb
 
 def med_filtering(xb, w=3):
-    xb = xb.astype(np.float32)
-    # a, b, c = xb.shape
-    # if a < c:
-    #     xb = xb.transpose(1, 2, 0)
+    xb = np.asarray(xb,np.float32)
+    # xb = xb.astype(np.float32)
+    a, b, c = xb.shape
+    if a < c:
+        xb = xb.transpose(1, 2, 0)
     _, _, bands = xb.shape
 
     for i in range(bands):
-        xb[:, :, i] = medfilt2d(xb[:, :, i], (w, w))
+        try:
+            tmp = medfilt2d(xb[:, :, i], (w, w))
+        except:
+            print("Waring: med_fileter failed")
+            return -1
+        xb[:, :, i] =tmp
     # if a < c:
     #     xb = np.transpose(xb, (2, 0, 1))
-    xb = xb.astype(np.uint16)
+    # xb = xb.astype(np.uint16)
+    xb = np.asarray(xb, np.uint16)
     return xb
 
 def data_augment(xb, yb, w, h, d_type=1):
@@ -133,6 +140,8 @@ def data_augment(xb, yb, w, h, d_type=1):
 
     if np.random.random() < 0.25:  # medium filtering
         xb = med_filtering(xb,3)
+        if isinstance(xb ,int):
+            return -1, -1
 
     if np.random.random() < 0.2:
         xb = add_noise(xb, w, h, d_type)
@@ -247,6 +256,9 @@ def train_data_generator(config, sampth, sample_url):
 
             if config.augment:
                 img, label = data_augment(img,label,config.img_w,config.img_h)
+                if isinstance(img, int):
+                    print("warning: something wrong in data_augment")
+                    continue
 
             img = np.asarray(img,np.float16)/norm_value
             img = np.clip(img, 0.0, 1.0)
@@ -325,18 +337,22 @@ def train_data_generator_files(config, sampth, sample_url):
             if img.shape[1] != config.img_w or img.shape[0] != config.img_h:
                 # print("resize samples")
                 img = resample_data(img,config.img_h,config.img_w,mode=Image.BILINEAR, bits=bits_num)
-                label=resample_data(label, config.img_h, config.img_w,mode=Image.NEAREST)
+                label = resample_data(label, config.img_h, config.img_w, mode=Image.NEAREST)
                 # if (len(np.unique(label))>config.nb_classes):
                 index = np.where(label >= config.label_nodata )
                 label[index]=0
 
             if config.augment:
                 img, label = data_augment(img,label,config.img_w,config.img_h)
+                if isinstance(img, int):
+                    print("warning: something wrong in data_augment")
+                    continue
 
             img = np.asarray(img, np.float16)/norm_value
             img = np.clip(img, 0.0, 1.0)
 
             batch +=1
+
             img = img_to_array(img)
             label=img_to_array(label)
             train_data.append(img)
@@ -419,6 +435,9 @@ def train_data_generator_h5(config, f):
 
         if config.augment:
             img, label = data_augment(img,label,config.img_w,config.img_h)
+            if isinstance(img, int):
+                print("warning: something wrong in data_augment")
+                continue
 
         img = np.asarray(img, np.float16)/norm_value
         img = np.clip(img, 0.0, 1.0)
