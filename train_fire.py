@@ -128,7 +128,7 @@ def train(send_massage_callback=send_message_callback, configs=None,gpu=0, sampl
         send_massage_callback("Fault! check input parameter:{} ".format(out))
         return out
 
-    # os.environ["CUDA_VISIBLE_DEVICES"] = str(out["gpu"])
+    os.environ["CUDA_VISIBLE_DEVICES"] = str(out["gpu"])
     with open(configs, 'r') as f:
         cfgl = json.load(f)
     config = Config(**cfgl)
@@ -308,7 +308,7 @@ def train_h5(send_massage_callback=send_message_callback, configs=None, gpu=0, s
         send_massage_callback("Fault! check input parameter:{} ".format(out))
         return out
 
-    # os.environ["CUDA_VISIBLE_DEVICES"] = str(out["gpu"])
+    os.environ["CUDA_VISIBLE_DEVICES"] = str(out["gpu"])
     with open(configs, 'r') as f:
         cfgl = json.load(f)
     config = Config(**cfgl)

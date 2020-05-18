@@ -35,7 +35,7 @@ class child_train(QDialog,Ui_Dialog_train,base_message):
         ,QMessageBox.Yes | QMessageBox.No,QMessageBox.Yes)
 
         # excute program
-        os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
+        # os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
         # cmd =['python','../train_yp.py','--gpu',gpu_id, '--sample', sample,"--model",model, '--config',  config]
         train(self.send, config, gpu_id, sample, model)
         try:
@@ -79,7 +79,7 @@ class child_train_h5(QDialog,Ui_Dialog_train_h5,base_message):
         ,QMessageBox.Yes | QMessageBox.No,QMessageBox.Yes)
 
         # excute program
-        os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
+        # os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
         # cmd =['python','../train_yp.py','--gpu',gpu_id, '--sample', sample,"--model",model, '--config',  config]
         train_h5(self.send, config, gpu_id, sample, model)
         try:
