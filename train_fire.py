@@ -167,6 +167,9 @@ def train(send_massage_callback=send_message_callback, configs=None,gpu=0, sampl
         [out["outDir"], '/', config.target_name, '_', config.network, '_', config.BACKBONE, '_', config.loss, '_',
          config.optimizer, '_', str(config.img_w), '_', band_name, '_', date_time, 'best.h5'])
     print("model save as to: {}".format(model_save_path))
+    last_model = ''.join(
+        [out["outDir"], '/', config.target_name, '_', config.network, '_', config.BACKBONE, '_', config.loss, '_',
+         config.optimizer, '_', str(config.img_w), '_', band_name, '_', date_time, 'last.h5'])
 
     input_layer = (config.img_w, config.img_h, len(config.band_list))
 
@@ -289,7 +292,7 @@ def train(send_massage_callback=send_message_callback, configs=None,gpu=0, sampl
                             max_q_size=1,
                             class_weight='auto')
 
-    # model.save(last_model)
+    model.save(last_model)
     print("Training finished!")
 
 
@@ -344,6 +347,9 @@ def train_h5(send_massage_callback=send_message_callback, configs=None, gpu=0, s
         [out["outDir"], '/', config.target_name, '_', config.network, '_', config.BACKBONE, '_', config.loss, '_',
          config.optimizer, '_', str(config.img_w), '_', band_name, '_', date_time, 'best.h5'])
     print("model save as to: {}".format(model_save_path))
+    last_model = ''.join(
+        [out["outDir"], '/', config.target_name, '_', config.network, '_', config.BACKBONE, '_', config.loss, '_',
+         config.optimizer, '_', str(config.img_w), '_', band_name, '_', date_time, 'last.h5'])
 
     input_layer = (config.img_w, config.img_h, len(config.band_list))
 
@@ -473,7 +479,7 @@ def train_h5(send_massage_callback=send_message_callback, configs=None, gpu=0, s
                                     callbacks=callable,
                                     max_q_size=1,
                                     class_weight='auto')
-            # model.save(last_model)
+            model.save(last_model)
             print("Training finished!")
     except:
         print("opening {} failed or train error".format(train_h5_file))

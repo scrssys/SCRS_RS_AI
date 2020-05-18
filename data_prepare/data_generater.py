@@ -90,9 +90,9 @@ def gamma_tansform(xb, g=2.0):
 def med_filtering(xb, w=3):
     xb = np.asarray(xb,np.float32)
     # xb = xb.astype(np.float32)
-    a, b, c = xb.shape
-    if a < c:
-        xb = xb.transpose(1, 2, 0)
+    # a, b, c = xb.shape
+    # if a < c:
+    #     xb = xb.transpose(1, 2, 0)
     _, _, bands = xb.shape
 
     for i in range(bands):
