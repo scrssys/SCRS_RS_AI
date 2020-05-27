@@ -55,7 +55,7 @@ def _window_2D(window_size, power=2, flag_show=False):
     if key in cached_2d_windows:
         wind = cached_2d_windows[key]
     else:
-        wind = _spline_window(window_size, power)
+        wind = np.array(_spline_window(window_size, power), dtype=np.float32)
         wind = np.expand_dims(np.expand_dims(wind, 3), 3)
         wind = wind * wind.transpose(1, 0, 2)
         if flag_show:
