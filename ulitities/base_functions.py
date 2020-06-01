@@ -101,11 +101,14 @@ def load_label(path):
     try:
         img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
     except:
-        print("please check label format")
-        dataset= gdal.Open(path)
+        print("Openv loading label failed, try gdal")
+        try:
+            dataset= gdal.Open(path)
+        except:
+            print("gdal loading label also failed")
+            return -2
         img = dataset.ReadAsArray()
         del dataset
-        # return -2
     if img is None:
         img=cv2.imdecode(np.fromfile(path,dtype=np.uint8),0)
         if img is None:
