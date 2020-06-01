@@ -102,7 +102,10 @@ def load_label(path):
         img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
     except:
         print("please check label format")
-        return -2
+        dataset= gdal.Open(path)
+        img = dataset.ReadAsArray()
+        del dataset
+        # return -2
     if img is None:
         img=cv2.imdecode(np.fromfile(path,dtype=np.uint8),0)
         if img is None:
