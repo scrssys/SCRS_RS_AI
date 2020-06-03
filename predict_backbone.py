@@ -401,27 +401,31 @@ def core_orignal_predict(image,bands, model,window_size,img_w=256, mask_bands=1,
     padding_img = img_to_array(padding_img)/QuanScale
 
     mask_whole = np.zeros((padding_h, padding_w), dtype=np.float32)
-    for i in list(range(padding_h // stride)):#tqdm(list(range(padding_h // stride))):
-        for j in list(range(padding_w // stride)):
-            crop = padding_img[i * stride:i * stride + window_size, j * stride:j * stride + window_size, :bands]
+    try:
+        for i in list(range(padding_h // stride)):#tqdm(list(range(padding_h // stride))):
+            for j in list(range(padding_w // stride)):
+                crop = padding_img[i * stride:i * stride + window_size, j * stride:j * stride + window_size, :bands]
 
-            crop = np.expand_dims(crop, axis=0)
-            # print('crop:{}'.format(crop.shape))
+                crop = np.expand_dims(crop, axis=0)
+                # print('crop:{}'.format(crop.shape))
 
-            pred = model.predict(crop, verbose=2)
-            if mask_bands<2:
-                pred[pred < 0.5] = 0
-                pred[pred >= 0.5] = 1
-            else:
-                pred = np.argmax(pred, axis=-1)  #for one hot encoding
-                # pred = pred[:,:,1]
+                pred = model.predict(crop, verbose=2)
+                if mask_bands<2:
+                    pred[pred < 0.5] = 0
+                    pred[pred >= 0.5] = 1
+                else:
+                    pred = np.argmax(pred, axis=-1)  #for one hot encoding
+                    # pred = pred[:,:,1]
 
 
-            pred = pred.reshape(img_w, img_w)
-            print(np.unique(pred))
+                pred = pred.reshape(img_w, img_w)
+                print(np.unique(pred))
 
-            mask_whole[i * stride:i * stride + window_size, j * stride:j * stride + window_size] = pred[:, :]
-        # print(np.unique(pred))
+                mask_whole[i * stride:i * stride + window_size, j * stride:j * stride + window_size] = pred[:, :]
+            # print(np.unique(pred))
+    except:
+        print("Error: inner predict func failed")
+        return []
     outputresult =mask_whole[0:h,0:w]
     # outputresult = outputresult.astype(np.uint8)
 
@@ -521,25 +525,29 @@ def core_smooth_predict_binary(small_img_patches, model, real_classes,QuanScale=
 
     mask_output = []
     # small_img_patches = small_img_patches/QuanScale
-    for p in list(range(patches)):
-        crop = small_img_patches[p,:,:,:]
-        if len(np.unique(crop.astype(np.uint)))<2:
-            a,b,_=crop.shape
-            pred= np.zeros((a,b),np.uint8)
-        else:
-            crop =crop/QuanScale
-            crop = img_to_array(crop)
-            crop = np.expand_dims(crop, axis=0)
-            # print ('crop:{}'.format(crop.shape))
-            pred = model.predict(crop, verbose=2)
-            pred[pred<0.5]=0
-            pred[pred>=0.5]=1
-            pred = pred.reshape((row,column))
+    try:
+        for p in list(range(patches)):
+            crop = small_img_patches[p,:,:,:]
+            if len(np.unique(crop.astype(np.uint)))<2:
+                a,b,_=crop.shape
+                pred= np.zeros((a,b),np.uint8)
+            else:
+                crop =crop/QuanScale
+                crop = img_to_array(crop)
+                crop = np.expand_dims(crop, axis=0)
+                # print ('crop:{}'.format(crop.shape))
+                pred = model.predict(crop, verbose=2)
+                pred[pred<0.5]=0
+                pred[pred>=0.5]=1
+                pred = pred.reshape((row,column))
 
-        # 将预测结果2D expand to 3D
-        res_pred = np.expand_dims(pred, axis=-1)
+            # 将预测结果2D expand to 3D
+            res_pred = np.expand_dims(pred, axis=-1)
 
-        mask_output.append(res_pred)
+            mask_output.append(res_pred)
+    except:
+        print("Error: inner predict func failed")
+        return []
 
     mask_result = np.asarray(mask_output, np.float16)
     del mask_output, small_img_patches, crop, res_pred
