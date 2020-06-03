@@ -448,44 +448,48 @@ def core_smooth_predict_multiclass(small_img_patches, model, real_classes,QuanSc
     patches,row,column,input_channels = small_img_patches.shape
 
     mask_output = []
-    for p in list(range(patches)):
-        crop = small_img_patches[p,:,:,:]
-        # ignore the nodata
-        if len(np.unique(crop))<2:
-            a, b, _ = crop.shape
-            pred = np.zeros((a, b), np.uint8)
-        else:
-            crop = img_to_array(crop)/QuanScale
-            crop = np.expand_dims(crop, axis=0)
-            # print ('crop:{}'.format(crop.shape))
-            pred = model.predict(crop, verbose=2)
-            if len(pred.shape) > 3:
-                pred = np.argmax(pred, axis=3)
+    try:
+        for p in list(range(patches)):
+            crop = small_img_patches[p,:,:,:]
+            # ignore the nodata
+            if len(np.unique(crop))<2:
+                a, b, _ = crop.shape
+                pred = np.zeros((a, b), np.uint8)
             else:
-                pred = np.argmax(pred, axis=2)
+                crop = img_to_array(crop)/QuanScale
+                crop = np.expand_dims(crop, axis=0)
+                # print ('crop:{}'.format(crop.shape))
+                pred = model.predict(crop, verbose=2)
+                if len(pred.shape) > 3:
+                    pred = np.argmax(pred, axis=3)
+                else:
+                    pred = np.argmax(pred, axis=2)
 
-        # pred = np.argmax(pred, axis=2)
-        pred = pred.reshape((row*column))
-        # mask_output.append(pred)
+            # pred = np.argmax(pred, axis=2)
+            pred = pred.reshape((row*column))
+            # mask_output.append(pred)
 
-        """using index function "where" to rapid find different class"""
-        tmp = pred.astype(np.uint8)
-        res_pred = np.zeros((row * column, real_classes))
-        for t in list(range(real_classes)):
-            idx = np.where(tmp == t + 1)
-            res_pred[idx, t] = 1
-        res_pred = res_pred.reshape((row, column, real_classes))
+            """using index function "where" to rapid find different class"""
+            tmp = pred.astype(np.uint8)
+            res_pred = np.zeros((row * column, real_classes))
+            for t in list(range(real_classes)):
+                idx = np.where(tmp == t + 1)
+                res_pred[idx, t] = 1
+            res_pred = res_pred.reshape((row, column, real_classes))
 
-        """bad demo as following: (cost long time by for loop)"""
-        # """method 2: by looping through every index"""
-        # res_pred = np.zeros((row, column, real_classes))
-        # for i in range(row):
-        #     for j in range(column):
-        #         for t in range(real_classes):
-        #             if pred[i,j]==t+1:
-        #                 res_pred[i,j,t]=1
+            """bad demo as following: (cost long time by for loop)"""
+            # """method 2: by looping through every index"""
+            # res_pred = np.zeros((row, column, real_classes))
+            # for i in range(row):
+            #     for j in range(column):
+            #         for t in range(real_classes):
+            #             if pred[i,j]==t+1:
+            #                 res_pred[i,j,t]=1
 
-        mask_output.append(res_pred)
+            mask_output.append(res_pred)
+    except:
+        print("Error: inner predict func failed")
+        return []
 
     mask_output = np.array(mask_output, np.float16)
     # print(np.unique(mask_output))
