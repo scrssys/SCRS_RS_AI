@@ -75,10 +75,10 @@ def check_predict_input(dict_para):
     else:
         print("warning: para model output is not a directory\n")
         return -3
-
+    t = config.model_path
     if os.path.isfile(dict_para["baseModel"]) and ('.h5' in dict_para["baseModel"]):
         base_model=dict_para["baseModel"]
-    elif os.path.isfile(config.model_path):
+    elif os.path.isfile(config.base_model):
         base_model=config.base_model
     else:
         print("warning: para base model is not a h5 file")
@@ -487,10 +487,11 @@ def train_h5(send_massage_callback=send_message_callback, configs=None, gpu=0, s
 
 import fire
 if __name__ == '__main__':
+
     # train(
     #     send_massage_callback=send_message_callback,
-    #     configs='config_multiclass_global.json',
-    #     gpu=0,
+    #     configs='/home/omnisky/PycharmProjects/data/samples/isprs/train_1.1k/config_multiclass_isprs_all.json',
+    #     gpu=1,
     #     samples='',
     #     outdir='',
     #     baseModel=''
