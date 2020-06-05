@@ -89,22 +89,20 @@ def gamma_tansform(xb, g=2.0):
 
 def med_filtering(xb, w=3):
     xb = np.asarray(xb,np.float32)
-    # xb = xb.astype(np.float32)
-    # a, b, c = xb.shape
-    # if a < c:
-    #     xb = xb.transpose(1, 2, 0)
     _, _, bands = xb.shape
 
     for i in range(bands):
+        # cv2.imwrite('/home/omnisky/PycharmProjects/data/samples/isprs/test/orig.png',xb[:, :, i])
         try:
-            tmp = medfilt2d(xb[:, :, i], (w, w))
+            # tmp = medfilt2d(xb[:, :, i], (w, w))
+            tmp = cv2.medianBlur(xb[:, :, i],w)
         except:
-            print("Waring: med_fileter failed")
+            print("Waring: med_filter failed")
             return -1
         xb[:, :, i] =tmp
-    # if a < c:
-    #     xb = np.transpose(xb, (2, 0, 1))
-    # xb = xb.astype(np.uint16)
+        # cv2.imwrite('/home/omnisky/PycharmProjects/data/samples/isprs/test/omedifid.png',xb[:, :, i])
+        # sys.exit(-2)
+
     xb = np.asarray(xb, np.uint16)
     return xb
 
@@ -139,7 +137,10 @@ def data_augment(xb, yb, w, h, d_type=1):
         xb = gamma_tansform(xb,tmp)
 
     if np.random.random() < 0.25:  # medium filtering
-        xb = med_filtering(xb,3)
+        if np.random.random() < 0.25:
+            xb = med_filtering(xb, 5)
+        else:
+            xb = med_filtering(xb,3)
         if isinstance(xb ,int):
             return -1, -1
 
