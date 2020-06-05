@@ -92,7 +92,6 @@ def med_filtering(xb, w=3):
     _, _, bands = xb.shape
 
     for i in range(bands):
-        # cv2.imwrite('/home/omnisky/PycharmProjects/data/samples/isprs/test/orig.png',xb[:, :, i])
         try:
             # tmp = medfilt2d(xb[:, :, i], (w, w))
             tmp = cv2.medianBlur(xb[:, :, i],w)
@@ -100,8 +99,6 @@ def med_filtering(xb, w=3):
             print("Waring: med_filter failed")
             return -1
         xb[:, :, i] =tmp
-        # cv2.imwrite('/home/omnisky/PycharmProjects/data/samples/isprs/test/omedifid.png',xb[:, :, i])
-        # sys.exit(-2)
 
     xb = np.asarray(xb, np.uint16)
     return xb
@@ -141,7 +138,7 @@ def data_augment(xb, yb, w, h, d_type=1):
             xb = med_filtering(xb, 5)
         else:
             xb = med_filtering(xb,3)
-        if isinstance(xb ,int):
+        if isinstance(xb,int):
             return -1, -1
 
     if np.random.random() < 0.2:
