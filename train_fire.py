@@ -488,14 +488,14 @@ def train_h5(send_massage_callback=send_message_callback, configs=None, gpu=0, s
 import fire
 if __name__ == '__main__':
 
-    train(
-        send_massage_callback=send_message_callback,
-        configs='/home/omnisky/PycharmProjects/data/samples/isprs/train_1_1k_copy/config_multiclass_isprs.json',
-        gpu=0,
-        samples='',
-        outdir='',
-        baseModel=''
-    )
+    # train(
+    #     send_massage_callback=send_message_callback,
+    #     configs='/home/omnisky/PycharmProjects/data/samples/isprs/train_1_1k_copy/config_multiclass_isprs.json',
+    #     gpu=0,
+    #     samples='',
+    #     outdir='',
+    #     baseModel=''
+    # )
 
     fire.Fire()
 
