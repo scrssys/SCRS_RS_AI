@@ -4,7 +4,7 @@ import random
 from PIL import Image
 from keras.utils.np_utils import to_categorical
 from keras.preprocessing.image import img_to_array
-from scipy.signal import medfilt, medfilt2d
+# from scipy.signal import medfilt, medfilt2d
 from skimage import exposure
 import matplotlib.pyplot as plt
 import cv2
