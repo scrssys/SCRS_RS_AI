@@ -3,6 +3,7 @@ import numpy as np
 from tqdm import tqdm
 from ulitities.base_functions import get_file,echoRuntime,send_message_callback
 import gdal
+gdal.UseExceptions()
 gdal.SetCacheMax(1000000000000)
 
 @echoRuntime
@@ -19,8 +20,12 @@ def convert_to_8Bit_percentclip(inputRaster, outputRaster,
         if rescale, each band is rescaled to a min and max
         set by percentiles
     '''
-    from osgeo import gdal
-    srcRaster = gdal.Open(inputRaster)
+    # from osgeo import gdal
+    try:
+        srcRaster = gdal.Open(inputRaster)
+    except:
+        print("Opening file failed:{}".format(inputRaster))
+        return
     # iterate through bands
     height = srcRaster.RasterYSize
     width = srcRaster.RasterXSize
@@ -75,8 +80,12 @@ def convert_to_8Bit_percentclip(inputRaster, outputRaster,
     del outdataset
 
 def convert_8bit_minMaxium(inputRaster, outputRaster,nodata=65535):
-    from osgeo import gdal
-    srcRaster = gdal.Open(inputRaster)
+    # from osgeo import gdal
+    try:
+        srcRaster = gdal.Open(inputRaster)
+    except:
+        print("Opening file failed:{}".format(inputRaster))
+        return
     # iterate through bands
     height = srcRaster.RasterYSize
     width = srcRaster.RasterXSize
@@ -156,6 +165,9 @@ def batch_convert_8bit(send_massage_callback=send_message_callback,inputdir="",o
         print("\ndealing with : " + file)
         absname = os.path.split(file)[1]
         outputfile = os.path.join(outputdir,absname)
+        if os.path.isfile(outputfile):
+            print("This image has been converted:{}".format(outputfile))
+            continue
         convert_to_8Bit_percentclip(file,outputfile, nodata)
         # convert_to_8Bit_percentclip(file, outputfile,
         #                  outputDataType='Byte',
@@ -178,11 +190,14 @@ def batch_convert_8bit_minmax(send_massage_callback=send_message_callback,inputd
         print("\ndealing with : " + file)
         absname = os.path.split(file)[1]
         outputfile = os.path.join(outputdir,absname)
+        if os.path.isfile(outputfile):
+            print("This image has been converted:{}".format(outputfile))
+            continue
         convert_8bit_minMaxium(file,outputfile,nd)
 
 if __name__=='__main__':
-    convert_8bit_minMaxium(r"/home/omnisky/PycharmProjects/data/water/test2/F/ZY306314304112720190606F.IMG",
-                           r"/home/omnisky/PycharmProjects/data/water/test2/Untitled Folder/ZY306314304112720190606F.IMG")
+    # convert_8bit_minMaxium(r"/home/omnisky/PycharmProjects/data/water/test2/F/ZY306314304112720190606F.IMG",
+    #                        r"/home/omnisky/PycharmProjects/data/water/test2/Untitled Folder/ZY306314304112720190606F.IMG")
     # convert_8bit_minMaxium(r"D:\data\16b.tif", r"D:\data\8b_percent3.tif")
     fire.Fire()
 
