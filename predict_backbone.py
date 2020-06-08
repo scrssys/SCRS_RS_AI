@@ -345,7 +345,10 @@ def predict_img_with_smooth_windowing(input_img, model, window_size,
     # windows.
 
     res = []
+    index_p=0
     for pad in pads:#tqdm(pads):
+        index_p +=1
+        print("Dealing the {} pad of {}".format(index_p, slices))
         # For every rotation:
         # predict each rotation with smooth window
         sd = _windowed_subdivs_multiclassbands(pad, model, window_size, subdivisions,
@@ -478,7 +481,8 @@ def core_smooth_predict_multiclass(small_img_patches, model, real_classes,QuanSc
             tmp = pred.astype(np.uint8)
             res_pred = np.zeros((row * column, real_classes))
             for t in list(range(real_classes)):
-                idx = np.where(tmp == t + 1)
+                # idx = np.where(tmp == t + 1)
+                idx = np.where(tmp == t)
                 res_pred[idx, t] = 1
             res_pred = res_pred.reshape((row, column, real_classes))
 
@@ -499,7 +503,7 @@ def core_smooth_predict_multiclass(small_img_patches, model, real_classes,QuanSc
     mask_output = np.array(mask_output, np.float16)
     # print(np.unique(mask_output))
 
-    print ("Shape of mask_output:{}".format(mask_output.shape))
+    print("Shape of mask_output:{}".format(mask_output.shape))
 
     return mask_output
 

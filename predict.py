@@ -137,12 +137,9 @@ def predict(send_massage_callback=send_message_callback, configs=None,gpu=0, inp
         pass
 
     target_class =config.nb_classes
-    if target_class>1:   # multiclass, target class = total class -1
-        if target_class==2:
-            print("Warning: target classes should not be 2, this must be binary classification!")
-            target_class =1
-        else:
-            target_class -=1
+    if target_class == 2:
+        print("Warning: target classes should not be 2, this must be binary classification!")
+        target_class =1
 
     FLAG_APPROACH_PREDICT = 0 # 0: original predict, 1: smooth predict
     if "smooth" in config.strategy:
@@ -179,7 +176,7 @@ def predict(send_massage_callback=send_message_callback, configs=None,gpu=0, inp
     df = pd.DataFrame.from_dict(out, orient='index')
     df.to_csv(csv_file)
 
-    out_bands = target_class
+    # out_bands = target_class
 
     try:
         send_massage_callback("loading models...")
@@ -278,7 +275,7 @@ def predict(send_massage_callback=send_message_callback, configs=None,gpu=0, inp
             elif FLAG_APPROACH_PREDICT == 1:
                 print("[INFO] predict image by smooth approach... ")
                 output_mask = np.zeros((this_h+config.window_size, W), np.uint8)
-                if out_bands > 1:
+                if target_class > 2:
                     result = predict_img_with_smooth_windowing(
                         input_img,
                         model,
@@ -290,9 +287,11 @@ def predict(send_massage_callback=send_message_callback, configs=None,gpu=0, inp
                         PLOT_PROGRESS=False,
                         QuanScale=TScale
                     )
-                    for i in range(target_class):
-                        indx = np.where(result[:, :, i] >= 127)
-                        output_mask[indx] = i + 1
+                    # for i in range(target_class):
+                    #     indx = np.where(result[:, :, i] >= 127)
+                    #     output_mask[indx] = i + 1
+
+                    output_mask = np.argmax(result, axis=-1)
                     del result
                     gc.collect()
 
