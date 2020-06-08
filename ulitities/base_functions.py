@@ -260,7 +260,7 @@ def load_img_by_gdal_info(path, grayscale=False):
     try:
         dataset = gdal.Open(path)
     except RuntimeError:
-        return 0,0,0,''
+        return 0,0,0,'',''
 
     y_height = dataset.RasterYSize
     x_width = dataset.RasterXSize
