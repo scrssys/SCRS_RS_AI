@@ -32,7 +32,7 @@ parser.add_argument('--gpu', dest='gpu_id', help='GPU device id to use [0]', nar
 # parser.add_argument('--config', dest='config_file', help='json file to config',
 #                          default='config_binary_whu_buildings.json')
 parser.add_argument('--config', dest='config_file', help='json file to config',
-                         default='/home/omnisky/PycharmProjects/data/rice/samples_all1_crop_copy/config_binary_global_classical.json')
+                         default='')
 args=parser.parse_args()
 gpu_id=args.gpu_id
 print("gpu_id:{}".format(gpu_id))
@@ -47,10 +47,12 @@ elif isinstance(gpu_id,list):
 else:
     pass
 
+
 with open(args.config_file, 'r') as f:
     cfg = json.load(f)
 
 config = Config(**cfg)
+print("config file: {}".format(args.config_file))
 print(config)
 
 
@@ -216,8 +218,11 @@ if __name__ == '__main__':
         model = classical_unet(config.img_w,config.img_h,input_bands,config.nb_classes)
     elif "fcns" in config.network:
         model = classical_fcnnet(config.img_w,config.img_h,input_bands,config.nb_classes)
-    else:
+    elif "segnet" in config.network:
         model = classical_segnet(config.img_w, config.img_h, input_bands, config.nb_classes)
+    else:
+        print("Error: network is wrong!")
+        sys.exit(-6)
 
 
     print(model.summary())

@@ -308,7 +308,7 @@ def train_data_generator_files(config, sampth, sample_url):
                 continue
             tp = np.unique(label_img)
             if config.label_nodata in tp:
-                print("Warning: contain nodata in label of {}".format(pic))
+                # print("Warning: contain nodata in label of {}".format(pic))
                 continue
             # if len(tp) < 2:
             #     # print("Only one value {} in {}".format(tp, sampth + '/label/' + pic))
