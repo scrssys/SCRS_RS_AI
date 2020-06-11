@@ -149,6 +149,10 @@ def train(model):
 
     model_history = History()
 
+    logdir = os.path.split(args.config_file)[0] + '/log/'
+    if not os.path.isdir(logdir):
+        print("warning: log dir is not exit")
+        os.mkdir(logdir)
     logdir = ''.join([config.log_dir,'/log',config.target_name,"_", config.network,"_",config.BACKBONE,"_", config.loss, date_time])
     if not os.path.isdir(logdir):
         print("Warning: ")
