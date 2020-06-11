@@ -587,7 +587,7 @@ def val_data_generator_files(config,sampth, sample_url):
                 continue
             tp = np.unique(label)
             if config.label_nodata in tp:
-                print("Warning: contain nodata in label of {}".format(pic))
+                # print("Warning: contain nodata in label of {}".format(pic))
                 continue
 
             # if len(tp) < 2:
