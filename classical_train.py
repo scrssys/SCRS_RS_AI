@@ -150,12 +150,15 @@ def train(model):
     model_history = History()
 
     logdir = os.path.split(args.config_file)[0] + '/log/'
-    logdir = ''.join([logdir,config.target_name,"_", config.network,"_",config.BACKBONE,"_", config.loss, date_time])
     if not os.path.isdir(logdir):
-        print("Warning: log dir is not exit")
+        print("warning: log dir is not exit")
         os.mkdir(logdir)
+    logpath = ''.join([logdir,config.target_name,"_", config.network,"_",config.BACKBONE,"_", config.loss, date_time])
+    # if not os.path.isdir(logdir):
+    #     print("Warning: log dir is not exit")
+    #     os.mkdir(logdir)
 
-    tb_log = TensorBoard(log_dir=logdir)
+    tb_log = TensorBoard(log_dir=logpath)
     callable = [model_checkpoint,model_earlystop, model_reduceLR, model_history, tb_log]
 
     train_set, val_set = get_train_val()
