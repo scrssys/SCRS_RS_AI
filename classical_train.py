@@ -21,18 +21,17 @@ from ulitities.base_functions import UINT16, UINT8, UINT10
 
 seed = 4
 np.random.seed(seed)
-from data_prepare.data_generater import train_data_generator,val_data_generator,train_data_generator_files,val_data_generator_files
+from data_prepare.data_generater import train_data_generator,val_data_generator,train_data_generator_files,val_data_generator_files, train_data_generator_files_new
 from config import Config
 
 from palaeoild_models.classical_models import classical_unet, classical_fcnnet,classical_segnet
 
 parser=argparse.ArgumentParser(description='RS classification train')
 parser.add_argument('--gpu', dest='gpu_id', help='GPU device id to use [0]', nargs='+',
-                        default=4, type=int)
-# parser.add_argument('--config', dest='config_file', help='json file to config',
-#                          default='config_binary_whu_buildings.json')
+                        default=5, type=int)
+
 parser.add_argument('--config', dest='config_file', help='json file to config',
-                         default='')
+                         default='/home/omnisky/PycharmProjects/data/samples/WHU_buidlings/config_binary_buiding.json')
 args=parser.parse_args()
 gpu_id=args.gpu_id
 print("gpu_id:{}".format(gpu_id))
@@ -193,7 +192,7 @@ def train(model):
     finally:
         print("Compile model successfully!")
 
-    H = model.fit_generator(generator=train_data_generator_files(config, config.train_data_path, train_set),
+    H = model.fit_generator(generator=train_data_generator_files_new(config, config.train_data_path, train_set),
                             steps_per_epoch=train_numb // config.batch_size,
                             epochs=config.epochs,
                             verbose=1,

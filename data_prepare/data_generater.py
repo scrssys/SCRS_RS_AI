@@ -367,6 +367,92 @@ def train_data_generator_files(config, sampth, sample_url):
                 train_label = []
                 batch = 0
 
+##new data_generator from files
+def train_data_generator_files_new(config, sampth, sample_url):
+    # print 'generateData...'
+    norm_value =255.0
+    bits_num=8
+    if '10' in config.im_type:
+        norm_value = 1024.0
+        bits_num = 16
+    elif '16' in config.im_type:
+        norm_value = 25535.0
+        bits_num = 16
+    else:
+        pass
+    # random.shuffle(sample_url)
+    train_data = []
+    train_label = []
+    batch = 0
+    samples_from_one_image = config.sample_per_img
+    """Ensure the samples in one batch extracting from 2 different images"""
+    if samples_from_one_image > int(0.5*config.batch_size+0.5):
+        samples_from_one_image = int(0.5*config.batch_size+0.5)
+
+    while True:
+        if batch==0:  # 防止训练集图像数量少于batch_size
+            train_data = []
+            train_label = []
+        random.shuffle(sample_url)
+        for pic in sample_url:
+            label_img = load_label(sampth+'/label/'+pic)
+            if isinstance(label_img,int):
+                print("load label failed:{}".fomat(pic))
+                continue
+            tp = np.unique(label_img)
+            if config.label_nodata in tp:
+                # print("Warning: contain nodata in label of {}".format(pic))
+                continue
+
+            src_img = load_src((sampth + '/src/' + pic), bandlist=config.band_list)
+            if isinstance(src_img, int):
+                print("load src failed:{}".format(pic))
+                continue
+
+            for inner_dx in range(samples_from_one_image):
+                random_size = random.randrange(config.img_w, config.img_w*2+1, config.img_w)
+                # random_size = config.img_w
+                img, label = random_crop(src_img, label_img, random_size, random_size)
+                """ignore randomly pure background area"""
+                if len(np.unique(label)) < 2:
+                    if (0 in np.unique(label)) and (np.random.random() < 0.75):
+                        continue
+
+                if img.shape[1] != config.img_w or img.shape[0] != config.img_h:
+                    # print("resize samples")
+                    img = resample_data(img,config.img_h,config.img_w,mode=Image.BILINEAR, bits=bits_num)
+                    label = resample_data(label, config.img_h, config.img_w, mode=Image.NEAREST)
+                    # if (len(np.unique(label))>config.nb_classes):
+                    index = np.where(label >= config.label_nodata )
+                    label[index]=0
+
+                if config.augment:
+                    img, label = data_augment(img,label,config.img_w,config.img_h)
+                    if isinstance(img, int):
+                        print("warning: something wrong in data_augment")
+                        continue
+
+                img = np.asarray(img, np.float16)/norm_value
+                img = np.clip(img, 0.0, 1.0)
+
+                batch +=1
+                img = img_to_array(img)
+                label=img_to_array(label)
+                train_data.append(img)
+                train_label.append(label)
+                if batch%config.batch_size==0:
+                    train_data = np.array(train_data)
+                    train_label = np.array(train_label)
+                    # print("img shape:{}".format(train_data.shape))
+                    # print("label shap:{}".format(train_label.shape))
+                    if config.nb_classes > 2:
+                        train_label = to_categorical(train_label, num_classes=config.nb_classes)
+                    yield (train_data, train_label)
+                    train_data = []
+                    train_label = []
+                    batch = 0
+
+
 # data for training from memory
 def train_data_generator_h5(config, f):
     # print 'generateData...'
