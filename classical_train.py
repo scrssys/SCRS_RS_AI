@@ -150,12 +150,9 @@ def train(model):
     model_history = History()
 
     logdir = os.path.split(args.config_file)[0] + '/log/'
+    logdir = ''.join([logdir,config.target_name,"_", config.network,"_",config.BACKBONE,"_", config.loss, date_time])
     if not os.path.isdir(logdir):
-        print("warning: log dir is not exit")
-        os.mkdir(logdir)
-    logdir = ''.join([config.log_dir,'/log',config.target_name,"_", config.network,"_",config.BACKBONE,"_", config.loss, date_time])
-    if not os.path.isdir(logdir):
-        print("Warning: ")
+        print("Warning: log dir is not exit")
         os.mkdir(logdir)
 
     tb_log = TensorBoard(log_dir=logdir)
