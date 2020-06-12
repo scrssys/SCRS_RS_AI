@@ -28,7 +28,7 @@ from palaeoild_models.classical_models import classical_unet, classical_fcnnet,c
 
 parser=argparse.ArgumentParser(description='RS classification train')
 parser.add_argument('--gpu', dest='gpu_id', help='GPU device id to use [0]', nargs='+',
-                        default=5, type=int)
+                        default=2, type=int)
 
 parser.add_argument('--config', dest='config_file', help='json file to config',
                          default='/home/omnisky/PycharmProjects/data/samples/WHU_buidlings/config_binary_buiding.json')
@@ -192,7 +192,7 @@ def train(model):
     finally:
         print("Compile model successfully!")
 
-    H = model.fit_generator(generator=train_data_generator_files_new(config, config.train_data_path, train_set),
+    H = model.fit_generator(generator=train_data_generator_files(config, config.train_data_path, train_set),
                             steps_per_epoch=train_numb // config.batch_size,
                             epochs=config.epochs,
                             verbose=1,
