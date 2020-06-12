@@ -384,10 +384,10 @@ def train_data_generator_files_new(config, sampth, sample_url):
     train_data = []
     train_label = []
     batch = 0
-    samples_from_one_image = config.sample_per_img
+    samples_from_one_image = 4
     """Ensure the samples in one batch extracting from 2 different images"""
-    if samples_from_one_image > int(0.5*config.batch_size+0.5):
-        samples_from_one_image = int(0.5*config.batch_size+0.5)
+    if samples_from_one_image > int(0.5*config.batch_size-0.5):
+        samples_from_one_image = int(0.5*config.batch_size-0.5)
 
     while True:
         if batch==0:  # 防止训练集图像数量少于batch_size

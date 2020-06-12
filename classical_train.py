@@ -31,7 +31,7 @@ parser.add_argument('--gpu', dest='gpu_id', help='GPU device id to use [0]', nar
                         default=2, type=int)
 
 parser.add_argument('--config', dest='config_file', help='json file to config',
-                         default='/home/omnisky/PycharmProjects/data/samples/WHU_buidlings/config_binary_buiding.json')
+                         default='/home/omnisky/PycharmProjects/data/samples/WHU_buidlings/config_binary_buiding_simpleFiles.json')
 args=parser.parse_args()
 gpu_id=args.gpu_id
 print("gpu_id:{}".format(gpu_id))
