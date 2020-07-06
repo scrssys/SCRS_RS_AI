@@ -59,7 +59,8 @@ def batch_rmovesmallobj(send_message_callback,inputdir,outputdir,minsize=5):
         post_process_segment(file, outputfile)
 if __name__ == "__main__":
     # batch_rmovesmallobj(r"C:\Users\SCRS\Pictures\111",r"C:\Users\SCRS\Pictures\222")
-    inputfile='/home/omnisky/PycharmProjects/data/samples/isprs/train_ori/label_all/top_potsdam_7_13.tif'
-    outputfile='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/test/crfss/whole48-tt.tif'
-    post_process_segment(inputfile,outputfile, Flag_cv=False, minsize=10)
+    # inputfile='/home/omnisky/PycharmProjects/data/samples/isprs/train_ori/label_all/top_potsdam_7_13.tif'
+    # outputfile='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/test/crfss/whole48-tt.tif'
+    # post_process_segment(inputfile,outputfile, Flag_cv=False, minsize=10)
+
     fire.Fire()

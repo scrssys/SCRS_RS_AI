@@ -1,5 +1,6 @@
 import numpy as np
 import pydensecrf.densecrf as dcrf
+import fire
 
 
 import cv2
@@ -128,10 +129,12 @@ def CRFs(original_image_path, predicted_image_path, CRF_image_path):
 
 
 if __name__=="__main__":
-    original_image_path='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/test/8bits/cuiping.png'
-    predicted_image_path='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/test/result/cuiping.png'
-    CRF_image_path='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/test/crfss/whole48.tif'
-    CRFs(original_image_path, predicted_image_path, CRF_image_path)
+    # original_image_path='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/test/8bits/cuiping.png'
+    # predicted_image_path='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/test/result/cuiping.png'
+    # CRF_image_path='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/test/crfss/whole48.tif'
+    # CRFs(original_image_path, predicted_image_path, CRF_image_path)
+
+    fire.Fire()
 
 
 
