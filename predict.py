@@ -323,7 +323,7 @@ def predict(send_massage_callback=send_message_callback, configs=None,gpu=0, inp
 
             gc.collect()
 
-        print(np.unique(result_mask))
+        print("Unique value in result mask: {}".format(np.unique(result_mask)))
         # result_mask[nodata_indx]=255
         # output_file = ''.join([output_dir, '/', abs_filename, config.suffix])
         output_file = ''.join([output_dir, '/', abs_filename])

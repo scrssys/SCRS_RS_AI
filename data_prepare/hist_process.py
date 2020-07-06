@@ -17,11 +17,11 @@ Flag_Hist_match=0 #0:直方图统计，1:直方图匹配
 
 
 # input_dir = '/media/omnisky/b1aca4b8-81b8-4751-8dee-24f70574dae9/test_global/images_ori/xielan/'
-input_dir ='/media/omnisky/b1aca4b8-81b8-4751-8dee-24f70574dae9/test_global/images_forClass/test_normal/'
-B=4
+input_dir ='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/train/label/'
+B=1
 S=1024
-result_bits='int16'
-dest_file='/home/omnisky/PycharmProjects/data/originaldata/global/16bit_miandiantaiguo/total_zy3test.csv'
+result_bits='int8'
+dest_file='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/train/total_zy3test.csv'
 # src_file='/home/omnisky/PycharmProjects/data/test/global/test_csv/src.csv'
 
 # test_file = '/home/omnisky/PycharmProjects/data/test/global/test_csv/histMap.csv'
@@ -41,15 +41,27 @@ def get_hist(files, bands=4, scale=1024):
 
     for file in in_files:
         print("\n\t[info]deal:{}".format(file))
-        img = load_img_by_gdal(file)
-        a,b,c = img.shape
-        if c != bands:
-            print("Warning: bands of img is :{}, but setting bands is:{}".format(c,bands))
-        real_b = min(c,bands)
-        for i in range(real_b):
-            h, bin_edges = np.histogram(img[:,:, i], bins=range(scale+1))
-            h = np.array(h,np.uint64)
-            hist[:,i] +=h[:scale]
+
+        if bands==1:
+            img = load_img_by_gdal(file,grayscale=True)
+            # c=1
+            h, bin_edges = np.histogram(img[:, :], bins=range(scale + 1))
+            h = np.array(h, np.uint64)
+            hist[:, 0] += h[:scale]
+        else:
+            img = load_img_by_gdal(file)
+            a,b,c = img.shape
+            real_b = min(c, bands)
+            h, bin_edges = np.histogram(img[:, :, i], bins=range(scale + 1))
+            h = np.array(h, np.uint64)
+            hist[:, i] += h[:scale]
+        # if c != bands:
+        #     print("Warning: bands of img is :{}, but setting bands is:{}".format(c,bands))
+        # real_b = min(c,bands)
+        # for i in range(real_b):
+        #     h, bin_edges = np.histogram(img[:,:, i], bins=range(scale+1))
+        #     h = np.array(h,np.uint64)
+        #     hist[:,i] +=h[:scale]
             # plt.plot(range(scale), h)
             # plt.show()
 

@@ -219,7 +219,7 @@ if __name__ == '__main__':
     #test classical_unet
     if "unet" in config.network:
         model = classical_unet(config.img_w,config.img_h,input_bands,config.nb_classes)
-    elif "fcns" in config.network:
+    elif "fcn8s" in config.network:
         model = classical_fcnnet(config.img_w,config.img_h,input_bands,config.nb_classes)
     elif "segnet" in config.network:
         model = classical_segnet(config.img_w, config.img_h, input_bands, config.nb_classes)

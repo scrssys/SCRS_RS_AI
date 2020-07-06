@@ -198,7 +198,8 @@ def train(send_massage_callback=send_message_callback, configs=None,gpu=0, sampl
 
     print(model.summary())
     # from keras.utils import plot_model
-    # plot_model(model, to_file='model.png')
+    # plot_model(model, to_file='model_fpn.png')
+    # sys.exit(-99)
     """\n**************************************"""
     print("Train by : {}_{}".format(config.network, config.BACKBONE))
     """\n**************************************\n"""
@@ -378,7 +379,8 @@ def train_h5(send_massage_callback=send_message_callback, configs=None, gpu=0, s
 
     print(model.summary())
     # from keras.utils import plot_model
-    # plot_model(model, to_file='model.png')
+    # plot_model(model, to_file='model_fpn.png')
+    # sys.exit(-99)
     """\n**************************************"""
     print("Train by : {}_{}".format(config.network, config.BACKBONE))
     """\n**************************************\n"""
@@ -490,8 +492,8 @@ if __name__ == '__main__':
 
     # train(
     #     send_massage_callback=send_message_callback,
-    #     configs='/home/omnisky/PycharmProjects/data/samples/isprs/train_1_1k_copy/config_multiclass_isprs.json',
-    #     gpu=0,
+    #     configs='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/config_binary_buiding_fpn_2.json',
+    #     gpu=1,
     #     samples='',
     #     outdir='',
     #     baseModel=''
