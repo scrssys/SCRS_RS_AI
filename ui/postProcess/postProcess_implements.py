@@ -284,11 +284,14 @@ class child_removesmallobject(QDialog, Ui_Dialog_removeSmallPolygon,base_message
     def slot_ok(self):
         in_dir = self.lineEdit_inputdir.text()
         ou_dir = self.lineEdit_outputdir.text()
-        scale_factor = str(int(self.comboBox_scale.currentText())*10)
-        cmd = ['python', '../post_process/remove_small_object.py',"batch_rmovesmallobj", in_dir,ou_dir,scale_factor]
+        flag=False
+        if self.checkBox_flag.isChecked():
+            flag=True
+        min_size = self.spinBox_ms.value()
+        threshold=self.spinBox_thd.value()
         self.buttonBox.setEnabled(False)
         try:
-            batch_rmovesmallobj(self.send,in_dir,ou_dir,scale_factor)
+            batch_rmovesmallobj(self.send,in_dir,ou_dir,flag_cv=flag,msize=min_size, thd=threshold)
             QMessageBox.information(self, '提示', "Finished")
         except:
             QMessageBox.information(self, '提示', "Error occurred")

@@ -70,7 +70,7 @@
      <x>0</x>
      <y>0</y>
      <width>532</width>
-     <height>23</height>
+     <height>19</height>
     </rect>
    </property>
    <property name="defaultUp">
@@ -129,7 +129,6 @@
     <property name="title">
      <string>Postprocess</string>
     </property>
-    <addaction name="actionCombineSingleModelReults"/>
     <addaction name="action_VoteMultiModelResults"/>
     <addaction name="actionAccuracyEvaluation"/>
     <addaction name="actionBinarization"/>
