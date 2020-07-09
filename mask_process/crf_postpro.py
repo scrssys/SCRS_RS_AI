@@ -80,8 +80,8 @@ def CRFs(original_image_path, predicted_image_path, CRF_image_path):
         d.addPairwiseGaussian(sxy=(5, 5), compat=3, kernel=dcrf.DIAG_KERNEL,
                               normalization=dcrf.NORMALIZE_SYMMETRIC)
 
-        # 增加了颜色相关术语，即特征是(x,y,r,g,b)-----使用局部颜色特征来细化它们
-        d.addPairwiseBilateral(sxy=(80, 80), srgb=(13, 13, 13), rgbim=img, compat=10,
+        # # 增加了颜色相关术语，即特征是(x,y,r,g,b)-----使用局部颜色特征来细化它们
+        d.addPairwiseBilateral(sxy=(10, 10), srgb=(13, 13, 13), rgbim=img, compat=10,
                                kernel=dcrf.DIAG_KERNEL,
                                normalization=dcrf.NORMALIZE_SYMMETRIC)
         '''
@@ -114,7 +114,7 @@ def CRFs(original_image_path, predicted_image_path, CRF_image_path):
     ####################################
 
     # 进行5次推理
-    Q = d.inference(20)
+    Q = d.inference(5)
 
     # 找出每个像素最可能的类
     MAP = np.argmax(Q, axis=0)
@@ -125,14 +125,15 @@ def CRFs(original_image_path, predicted_image_path, CRF_image_path):
     print("unique value:{}".format(np.unique(MAP)))
     imwrite(CRF_image_path, MAP.reshape((img.shape[0],img.shape[1])))
 
-    print("CRF图像保存在", CRF_image_path, "!")
+    print("CRF图像saving to: ", CRF_image_path, "!")
 
 
 if __name__=="__main__":
-    # original_image_path='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/test/8bits/cuiping.png'
-    # predicted_image_path='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/test/result/cuiping.png'
-    # CRF_image_path='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/test/crfss/whole48.tif'
-    # CRFs(original_image_path, predicted_image_path, CRF_image_path)
+    original_image_path='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/test/whole_img.tif'
+    # original_image_path='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/test/top_potsdam_7_13_RGB.tif'
+    predicted_image_path='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/test/result/2020-07-07_14-04-35-fpn-nrg-bce-dice-smooth-8slices/whole_img.tif'
+    CRF_image_path='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/test/result/2020-07-07_14-04-35-fpn-nrg-bce-dice-smooth-8slices/whole_img-crf1.tif'
+    CRFs(original_image_path, predicted_image_path, CRF_image_path)
 
     fire.Fire()
 

@@ -7,7 +7,7 @@ import numpy as np
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 # import tensorflow as tf
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, classification_report
 
 from ulitities.base_functions import load_img_by_cv2,get_file,load_img_by_gdal,send_message_callback, load_label
 
@@ -202,22 +202,6 @@ def accuracy_evalute(send_message_callback,input_dict):
     valid_labels = input_dict['valid_values']
     n_class = len(valid_labels)
     check_rate = input_dict['check_rate']
-    # gup_id = input_dict['GPUID']
-    # os.environ["CUDA_VISIBLE_DEVICES"] = gup_id
-    # input_files = []
-    # if os.path.isfile(config.img_input):
-    #     print("[INFO] input is one file...")
-    #     input_files.append(config.img_input)
-    # elif os.path.isdir(config.img_input):
-    #     print("[INFO] input is a directory...")
-    #     in_files, _ = get_file(config.img_input)
-    #     for file in in_files:
-    #         input_files.append(file)
-    # if len(input_files) == 0:
-    #     print("no input images")
-    #     sys.exit(-1)
-    # print("{} images will be classified".format(len(input_files)))
-
 
     ref_img = load_img_by_gdal(ref_file, grayscale=True)
 
@@ -314,13 +298,15 @@ def accuracy_evalute(send_message_callback,input_dict):
         x_total * x_total - sum(x_col_plus * x_row_plus))
 
     send_message_callback("Kappa:{:.3f}".format(kappa))
+    classification_rep = classification_report(valid_ref,valid_pred)
+    print("accuracy by sklearn.metrics directly",classification_rep)
 
     for i in range(n_class):
         i = i
-        prec = x_diagonal[i] / (x_row_plus[i]+SMOOTH)
+        prec = x_diagonal[i] / (x_col_plus[i]+SMOOTH)
         send_message_callback("\nForground of {}".format(i))
         send_message_callback("precision= {:.3f}".format(prec))
-        recall = x_diagonal[i] / (x_col_plus[i]+SMOOTH)
+        recall = x_diagonal[i] / (x_row_plus[i]+SMOOTH)
         send_message_callback("recall= {:.3f}".format(recall))
         F1_score = (2*recall*prec)/(recall+prec)
         send_message_callback("F1_score= {:.3f}".format(F1_score))
