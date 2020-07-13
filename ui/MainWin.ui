@@ -298,10 +298,13 @@
    <property name="text">
     <string>train</string>
    </property>
+   <property name="visible">
+    <bool>true</bool>
+   </property>
   </action>
   <action name="actionconvert_8bit">
    <property name="text">
-    <string>convert 8bit</string>
+    <string>影像转8bit</string>
    </property>
   </action>
   <action name="actionlabel_crop">

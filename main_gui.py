@@ -41,6 +41,7 @@ class mywindow(QMainWindow, Ui_MainWindow):
         self.setWindowIcon(QIcon('else/scrslogo.png'))
         self.setupUi(self)
         self.new_translate()
+        self.menuTrain.setVisible(False)
         self.setFont(QFont('SansSerif',12))
         # self.m_thread = main_thread()
         self.newlay = QGridLayout(self.centralwidget)
