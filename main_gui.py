@@ -268,6 +268,7 @@ class mywindow(QMainWindow, Ui_MainWindow):
         child = child_abount()
         child.show()
         child.exec_()
+    # 加密狗
     def Authority_Verify(self):
         if 'Windows' in platform.system():
             if "32bit" in platform.architecture():
