@@ -70,7 +70,7 @@
      <x>0</x>
      <y>0</y>
      <width>532</width>
-     <height>19</height>
+     <height>23</height>
     </rect>
    </property>
    <property name="defaultUp">
@@ -172,6 +172,11 @@
   <action name="actionSampleGenCommon">
    <property name="text">
     <string>Sample Generate</string>
+   </property>
+   <property name="font">
+    <font>
+     <family>黑体</family>
+    </font>
    </property>
   </action>
   <action name="actionCombineSingleModelReults">

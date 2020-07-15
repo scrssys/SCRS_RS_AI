@@ -1,5 +1,6 @@
 #encoding:utf-8
 import sys,os
+from ctypes import *
 sys.path.append(os.path.abspath('.'))
 if os.path.abspath('.')!=os.getcwd():
     sys.path.append(os.getcwd())
@@ -67,6 +68,7 @@ class mywindow(QMainWindow, Ui_MainWindow):
         # self.textEdit.setText("Runtime message:\ne:\ne:\ne:\ne:\ne:\ne:\ne:\ne:\ne:\n")
 
         self.main_message_sig.connect(self.OutputWritten)
+        self.Authority_Verify()
     """
     #   Redirect standard output
         sys.stdout = EmittingStream(textWritten=self.OutputWritten)
@@ -91,7 +93,7 @@ class mywindow(QMainWindow, Ui_MainWindow):
 
     def new_translate(self ):
         _translate = QtCore.QCoreApplication.translate
-        self.setWindowTitle(_translate("MainWindow", "    自然资源督察要素遥感识别监测系统"))
+        self.setWindowTitle(_translate("MainWindow", "        高分辨率遥感影像自动识别监测系统"))
         self.menuFile.setTitle(_translate("MainWindow", "文件"))
         self.menuPrepocess.setTitle(_translate("MainWindow", "预处理"))
         self.menuTrain.setTitle(_translate("MainWindow", "模型训练"))
@@ -160,6 +162,7 @@ class mywindow(QMainWindow, Ui_MainWindow):
         child.exec()
 
     def slot_predict(self):
+        self.Authority_Verify()
         child = child_predict()
         child.message_sig.connect(self.OutputWritten)
         child.show()
@@ -265,7 +268,26 @@ class mywindow(QMainWindow, Ui_MainWindow):
         child = child_abount()
         child.show()
         child.exec_()
-
+    def Authority_Verify(self):
+        if 'Windows' in platform.system():
+            if "32bit" in platform.architecture():
+                Psyuunew = windll.LoadLibrary('Syunew3D.dll')
+            else:
+                Psyuunew = windll.LoadLibrary('Syunew3D_x64.dll')
+        USB_keyID = 4294967295
+        ID_1 = c_ulong(1)
+        ID_2 = c_ulong()
+        KeyPath = create_string_buffer(260)
+        ret = Psyuunew.GetID(byref(ID_1), byref(ID_2), KeyPath)
+        if ret == 0:
+            if ID_1.value == USB_keyID:
+                print('权限验证通过\n')
+            else:
+                print('权限验证未通过\n')
+                sys.exit()
+        else:
+            print('加密锁未找到\n')
+            sys.exit()
 class child_abount(QDialog, Ui_Dialog_about):
     def __init__(self):
         super(child_abount, self).__init__()
@@ -274,6 +296,7 @@ class child_abount(QDialog, Ui_Dialog_about):
 
 if __name__=='__main__':
     import sys
+
     app=QApplication(sys.argv)
     widget=mywindow()
     # widget = child_label()
