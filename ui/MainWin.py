@@ -2,11 +2,13 @@
 
 # Form implementation generated from reading ui file 'MainWin.ui'
 #
-# Created by: PyQt5 UI code generator 5.5.1
+# Created by: PyQt5 UI code generator 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -33,7 +35,7 @@ class Ui_MainWindow(object):
         self.tabWidget.addTab(self.tab, "")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 532, 19))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 532, 23))
         self.menubar.setDefaultUp(True)
         self.menubar.setNativeMenuBar(False)
         self.menubar.setObjectName("menubar")
@@ -72,6 +74,9 @@ class Ui_MainWindow(object):
         self.actionImage_strech = QtWidgets.QAction(MainWindow)
         self.actionImage_strech.setObjectName("actionImage_strech")
         self.actionSampleGenCommon = QtWidgets.QAction(MainWindow)
+        font = QtGui.QFont()
+        font.setFamily("黑体")
+        self.actionSampleGenCommon.setFont(font)
         self.actionSampleGenCommon.setObjectName("actionSampleGenCommon")
         self.actionCombineSingleModelReults = QtWidgets.QAction(MainWindow)
         self.actionCombineSingleModelReults.setText("Combine multiclass")
@@ -235,4 +240,3 @@ class Ui_MainWindow(object):
         self.actionOpen_Vector.setText(_translate("MainWindow", "Open Vector"))
         self.action_Train_h5.setText(_translate("MainWindow", "train_h5"))
         self.actionconvert_sample_to_h5.setText(_translate("MainWindow", "convert_sample_to_h5"))
-
