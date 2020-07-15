@@ -129,11 +129,11 @@ def CRFs(original_image_path, predicted_image_path, CRF_image_path):
 
 
 if __name__=="__main__":
-    original_image_path='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/test/whole_img.tif'
-    # original_image_path='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/test/top_potsdam_7_13_RGB.tif'
-    predicted_image_path='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/test/result/2020-07-07_14-04-35-fpn-nrg-bce-dice-smooth-8slices/whole_img.tif'
-    CRF_image_path='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/test/result/2020-07-07_14-04-35-fpn-nrg-bce-dice-smooth-8slices/whole_img-crf1.tif'
-    CRFs(original_image_path, predicted_image_path, CRF_image_path)
+    # original_image_path='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/test/whole_img.tif'
+    # # original_image_path='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/test/top_potsdam_7_13_RGB.tif'
+    # predicted_image_path='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/test/result/2020-07-07_14-04-35-fpn-nrg-bce-dice-smooth-8slices/whole_img.tif'
+    # CRF_image_path='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/test/result/2020-07-07_14-04-35-fpn-nrg-bce-dice-smooth-8slices/whole_img-crf1.tif'
+    # CRFs(original_image_path, predicted_image_path, CRF_image_path)
 
     fire.Fire()
 
