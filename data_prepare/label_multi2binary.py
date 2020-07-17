@@ -6,8 +6,8 @@ from tqdm import tqdm
 from ulitities.base_functions import get_file
 
 
-inputdir = '/home/omnisky/PycharmProjects/data/samples/global/test/label/paper/all_class'
-outputdir = '/home/omnisky/PycharmProjects/data/samples/global/test/label/paper/single_class'
+inputdir = '/home/omnisky/PycharmProjects/data/tree/isprs/label_all'
+outputdir = '/home/omnisky/PycharmProjects/data/tree/isprs/label_binary'
 target_class=[1,2,3,4,5]
 
 if __name__=='__main__':

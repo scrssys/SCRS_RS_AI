@@ -275,20 +275,20 @@ class mywindow(QMainWindow, Ui_MainWindow):
                 Psyuunew = windll.LoadLibrary('Syunew3D.dll')
             else:
                 Psyuunew = windll.LoadLibrary('Syunew3D_x64.dll')
-        USB_keyID = 4294967295
-        ID_1 = c_ulong(1)
-        ID_2 = c_ulong()
-        KeyPath = create_string_buffer(260)
-        ret = Psyuunew.GetID(byref(ID_1), byref(ID_2), KeyPath)
-        if ret == 0:
-            if ID_1.value == USB_keyID:
-                print('权限验证通过\n')
+            USB_keyID = 4294967295
+            ID_1 = c_ulong(1)
+            ID_2 = c_ulong()
+            KeyPath = create_string_buffer(260)
+            ret = Psyuunew.GetID(byref(ID_1), byref(ID_2), KeyPath)
+            if ret == 0:
+                if ID_1.value == USB_keyID:
+                    print('权限验证通过\n')
+                else:
+                    print('权限验证未通过\n')
+                    sys.exit()
             else:
-                print('权限验证未通过\n')
+                print('加密锁未找到\n')
                 sys.exit()
-        else:
-            print('加密锁未找到\n')
-            sys.exit()
 class child_abount(QDialog, Ui_Dialog_about):
     def __init__(self):
         super(child_abount, self).__init__()
