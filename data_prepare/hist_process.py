@@ -14,13 +14,13 @@ from ulitities.base_functions import get_file, load_img_by_gdal,load_img_by_gdal
 min_delta=0.0000001
 
 
-Flag_Hist_match=2 #0:直方图统计，1:save hitmap; 2:直方图匹配
+Flag_Hist_match=0 #0:直方图统计，1:save hitmap; 2:直方图匹配
 
-input_dir ='/home/omnisky/PycharmProjects/data/tree/ori-global/src'
+input_dir ='D:\data\water\img_8bit'
 B=4
 S=256
 result_bits='int8'
-dest_file ='/home/omnisky/PycharmProjects/data/tree/ori-isprs/isprs_src_hist1.csv'
+dest_file ='D:\data\water\img_8bit\_hist1.csv'
 # dest_file ='/home/omnisky/PycharmProjects/data/tree/ori-global/global_src_hist1.csv'
 src_file='/home/omnisky/PycharmProjects/data/tree/ori-global/global_src_hist1.csv'
 histmap_file ='/home/omnisky/PycharmProjects/data/tree/histmap_global2isprs.csv'
@@ -30,6 +30,7 @@ output_dir = '/home/omnisky/PycharmProjects/data/tree/ori-global/test_histM/'
 
 def get_hist(files, bands=4, scale=256):
     print("[Info] Statisify histogram from images...")
+    # print("bands={}, scale={}".format(bands,scale))
     hist = np.zeros((scale,bands),np.uint64)
     in_files =np.zeros((scale,bands),np.uint16)
     if isinstance(files,str):
@@ -63,9 +64,11 @@ def get_hist(files, bands=4, scale=256):
 
 
 def save_hist_to_csv(in_dir,csv_file,bands=4,scale=256):
+    print(in_dir, csv_file, bands,scale)
+    # sys.exit(-1)
     input_files, _ = get_file(in_dir)
     if len(input_files)==0:
-        print("Error: there is no file in input dir")
+        print("Error: there is no file in input dir：{}".format(in_dir))
         return -1
 
     Hist = get_hist(input_files, bands, scale)
@@ -243,7 +246,7 @@ def histmap_img(in_dir, out_dir, histmap_file, bands=4, scale=256):
         absname = absname.split('.')[0]
         absname = ''.join([absname, '.tif'])
 
-        # img, geoinfo = load_img_by_gdal_geo(file)
+        img, geoinfo = load_img_by_gdal_geo(file)
         H, W, C, geoinf, projinf = load_img_by_gdal_info(file)
         # H, W, C = img.shape
         if C != bands:
@@ -291,20 +294,21 @@ def histmap_img(in_dir, out_dir, histmap_file, bands=4, scale=256):
 
 
 if __name__=='__main__':
-    ret=0
-    if Flag_Hist_match==0:
-        ret=save_hist_to_csv(input_dir,dest_file,bands=B,scale=S)
-    elif Flag_Hist_match==1:
-        ret=save_histMap(src_file,dest_file,histmap_file, scale=S)
-    elif Flag_Hist_match==2:
-        ret=histmap_img(input_dir, output_dir,histmap_file,  bands=B, scale=S)
-    else:
-        print("Error: please check the value Flag_Hist_match which should be in [0,1,2]")
-
-    if ret!=0:
-        print("Error: wrong")
-    else:
-        print("Successfully!")
     fire.Fire()
+    # ret=0
+    # if Flag_Hist_match==0:
+    #     ret=save_hist_to_csv(input_dir,dest_file,bands=B,scale=S)
+    # elif Flag_Hist_match==1:
+    #     ret=save_histMap(src_file,dest_file,histmap_file, scale=S)
+    # elif Flag_Hist_match==2:
+    #     ret=histmap_img(input_dir, output_dir,histmap_file,  bands=B, scale=S)
+    # else:
+    #     print("Error: please check the value Flag_Hist_match which should be in [0,1,2]")
+    #
+    # if ret!=0:
+    #     print("Error: wrong")
+    # else:
+    #     print("Successfully!")
+
 
 

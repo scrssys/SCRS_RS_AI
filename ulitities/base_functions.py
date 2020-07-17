@@ -432,12 +432,19 @@ def get_file(file_dir, file_type=[".jpg",'.png', '.tif', '.tiff','.img']):
     :return: L: a list of files under the file_dir and sub_folders; num: the length of L
     """
     im_type=['.png']
+    # print("进入get_file")
     if isinstance(file_type, str):
         im_type=file_type
     elif isinstance(file_type,list):
         im_type=file_type
+    # print(im_type)
+    # print("input_dir={}".format(file_dir))
     L=[]
+    if not os.path.isdir(file_dir):
+        print("Error:input dir is not existed")
+        return "",0
     for root,dirs,files in os.walk(file_dir):
+        # print("\nfiles")
         for file in files:
             if (str.lower(os.path.splitext(file)[1]) in im_type):
                 L.append(os.path.join(root,file))
