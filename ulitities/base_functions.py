@@ -187,7 +187,7 @@ def load_img_by_gdal(path, grayscale=False):
     im_bands = dataset.RasterCount
     img = dataset.ReadAsArray(0,0,x_width,y_height)
     if grayscale == False:
-        img = np.array(img, dtype="float")
+        img = np.asarray(img, np.uint16)
         try:
             img = np.transpose(img, (1, 2, 0))
         except:
@@ -287,7 +287,7 @@ def load_img_by_gdal_blocks(path, x,y,width,height,grayscale=False):
         height = y_height-y
     img = dataset.ReadAsArray(x,y,width,height)
     if grayscale == False:
-        img = np.array(img, dtype="float")
+        img = np.asarray(img, np.uint16)
         try:
             img = np.transpose(img, (1, 2, 0))
         except:
@@ -300,7 +300,6 @@ def load_img_by_gdal_blocks(path, x,y,width,height,grayscale=False):
     gc.collect()
 
     return img
-
 
 
 def load_img_normalization(input_bands, path, data_type=UINT8):
