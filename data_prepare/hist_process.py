@@ -89,7 +89,7 @@ def get_hist(files, bands=4, scale=256, block_h=20000):
     return hist
 
 
-def save_hist_to_csv(in_dir,csv_file,bands=4,scale=256):
+def save_hist(in_dir,csv_file,bands=4,scale=256):
     print(in_dir, csv_file, bands,scale)
     # sys.exit(-1)
     input_files, _ = get_file(in_dir)
@@ -254,7 +254,7 @@ def save_histMap(src_file, dest_file, histmap_file, bands=4,scale=256):
 
     return 0
 
-def histmap_img(in_dir, out_dir, histmap_file, bands=4, scale=256, block_h=20000):
+def img_histmap(in_dir, out_dir, histmap_file, bands=4, scale=256, block_h=20000):
     histMaps = np.array(pd.read_csv(histmap_file))
     if not os.path.isdir(in_dir):
         print("Error: input dir is not existed")
@@ -369,11 +369,11 @@ if __name__=='__main__':
     """用于测试"""
     # ret=0
     # if Flag_Hist_match==0:
-    #     ret=save_hist_to_csv(input_dir,dest_file,bands=B,scale=S)
+    #     ret=save_hist(input_dir,dest_file,bands=B,scale=S)
     # elif Flag_Hist_match==1:
     #     ret=save_histMap(src_file,dest_file,histmap_file, scale=S)
     # elif Flag_Hist_match==2:
-    #     ret=histmap_img(input_dir, output_dir,histmap_file,  bands=B, scale=S)
+    #     ret=img_histmap(input_dir, output_dir,histmap_file,  bands=B, scale=S)
     # else:
     #     print("Error: please check the value Flag_Hist_match which should be in [0,1,2]")
     #
