@@ -14,20 +14,20 @@ from ulitities.base_functions import get_file, load_img_by_gdal,load_img_by_gdal
 min_delta=0.0000001
 
 
-Flag_Hist_match=2 #0:直方图统计，1:save hitmap; 2:直方图匹配
+Flag_Hist_match=3 #0:直方图统计，1:save hitmap; 2:基于对照表的直方图匹配; 3：向目标直方图的直方图匹配
 
-input_dir ='F:\\11'
+input_dir ='D:\\data\\water\\img_8bit'
 B=4
 S=256
 result_bits = 'int8'
-blockHeight=20000
+blockHeight=7000
 dest_file = 'F:\\11\\2_hist1.csv'
 # dest_file ='/home/omnisky/PycharmProjects/data/tree/ori-global/global_src_hist1.csv'
-src_file='/home/omnisky/PycharmProjects/data/tree/ori-global/global_src_hist1.csv'
+src_file='D:\\data\\water\\img_8bit\\ts2t.csv'
 histmap_file ='F:\\11\\histmap.csv'
 # test_file = '/home/omnisky/PycharmProjects/data/test/global/test_csv/histMap.csv'
 
-output_dir = 'D:\\data\\test'
+output_dir = 'D:\\data\\test2'
 
 def get_hist(files, bands=4, scale=256, block_h=20000):
     print("[Info] Statisify histogram from images...")
@@ -76,20 +76,11 @@ def get_hist(files, bands=4, scale=256, block_h=20000):
                     h = np.asarray(h, np.uint32)
                     hist[:, index_band] += h[:scale]
             del dataset
-            # img = load_img_by_gdal(file)
-            # a,b,c = img.shape
-            # if bands>c:
-            #     print("Warning: image bands is gt B")
-            # real_b = min(c, bands)
-            # for i in range(real_b):
-            #     h, bin_edges = np.histogram(img[:, :, i], bins=range(scale + 1))
-            #     h = np.array(h, np.uint64)
-            #     hist[:, i] += h[:scale]
 
     return hist
 
 
-def save_hist(in_dir,csv_file,bands=4,scale=256):
+def save_hist(in_dir,csv_file,bands=4,scale=256, block_h=20000):
     print(in_dir, csv_file, bands,scale)
     # sys.exit(-1)
     input_files, _ = get_file(in_dir)
@@ -97,7 +88,7 @@ def save_hist(in_dir,csv_file,bands=4,scale=256):
         print("Error: there is no file in input dir：{}".format(in_dir))
         return -1
 
-    Hist = get_hist(input_files, bands, scale,blockHeight)
+    Hist = get_hist(input_files, bands, scale,block_h)
 
     # Data = {'band_1':Hist[:,0], 'band_2':Hist[:,1],'band_3':Hist[:,2],'band_4':Hist[:,3]}
 
@@ -209,27 +200,22 @@ def HistMappingSML(scr, dest, scale):
 
     return histMap
 
-
-def save_histMap(src_file, dest_file, histmap_file, bands=4,scale=256):
-    all_dest = np.array(pd.read_csv(dest_file))
-    all_src = np.array(pd.read_csv(src_file))
-    if all_dest.shape[-1] != all_src.shape[-1]:
+def HistMap(allsrc,alldest,bands=4, scale=256):
+    if alldest.shape[-1] != allsrc.shape[-1]:
         print("Error: bands of dest and src are not equal!")
         return -1
-    C=min(bands, all_dest.shape[-1])
-    all_histMap=[]
+    C=min(bands, alldest.shape[-1])
+    all_histMap = []
     for t in range(C):
         print("[Info]\t\tband:{}".format(t + 1))
         # tmp = np.zeros((H, W), np.uint16)
-        dest = all_dest[:, t + 1]
-        dest[0,t+1] = 1  # 防止背景“0”的值过大，降低了整体的值
-        src = all_src[:, t+1]
-        src[0, t + 1] = 1  # 防止背景“0”的值过大，降低了整体的值
+        dest = alldest[:, t]
+        dest[0] = 1  # 防止背景“0”的值过大，降低了整体的值
+        src = allsrc[:, t]
+        src[0] = 1  # 防止背景“0”的值过大，降低了整体的值
         if len(dest) != len(src) or len(dest) != scale:
             print("Error: length  of dest, src and scale are not equal")
             return -2
-        # assert (len(dest) == len(src))
-        # assert (len(dest) == scale)
 
         cum_dest = calc_cum_hist(dest)
         for i in range(scale):
@@ -249,21 +235,42 @@ def save_histMap(src_file, dest_file, histmap_file, bands=4,scale=256):
         all_histMap.append(histM)
     all_histMap = np.asarray(all_histMap, np.uint16)
     all_histMap = np.transpose(all_histMap,(1,0))
+
+    return all_histMap
+
+def save_histMap(src_file, dest_file, histmap_file, bands=4,scale=256):
+    all_dest = np.array(pd.read_csv(dest_file))
+    all_src = np.array(pd.read_csv(src_file))
+    all_histMap= HistMap(all_src[:,1:],all_dest[:,1:],bands, scale)
     df = pd.DataFrame(all_histMap)
     df.to_csv(histmap_file)
 
     return 0
 
-def img_histmap(in_dir, out_dir, histmap_file, bands=4, scale=256, block_h=20000):
+def img_histMap_from_maps(in_dir, out_dir, histmap_file, bands=4, scale=256, block_h=20000):
     histMaps = np.array(pd.read_csv(histmap_file))
-    if not os.path.isdir(in_dir):
-        print("Error: input dir is not existed")
+    histMaps = histMaps[:,1:]
+    ret =0
+    ret = img_histMap(in_dir, out_dir, histMaps, bands, scale, block_h)
+
+    return ret
+
+
+def img_histMap(in_dir, out_dir, histMaps, bands=4, scale=256, block_h=20000):
+    # histMaps = np.array(pd.read_csv(histmap_file))
+    files=[]
+    if os.path.isdir(in_dir):
+        files, _ = get_file(in_dir)
+    elif os.path.isfile(in_dir):
+        files.append(in_dir)
+    else:
+        print("Error: input is not a file or dir")
         return -1
 
-    files, _ = get_file(in_dir)
+    # files, _ = get_file(in_dir)
     if len(files)==0:
         print("Warnin:There is no file in input dir")
-        return -1
+        return -2
     if not os.path.isdir(out_dir):
         print(("Warning: output dir is not existed, it will be created automatically"))
         os.mkdir(out_dir)
@@ -278,7 +285,7 @@ def img_histmap(in_dir, out_dir, histmap_file, bands=4, scale=256, block_h=20000
             dataset = gdal.Open(file)
         except:
             print("Error:Opening img failed {}".format(file))
-            return -1
+            return -3
         y_height = dataset.RasterYSize
         x_width = dataset.RasterXSize
         img_bands = dataset.RasterCount
@@ -287,7 +294,7 @@ def img_histmap(in_dir, out_dir, histmap_file, bands=4, scale=256, block_h=20000
         projinf= dataset.GetProjectionRef()
         if img_bands != bands:
             print("Error: B is not equal image bands")
-            return -1
+            return -4
         n_blocks = 1
         if y_height % block_h == 0:
             n_blocks = int(y_height / block_h)
@@ -305,50 +312,28 @@ def img_histmap(in_dir, out_dir, histmap_file, bands=4, scale=256, block_h=20000
             for index_band in range(real_b):
                 tmp = np.zeros((y_block_height, x_width), np.uint16)
                 tmp[:,:]=img[:,:,index_band]
-                for i in range(scale):
-                    if i != histMaps[i,index_band+1]:
+                unique_value = np.unique(tmp)
+                if len(unique_value)>scale:
+                    print("Error: img value range is gt scale")
+                    return -5
+                for i in unique_value:
+                    if i != histMaps[i,index_band]:
                         index = np.where(img[:,:,index_band] == i)
-                        tmp[index] = histMaps[i,index_band+1]
-                result[start_y:start_y+y_block_height , :, index_band] = tmp[:,:]
-                    # tmp[index] = hist_one[i]
-                # for i in range(y_block_height):
-                #     for j in range(x_width):
-                #         result[index_block*block_h+i,j,index_band]=histMaps[img[i,j,index_band],index_band+1]
-                # index = np.where(img[:,:,index_band]==)
+                        tmp[index] = histMaps[i,index_band]
+                result[start_y:start_y+y_block_height, :, index_band] = tmp[:,:]
 
-        # img, geoinfo = load_img_by_gdal_geo(file)
-        # H, W, C, geoinf, projinf = load_img_by_gdal_info(file)
-        # H, W, C = img.shape
-        # if C != bands:
-        #     print("Error: B is not equal image bands")
-        #     return -1
-        # assert (C == bands)
-        # all_src = get_hist(file, bands, scale)
-        # result = []
         del dataset
         if not os.path.isdir(out_dir):
             print("Warning: output directory does not exist")
             os.mkdir(out_dir)
 
-        # for t in range(bands):
-        #     print("[Info]\t\tband:{}".format(t + 1))
-        #     tmp = np.zeros((H, W), np.uint16)
-        #     tmp[:,:] = img[:,:,t]
-        #     hist_one = histMaps[:,t+1]
-        #
-        #     for i in range(scale):
-        #         if i !=hist_one[i]:
-        #             index = np.where(img[:,:,t] == i)
-        #             # tmp[index] = histMaps[i,t+1]
-        #             tmp[index] = hist_one[i]
-        #
-        #     # plt.imshow(tmp)
-        #     # plt.show()
-        #     result.append(tmp)
-
         outputfile = os.path.join(out_dir, absname)
         driver = gdal.GetDriverByName("GTiff")
-        outdataset = driver.Create(outputfile, x_width, y_height, real_b, gdal.GDT_UInt16)
+        try:
+            outdataset = driver.Create(outputfile, x_width, y_height, real_b, gdal.GDT_UInt16)
+        except:
+            print("Error: creating file failed {}".format(outputfile))
+            return -6
 
         outdataset.SetGeoTransform(geoinf)
         outdataset.SetProjection(projinf)
@@ -362,6 +347,27 @@ def img_histmap(in_dir, out_dir, histmap_file, bands=4, scale=256, block_h=20000
 
     return 0
 
+def img_histMap_to_dest(in_dir,out_dir, dest_file, bands=4,scale=256,block_h=20000):
+    fileList=[]
+    if os.path.isdir(in_dir):
+        fileList, _ = get_file(in_dir)
+    elif os.path.isfile(in_dir):
+        fileList.append(in_dir)
+    else:
+        print("Error: pleace check input dir or file")
+        return -1
+
+    all_dest = np.array(pd.read_csv(dest_file))
+    all_dest = all_dest[:,1:]
+
+    for file in tqdm(fileList):
+        Hist = get_hist(file, bands, scale, block_h)
+        histMaps = HistMap(Hist,all_dest,bands, scale)
+        ret =0
+        ret = img_histMap(file, out_dir, histMaps, bands, scale, block_h)
+
+    return ret
+
 
 if __name__=='__main__':
     fire.Fire()
@@ -369,11 +375,13 @@ if __name__=='__main__':
     """用于测试"""
     # ret=0
     # if Flag_Hist_match==0:
-    #     ret=save_hist(input_dir,dest_file,bands=B,scale=S)
+    #     ret=save_hist(input_dir,dest_file,bands=B,scale=S,block_h=blockHeight)
     # elif Flag_Hist_match==1:
     #     ret=save_histMap(src_file,dest_file,histmap_file, scale=S)
     # elif Flag_Hist_match==2:
-    #     ret=img_histmap(input_dir, output_dir,histmap_file,  bands=B, scale=S)
+    #     ret=img_histMap_from_maps(input_dir, output_dir,histmap_file,  bands=B, scale=S,block_h=blockHeight)
+    # elif Flag_Hist_match==3:
+    #     img_histMap_to_dest(input_dir, output_dir,dest_file, bands=B, scale=S, block_h=blockHeight)
     # else:
     #     print("Error: please check the value Flag_Hist_match which should be in [0,1,2]")
     #
