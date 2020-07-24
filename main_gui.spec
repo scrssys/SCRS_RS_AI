@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['main_gui.py'],
-             pathex=['D:\\coding\\qiaozh\\SCRS_RS_AI'],
+             pathex=['D:\\coding\\qiaozh\\SCRS_RS_AI_2'],
              binaries=[],
              datas=[('C:/Program Files/Anaconda3/envs/tfpy35/Lib/site-packages/tensorflow/python/_pywrap_tensorflow_internal.pyd', 'tensorflow/python')],
              hiddenimports=["pywt","pywt._extensions._cwt","win32timezone"],
@@ -19,14 +19,18 @@ pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 exe = EXE(pyz,
           a.scripts,
-          a.binaries,
-          a.zipfiles,
-          a.datas,
           [],
+          exclude_binaries=True,
           name='main_gui',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          runtime_tmpdir=None,
           console=True )
+coll = COLLECT(exe,
+               a.binaries,
+               a.zipfiles,
+               a.datas,
+               strip=False,
+               upx=True,
+               name='main_gui')

@@ -68,7 +68,7 @@ class mywindow(QMainWindow, Ui_MainWindow):
         # self.textEdit.setText("Runtime message:\ne:\ne:\ne:\ne:\ne:\ne:\ne:\ne:\ne:\n")
 
         self.main_message_sig.connect(self.OutputWritten)
-        self.Authority_Verify()
+        # self.Authority_Verify()
     """
     #   Redirect standard output
         sys.stdout = EmittingStream(textWritten=self.OutputWritten)
