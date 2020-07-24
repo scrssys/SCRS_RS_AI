@@ -5,7 +5,10 @@
 # Created by: PyQt5 UI code generator 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
+
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_Dialog_samplecrop(object):
     def setupUi(self, Dialog_samplecrop):
@@ -56,9 +59,6 @@ class Ui_Dialog_samplecrop(object):
         self.lineEdit_cropsize.setMaxLength(6)
         self.lineEdit_cropsize.setAlignment(QtCore.Qt.AlignCenter)
         self.lineEdit_cropsize.setObjectName("lineEdit_cropsize")
-
-
-
         self.horizontalLayout_2.addWidget(self.lineEdit_cropsize)
         self.horizontalLayout_3.addLayout(self.horizontalLayout_2)
         self.pushButton_process = QtWidgets.QPushButton(self.widget)

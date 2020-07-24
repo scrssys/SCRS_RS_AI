@@ -2,11 +2,13 @@
 
 # Form implementation generated from reading ui file 'Dialog_predict.ui'
 #
-# Created by: PyQt5 UI code generator 5.5.1
+# Created by: PyQt5 UI code generator 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_Dialog_predict(object):
     def setupUi(self, Dialog_predict):
@@ -27,6 +29,7 @@ class Ui_Dialog_predict(object):
         self.layoutWidget.setFont(font)
         self.layoutWidget.setObjectName("layoutWidget")
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.layoutWidget)
+        self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
         self.label_4 = QtWidgets.QLabel(self.layoutWidget)
         font = QtGui.QFont()
@@ -53,6 +56,7 @@ class Ui_Dialog_predict(object):
         self.layoutWidget1.setGeometry(QtCore.QRect(30, 10, 431, 171))
         self.layoutWidget1.setObjectName("layoutWidget1")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.layoutWidget1)
+        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
@@ -157,7 +161,7 @@ class Ui_Dialog_predict(object):
 
     def retranslateUi(self, Dialog_predict):
         _translate = QtCore.QCoreApplication.translate
-        Dialog_predict.setWindowTitle(_translate("Dialog_predict", "图像分类"))
+        Dialog_predict.setWindowTitle(_translate("Dialog_predict", "Image predict"))
         self.label_4.setText(_translate("Dialog_predict", "GPU"))
         self.comboBox_gpu.setItemText(0, _translate("Dialog_predict", "0"))
         self.comboBox_gpu.setItemText(1, _translate("Dialog_predict", "1"))
@@ -175,4 +179,3 @@ class Ui_Dialog_predict(object):
         self.BT_config.setText(_translate("Dialog_predict", "Open"))
         self.label_5.setText(_translate("Dialog_predict", "model"))
         self.BT_model.setText(_translate("Dialog_predict", "Open"))
-

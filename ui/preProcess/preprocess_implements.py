@@ -7,9 +7,10 @@ import subprocess
 import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
-from PyQt5.QtCore import QFileInfo, QDir, QCoreApplication, Qt
-from PyQt5.QtGui import QIntValidator
-from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
+from PyQt5 import QtCore
+# from PyQt5.QtCore import QFileInfo, QDir, QCoreApplication, Qt
+# from PyQt5.QtGui import QIntValidator
+# from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
 from ui.preProcess.ImageStretch import Ui_Dialog_image_stretch
 from ui.preProcess.label_check import Ui_Dialog_label_check
 from ui.preProcess.ImageClip import Ui_Dialog_image_clip
@@ -24,7 +25,7 @@ from data_prepare.crop_samples import Simple_Crop
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from  PyQt5.QtGui import *
-QTranslator()
+# QTranslator()
 
 imgStretch_dict = {'input_dir': '', 'output_dir': '', 'NoData': '65535', 'OutBits': '16bits',
                        'StretchRange': '1024','CutValue': '100'}
@@ -37,6 +38,14 @@ class child_convert_8bit(QDialog,Ui_Dialog_convert8bit,base_message):
         super(child_convert_8bit,self).__init__()
         self.setWindowTitle("convert 8bit")
         self.setupUi(self)
+        self.new_translate()
+
+    def new_translate(self):
+        _translate = QtCore.QCoreApplication.translate
+        self.setWindowTitle(_translate("conver8bits", "图像转8bits"))
+        self.label.setText(_translate("imagepath", "输入路径"))
+        self.label_2.setText(_translate("outputpath", "输出路径"))
+        self.label_3.setText(_translate("Strench type", "拉伸方式"))
     def slot_select_samplepath(self):
         dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
         self.lineEdit_imagpath.setText(dir_tmp)
@@ -86,7 +95,11 @@ class child_samplecrop(QDialog,Ui_Dialog_samplecrop,base_message):
         self.new_translate()
 
     def new_translate(self):
-        _translate = QCoreApplication.translate
+        _translate = QtCore.QCoreApplication.translate
+        self.setWindowTitle(_translate("samplecrop", "样本裁剪"))
+        self.label.setText(_translate("Sampledir", "输入路径"))
+        self.label_3.setText(_translate("Outputdir", "输出路径"))
+        self.label_2.setText(_translate("CropSize:", "尺寸"))
         pIntvalidator=QIntValidator(self)
         pIntvalidator.setRange(1,9999)
         self.lineEdit_cropsize.setValidator(pIntvalidator)

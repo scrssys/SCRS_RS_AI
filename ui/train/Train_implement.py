@@ -13,6 +13,15 @@ class child_train(QDialog,Ui_Dialog_train,base_message):
         super(child_train,self).__init__()
         self.setWindowTitle("train")
         self.setupUi(self)
+        self.new_translate()
+
+    def new_translate(self):
+        _translate = QtCore.QCoreApplication.translate
+        self.setWindowTitle(_translate("Dialog", " 模型训练【文件模式】"))
+        self.label.setText(_translate("Sample","样本路径"))
+        self.label_2.setText(_translate("Config", "配置文件"))
+        self.label_3.setText(_translate("ModelSave", "模型路径"))
+
     def slot_open_sample(self):
         dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
         self.lineEdit_sample.setText(dir_tmp)
@@ -56,6 +65,14 @@ class child_train_h5(QDialog,Ui_Dialog_train_h5,base_message):
         super(child_train_h5,self).__init__()
         self.setWindowTitle("train")
         self.setupUi(self)
+        self.new_translate()
+
+    def new_translate(self):
+        _translate = QtCore.QCoreApplication.translate
+        self.setWindowTitle(_translate("Dialog", " 模型训练【H5模式】"))
+        self.label.setText(_translate("SampleFile", "样本路径"))
+        self.label_2.setText(_translate("Config", "配置文件"))
+        self.label_3.setText(_translate("ModelSave", "模型路径"))
     def slot_open_sample(self):
         str, _ = QFileDialog.getOpenFileName(self, "Select h5 file", '../../data/', self.tr("H5(*.h5)"))
         self.lineEdit_sample.setText(str)

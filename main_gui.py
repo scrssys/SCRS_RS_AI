@@ -1,4 +1,6 @@
-#encoding:utf-8
+# encoding:utf-8
+#pragma execution_character_set('utf-8')
+
 import sys,os
 from ctypes import *
 sys.path.append(os.path.abspath('.'))
@@ -45,7 +47,7 @@ class mywindow(QMainWindow, Ui_MainWindow):
         # self.action_Train.setVisible(False)
         # self.action_Train_h5.setVisible(False)
 
-        self.setFont(QFont('SansSerif',12))
+        self.setFont(QFont('Roman',12))
         # self.m_thread = main_thread()
         self.newlay = QGridLayout(self.centralwidget)
         from PyQt5.QtWidgets import QVBoxLayout
@@ -94,8 +96,8 @@ class mywindow(QMainWindow, Ui_MainWindow):
     def new_translate(self ):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "        高分辨率遥感影像自动识别监测系统"))
-        self.menuFile.setTitle(_translate("MainWindow", "文件"))
-        self.menuPrepocess.setTitle(_translate("MainWindow", "预处理"))
+        self.menuFile.setTitle(_translate("MainWindow", u"文件"))
+        self.menuPrepocess.setTitle(_translate("MainWindow", self.tr("预处理")))
         self.menuTrain.setTitle(_translate("MainWindow", "模型训练"))
         self.menuClassify.setTitle(_translate("MainWindow", "分类识别"))
         self.menuHelp.setTitle(_translate("MainWindow", "帮助"))
@@ -162,7 +164,7 @@ class mywindow(QMainWindow, Ui_MainWindow):
         child.exec()
 
     def slot_predict(self):
-        self.Authority_Verify()
+        # self.Authority_Verify()
         child = child_predict()
         child.message_sig.connect(self.OutputWritten)
         child.show()

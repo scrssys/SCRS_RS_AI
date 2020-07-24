@@ -275,6 +275,18 @@ class child_removesmallobject(QDialog, Ui_Dialog_removeSmallPolygon,base_message
     def __init__(self):
         super(child_removesmallobject, self).__init__()
         self.setupUi(self)
+        self.new_translate()
+
+    def new_translate(self):
+        _translate = QCoreApplication.translate
+        self.setWindowTitle(_translate("removeSmallArea", " 去除与填补小面"))
+        self.label.setText(_translate("input_dir", "输入路径"))
+        self.label_3.setText(_translate("output_dir", "输出路径"))
+        self.label_4.setText(_translate("method", "方法"))
+        self.label_2.setText(_translate("minsize", "去除小面尺寸"))
+        self.label_5.setText(_translate("threshold", "填补小面阈值"))
+
+
     def slot_select_inputdir(self):
         dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
         self.lineEdit_inputdir.setText(dir_tmp)

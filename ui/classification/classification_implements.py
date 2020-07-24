@@ -16,6 +16,15 @@ class child_predict(QDialog, Ui_Dialog_predict,base_message):
     def __init__(self):
         super(child_predict, self).__init__()
         self.setupUi(self)
+        self.new_translate()
+
+    def new_translate(self):
+        _translate = QCoreApplication.translate
+        self.setWindowTitle(_translate("Image predict", " 图像目标提取"))
+        self.label.setText(_translate("input", "图像路径"))
+        self.label_2.setText(_translate("output", "输出路径"))
+        self.label_3.setText(_translate("config", "配置文件"))
+        self.label_5.setText(_translate("model", "模型文件"))
 
     def slot_input(self):
         dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing dir", '')
