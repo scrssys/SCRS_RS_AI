@@ -126,6 +126,9 @@ class mywindow(QMainWindow, Ui_MainWindow):
         self.action_Train_h5.setText(_translate("MainWindow", "训练（H5mode）"))
         self.actionremove_small_object.setText(_translate("MainWindow","消除小面"))
         self.actionRasterToPolygon.setText(_translate("MainWindow","栅格转矢量"))
+        self.actionincdex_calc.setText(_translate("MainWindow", "指数计算"))
+        self.actionband_combine.setText(_translate("MainWindow", "影像波段合成"))
+
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "输出"))
         # self.actionPredictOne.setText(_translate("MainWindow", "分类"))
     def slot_action_openvector(self):
@@ -157,6 +160,16 @@ class mywindow(QMainWindow, Ui_MainWindow):
                 self.doc.addWidget(self.F, 0, 1)
             except:
                 self.OutputWritten("Fialed on open:")
+
+    def slot_band_combine(self):
+        child = child_band_combine()
+        child.show()
+        child.exec()
+
+    def slot_incex_calc(self):
+        child = child_index_calc()
+        child.show()
+        child.exec()
 
     def slot_predict_one(self):
         child = child_predict_one()

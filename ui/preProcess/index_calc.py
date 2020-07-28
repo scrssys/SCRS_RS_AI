@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'convert_8bit.ui'
+# Form implementation generated from reading ui file 'index_calc.ui'
 #
 # Created by: PyQt5 UI code generator 5.13.0
 #
@@ -10,17 +10,12 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_Dialog_convert8bit(object):
-    def setupUi(self, Dialog_convert8bit):
-        Dialog_convert8bit.setObjectName("Dialog_convert8bit")
-        Dialog_convert8bit.resize(512, 226)
-        self.buttonBox = QtWidgets.QDialogButtonBox(Dialog_convert8bit)
-        self.buttonBox.setGeometry(QtCore.QRect(330, 180, 156, 31))
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName("buttonBox")
-        self.layoutWidget = QtWidgets.QWidget(Dialog_convert8bit)
-        self.layoutWidget.setGeometry(QtCore.QRect(29, 10, 461, 151))
+class Ui_Dialog_index_calc(object):
+    def setupUi(self, Dialog_index_calc):
+        Dialog_index_calc.setObjectName("Dialog_index_calc")
+        Dialog_index_calc.resize(498, 240)
+        self.layoutWidget = QtWidgets.QWidget(Dialog_index_calc)
+        self.layoutWidget.setGeometry(QtCore.QRect(9, 20, 461, 151))
         self.layoutWidget.setObjectName("layoutWidget")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.layoutWidget)
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
@@ -63,14 +58,13 @@ class Ui_Dialog_convert8bit(object):
         self.label_3 = QtWidgets.QLabel(self.layoutWidget)
         self.label_3.setObjectName("label_3")
         self.horizontalLayout_3.addWidget(self.label_3)
-        self.comboBox_scale = QtWidgets.QComboBox(self.layoutWidget)
-        self.comboBox_scale.setMinimumSize(QtCore.QSize(0, 22))
-        self.comboBox_scale.setObjectName("comboBox_scale")
-        self.comboBox_scale.addItem("")
-        self.comboBox_scale.addItem("")
-        self.comboBox_scale.addItem("")
-        self.comboBox_scale.addItem("")
-        self.horizontalLayout_3.addWidget(self.comboBox_scale)
+        self.comboBox = QtWidgets.QComboBox(self.layoutWidget)
+        self.comboBox.setMinimumSize(QtCore.QSize(0, 22))
+        self.comboBox.setObjectName("comboBox")
+        self.comboBox.addItem("")
+        self.comboBox.addItem("")
+        self.comboBox.addItem("")
+        self.horizontalLayout_3.addWidget(self.comboBox)
         self.horizontalLayout_5.addLayout(self.horizontalLayout_3)
         spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_5.addItem(spacerItem2)
@@ -87,25 +81,29 @@ class Ui_Dialog_convert8bit(object):
         self.horizontalLayout_4.addWidget(self.spinBox)
         self.horizontalLayout_5.addLayout(self.horizontalLayout_4)
         self.verticalLayout_2.addLayout(self.horizontalLayout_5)
+        self.buttonBox = QtWidgets.QDialogButtonBox(Dialog_index_calc)
+        self.buttonBox.setGeometry(QtCore.QRect(310, 190, 156, 31))
+        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
+        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
+        self.buttonBox.setObjectName("buttonBox")
 
-        self.retranslateUi(Dialog_convert8bit)
-        self.buttonBox.accepted.connect(Dialog_convert8bit.slot_ok)
-        self.buttonBox.rejected.connect(Dialog_convert8bit.reject)
-        self.pushButton_imagepath.clicked.connect(Dialog_convert8bit.slot_select_samplepath)
-        self.pushButton_outputpath.clicked.connect(Dialog_convert8bit.slot_select_outputpath)
-        QtCore.QMetaObject.connectSlotsByName(Dialog_convert8bit)
+        self.retranslateUi(Dialog_index_calc)
+        self.pushButton_imagepath.clicked.connect(Dialog_index_calc.slot_select_inputpath)
+        self.pushButton_outputpath.clicked.connect(Dialog_index_calc.slot_select_outputpath)
+        self.buttonBox.accepted.connect(Dialog_index_calc.slot_ok)
+        self.buttonBox.rejected.connect(Dialog_index_calc.reject)
+        QtCore.QMetaObject.connectSlotsByName(Dialog_index_calc)
 
-    def retranslateUi(self, Dialog_convert8bit):
+    def retranslateUi(self, Dialog_index_calc):
         _translate = QtCore.QCoreApplication.translate
-        Dialog_convert8bit.setWindowTitle(_translate("Dialog_convert8bit", "conver8bits"))
-        self.label.setText(_translate("Dialog_convert8bit", "imagepath"))
-        self.pushButton_imagepath.setText(_translate("Dialog_convert8bit", "open"))
-        self.label_2.setText(_translate("Dialog_convert8bit", "outputpath"))
-        self.pushButton_outputpath.setText(_translate("Dialog_convert8bit", "open"))
-        self.label_3.setText(_translate("Dialog_convert8bit", "Strench type"))
-        self.comboBox_scale.setCurrentText(_translate("Dialog_convert8bit", "Percent clip"))
-        self.comboBox_scale.setItemText(0, _translate("Dialog_convert8bit", "Percent clip"))
-        self.comboBox_scale.setItemText(1, _translate("Dialog_convert8bit", "Min Maxinum"))
-        self.comboBox_scale.setItemText(2, _translate("Dialog_convert8bit", "Hist specification"))
-        self.comboBox_scale.setItemText(3, _translate("Dialog_convert8bit", "Stand deviation"))
-        self.label_4.setText(_translate("Dialog_convert8bit", "Nodata"))
+        Dialog_index_calc.setWindowTitle(_translate("Dialog_index_calc", "Dialog_index"))
+        self.label.setText(_translate("Dialog_index_calc", "imagepath"))
+        self.pushButton_imagepath.setText(_translate("Dialog_index_calc", "open"))
+        self.label_2.setText(_translate("Dialog_index_calc", "outputpath"))
+        self.pushButton_outputpath.setText(_translate("Dialog_index_calc", "open"))
+        self.label_3.setText(_translate("Dialog_index_calc", "Index"))
+        self.comboBox.setCurrentText(_translate("Dialog_index_calc", "NDVI"))
+        self.comboBox.setItemText(0, _translate("Dialog_index_calc", "NDVI"))
+        self.comboBox.setItemText(1, _translate("Dialog_index_calc", "NDWI"))
+        self.comboBox.setItemText(2, _translate("Dialog_index_calc", "NDBI"))
+        self.label_4.setText(_translate("Dialog_index_calc", "Nodata"))

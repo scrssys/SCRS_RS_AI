@@ -90,7 +90,6 @@ def convert_8bit_minMaxium(inputRaster, outputRaster,nodata=65535):
     height = srcRaster.RasterYSize
     width = srcRaster.RasterXSize
     im_bands = srcRaster.RasterCount
-
     geotransform = srcRaster.GetGeoTransform()
     projinf=srcRaster.GetProjectionRef()
     result = []
@@ -111,7 +110,7 @@ def convert_8bit_minMaxium(inputRaster, outputRaster,nodata=65535):
             return -1
 
         index = np.where(band_arr_tmp == nodata)
-        new_data = np.asarray(band_arr_tmp, dtype=np.float32)
+        new_data = np.asarray(band_arr_tmp, dtype=np.float16)
         # if len(index)<2:
         #     print("no nodata")
         #     bmin = new_data.min()
@@ -128,7 +127,7 @@ def convert_8bit_minMaxium(inputRaster, outputRaster,nodata=65535):
         temp = 255.0 * (new_data - bmin) / (bmax - bmin + 0.000001)
         temp[temp < 0.00001] = 0
         temp[temp > 253.99999] = 254
-        temp[index] = 255
+        # temp[index] = 255
         temp=np.asarray(temp, np.uint8)
         temp[index]=0
         result.append(temp)

@@ -1,88 +1,98 @@
 #coding:utf-8
-
-import os,sys
+import os,sys,fire
+from ulitities.base_functions import get_file,find_file
+from tqdm import tqdm
 try:
     from osgeo import ogr, osr, gdal
     gdal.UseExceptions()
 except:
     sys.exit('ERROR: cannot find GDAL/OGR modules')
+def band_combine(file_list,outputfile):
+    dataset = []
+    result = []
+    band_n=0
+    for i in band_list:
+        for j in i:
+            band_n= band_n+1
+    for i,file in enumerate(file_list):
+        dataset = gdal.Open(file)
+        for j in band_list[i]:
+            try:
+                band = dataset.GetRasterBand(j+1)
+            except:
+                print(file +": get band index out of range")
+                return 0
+            band_array = band.ReadAsArray()
+            result.append(band_array)
+    X = dataset.RasterXSize
+    Y = dataset.RasterYSize
+    del band_array
+    driver = gdal.GetDriverByName('GTiff')
+    output_basename = os.path.basename(file).split(".")[0]
+    # output_filename = outputpath+ \
+    #                   output_basename + ".tif"
+    outdataset = driver.Create(outputfile, X,
+                              Y, band_n, gdal.GDT_Byte)
+    for i in range(band_n):
+        outdataset.GetRasterBand(i + 1).WriteArray(result[i])
+    outdataset.FlushCache()
+    # del outdataset
 
-import numpy as np
 
-variable_str='3_13'
+def batch_band_combine(indir,outdir,nodata=65535):
+    if not os.path.isdir(indir):
+        print("Error:input is not a directory")
+        return -1
 
-input_files =['/home/omnisky/PycharmProjects/data/samples/isprs/4_Ortho_RGBIR/top_potsdam_{}_RGBIR.tif'.format(variable_str),
-              '/home/omnisky/PycharmProjects/data/samples/isprs/1_DSM_normalisation/1_DSM_normalisation/dsm_potsdam_0{}_normalized_lastools.jpg'.format(variable_str)]
-output_file = '/home/omnisky/PycharmProjects/data/samples/isprs/train/src/top_potsdam_{}.tif'.format(variable_str)
+    if not os.path.isdir(indir+'/a/') or not os.path.isdir(indir+'/b'):
+        print("Error: please check dir img and index")
+        return -2
+
+    filelist_a, nb = get_file(indir+'/a/')
+    if nb ==0:
+        print("Error: there is no file in dir a")
+        return -3
+    if not os.path.isdir(outdir):
+        print("Warning: outdir is not exist, it will be created")
+        os.mkdir(outdir)
+    for fileA in tqdm(filelist_a):
+        basename=os.path.basename(fileA).split(".")[0]
+        fileB = find_file(indir+'/b/',basename)
+        print(fileB)
+        flist=[]
+        flist.append(fileA)
+        flist.append(fileB)
+        outfile = outdir+'/'+basename+'.tif'
+        ret =0
+        ret = band_combine(flist,outfile)
+        if ret!=0:
+            print("Error:combinig failed :{}".format(basename))
+            continue
+
+    return 0
+
+
+
+# indir = "D:\\water\\src\\8bitOrigin"
+# # list = os.listdir(indir)
+# # for file in list:
+# #     basename = os.path.basename(file).split(".")[0]
+# #     try:
+# #         print(file)
+# #         infile_1= "D:\\water\\src\\8bitOrigin\\" +file
+# #         infile_2 =  "D:\\water\\src\\8bitIndex\\" +basename + "_ndwi.tif"
+# #         filelist = [infile_1,infile_2]
+# #         band_list = [[0,1,2,3],[0]]
+# #         band_combine(filelist,[[0,1,2,3],[0]])
+# #
+# #     except:
+# #         print("filed  : "+file)
+# variable_str='3_13'
+#
+# input_files =['/home/omnisky/PycharmProjects/data/samples/isprs/4_Ortho_RGBIR/top_potsdam_{}_RGBIR.tif'.format(variable_str),
+#               '/home/omnisky/PycharmProjects/data/samples/isprs/1_DSM_normalisation/1_DSM_normalisation/dsm_potsdam_0{}_normalized_lastools.jpg'.format(variable_str)]
+# output_file = '/home/omnisky/PycharmProjects/data/samples/isprs/train/src/top_potsdam_{}.tif'.format(variable_str)
 
 if __name__=="__main__":
-    if not os.path.isfile(input_files[0]):
-        print("File does not exist:{}".format(input_files[0]))
-        sys.exit(-1)
-
-    try:
-        dataset=gdal.Open(input_files[0])
-    except RuntimeError:
-        print("Could not open file:{}".format(input_files[0]))
-    finally:
-        print("Input file could be opened!")
-
-    x=dataset.RasterXSize
-    y=dataset.RasterYSize
-    d_type = dataset.GetRasterBand(1).DataType
-    # print(dataset.GetMetadata())
-    dataset = None
-    # del dataset
-
-    """
-    Extract data from each images, and combine to output file
-    """
-    out_data=[]
-    for file in input_files:
-        if not os.path.isfile(file):
-            print("file does not exist:{}".format(file))
-            sys.exit(-2)
-        print("Extract data from :{}".format(file))
-
-        try:
-            dataset = gdal.Open(file)
-        except RuntimeError:
-            print("Could not open file:{}".format(file))
-        finally:
-            print("Input file could be opened!")
-
-        width = dataset.RasterXSize
-        height=dataset.RasterYSize
-        if x!=width or y!=height:
-            print("Error: input files have different width and height\n")
-            sys.exit(-4)
-        im_band = dataset.RasterCount
-        im_type = dataset.GetRasterBand(1).DataType
-        if d_type != im_type:
-            print("Error: data types are not the same!\n")
-            sys.exit(-5)
-        for index in range(im_band):
-            # banddatarater=dataset.GetRasterBand(index)
-            tmp=dataset.GetRasterBand(index+1).ReadAsArray(0,0,width,height)
-            out_data.append(tmp)
-
-        dataset=None
-        # del dataset
-
-    out_data = np.array(out_data)
-    res_band,_,_ = out_data.shape
-    if (res_band<2):
-        print("The number of input-image bands is less than 2! ")
-        sys.exit(-3)
-    out_driver=gdal.GetDriverByName("GTiff")
-    out_dataset=out_driver.Create(output_file, x, y, res_band, d_type)
-    for i in range(res_band):
-        out_dataset.GetRasterBand(i+1).WriteArray(out_data[i])
-
-    print("Saved to: {}".format(output_file))
-
-    del out_dataset
-
-
-
-
+    fire.Fire()
+    print("")

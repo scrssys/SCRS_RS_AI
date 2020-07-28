@@ -1,39 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog_convert8bit</class>
- <widget class="QDialog" name="Dialog_convert8bit">
+ <class>Dialog_index_calc</class>
+ <widget class="QDialog" name="Dialog_index_calc">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>512</width>
-    <height>226</height>
+    <width>498</width>
+    <height>240</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>conver8bits</string>
+   <string>Dialog_index</string>
   </property>
-  <widget class="QDialogButtonBox" name="buttonBox">
-   <property name="geometry">
-    <rect>
-     <x>330</x>
-     <y>180</y>
-     <width>156</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-   </property>
-  </widget>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>29</x>
-     <y>10</y>
+     <x>9</x>
+     <y>20</y>
      <width>461</width>
      <height>151</height>
     </rect>
@@ -118,12 +102,12 @@
         <item>
          <widget class="QLabel" name="label_3">
           <property name="text">
-           <string>Strench type</string>
+           <string>Index</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="comboBox_scale">
+         <widget class="QComboBox" name="comboBox">
           <property name="minimumSize">
            <size>
             <width>0</width>
@@ -131,26 +115,21 @@
            </size>
           </property>
           <property name="currentText">
-           <string>Percent clip</string>
+           <string>NDVI</string>
           </property>
           <item>
            <property name="text">
-            <string>Percent clip</string>
+            <string>NDVI</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>Min Maxinum</string>
+            <string>NDWI</string>
            </property>
           </item>
           <item>
            <property name="text">
-            <string>Hist specification</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Stand deviation</string>
+            <string>NDBI</string>
            </property>
           </item>
          </widget>
@@ -201,76 +180,92 @@
     </item>
    </layout>
   </widget>
+  <widget class="QDialogButtonBox" name="buttonBox">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>190</y>
+     <width>156</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="standardButtons">
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>Dialog_convert8bit</receiver>
-   <slot>slot_ok()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>348</x>
-     <y>204</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>240</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>Dialog_convert8bit</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>416</x>
-     <y>210</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>286</x>
-     <y>240</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>pushButton_imagepath</sender>
    <signal>clicked()</signal>
-   <receiver>Dialog_convert8bit</receiver>
-   <slot>slot_select_samplepath()</slot>
+   <receiver>Dialog_index_calc</receiver>
+   <slot>slot_select_inputpath()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>423</x>
-     <y>68</y>
+     <x>429</x>
+     <y>31</y>
     </hint>
     <hint type="destinationlabel">
-     <x>511</x>
-     <y>48</y>
+     <x>459</x>
+     <y>63</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>pushButton_outputpath</sender>
    <signal>clicked()</signal>
-   <receiver>Dialog_convert8bit</receiver>
+   <receiver>Dialog_index_calc</receiver>
    <slot>slot_select_outputpath()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>465</x>
-     <y>125</y>
+     <x>433</x>
+     <y>99</y>
     </hint>
     <hint type="destinationlabel">
-     <x>511</x>
-     <y>95</y>
+     <x>458</x>
+     <y>116</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>Dialog_index_calc</receiver>
+   <slot>slot_ok()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>359</x>
+     <y>200</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>160</x>
+     <y>205</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>Dialog_index_calc</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>431</x>
+     <y>209</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>482</x>
+     <y>230</y>
     </hint>
    </hints>
   </connection>
  </connections>
  <slots>
-  <slot>slot_select_samplepath()</slot>
+  <slot>slot_select_inputpath()</slot>
   <slot>slot_select_outputpath()</slot>
   <slot>slot_ok()</slot>
  </slots>

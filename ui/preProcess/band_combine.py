@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'convert_8bit.ui'
+# Form implementation generated from reading ui file 'band_combine.ui'
 #
 # Created by: PyQt5 UI code generator 5.13.0
 #
@@ -10,17 +10,17 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_Dialog_convert8bit(object):
-    def setupUi(self, Dialog_convert8bit):
-        Dialog_convert8bit.setObjectName("Dialog_convert8bit")
-        Dialog_convert8bit.resize(512, 226)
-        self.buttonBox = QtWidgets.QDialogButtonBox(Dialog_convert8bit)
-        self.buttonBox.setGeometry(QtCore.QRect(330, 180, 156, 31))
+class Ui_Dialog_band_combine(object):
+    def setupUi(self, Dialog_band_combine):
+        Dialog_band_combine.setObjectName("Dialog_band_combine")
+        Dialog_band_combine.resize(502, 263)
+        self.buttonBox = QtWidgets.QDialogButtonBox(Dialog_band_combine)
+        self.buttonBox.setGeometry(QtCore.QRect(321, 200, 156, 31))
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName("buttonBox")
-        self.layoutWidget = QtWidgets.QWidget(Dialog_convert8bit)
-        self.layoutWidget.setGeometry(QtCore.QRect(29, 10, 461, 151))
+        self.layoutWidget = QtWidgets.QWidget(Dialog_band_combine)
+        self.layoutWidget.setGeometry(QtCore.QRect(20, 30, 461, 151))
         self.layoutWidget.setObjectName("layoutWidget")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.layoutWidget)
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
@@ -60,17 +60,6 @@ class Ui_Dialog_convert8bit(object):
         self.horizontalLayout_5.setObjectName("horizontalLayout_5")
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        self.label_3 = QtWidgets.QLabel(self.layoutWidget)
-        self.label_3.setObjectName("label_3")
-        self.horizontalLayout_3.addWidget(self.label_3)
-        self.comboBox_scale = QtWidgets.QComboBox(self.layoutWidget)
-        self.comboBox_scale.setMinimumSize(QtCore.QSize(0, 22))
-        self.comboBox_scale.setObjectName("comboBox_scale")
-        self.comboBox_scale.addItem("")
-        self.comboBox_scale.addItem("")
-        self.comboBox_scale.addItem("")
-        self.comboBox_scale.addItem("")
-        self.horizontalLayout_3.addWidget(self.comboBox_scale)
         self.horizontalLayout_5.addLayout(self.horizontalLayout_3)
         spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_5.addItem(spacerItem2)
@@ -88,24 +77,18 @@ class Ui_Dialog_convert8bit(object):
         self.horizontalLayout_5.addLayout(self.horizontalLayout_4)
         self.verticalLayout_2.addLayout(self.horizontalLayout_5)
 
-        self.retranslateUi(Dialog_convert8bit)
-        self.buttonBox.accepted.connect(Dialog_convert8bit.slot_ok)
-        self.buttonBox.rejected.connect(Dialog_convert8bit.reject)
-        self.pushButton_imagepath.clicked.connect(Dialog_convert8bit.slot_select_samplepath)
-        self.pushButton_outputpath.clicked.connect(Dialog_convert8bit.slot_select_outputpath)
-        QtCore.QMetaObject.connectSlotsByName(Dialog_convert8bit)
+        self.retranslateUi(Dialog_band_combine)
+        self.buttonBox.accepted.connect(Dialog_band_combine.slot_ok)
+        self.buttonBox.rejected.connect(Dialog_band_combine.reject)
+        self.pushButton_imagepath.clicked.connect(Dialog_band_combine.slot_select_inputpath)
+        self.pushButton_outputpath.clicked.connect(Dialog_band_combine.slot_select_outputpath)
+        QtCore.QMetaObject.connectSlotsByName(Dialog_band_combine)
 
-    def retranslateUi(self, Dialog_convert8bit):
+    def retranslateUi(self, Dialog_band_combine):
         _translate = QtCore.QCoreApplication.translate
-        Dialog_convert8bit.setWindowTitle(_translate("Dialog_convert8bit", "conver8bits"))
-        self.label.setText(_translate("Dialog_convert8bit", "imagepath"))
-        self.pushButton_imagepath.setText(_translate("Dialog_convert8bit", "open"))
-        self.label_2.setText(_translate("Dialog_convert8bit", "outputpath"))
-        self.pushButton_outputpath.setText(_translate("Dialog_convert8bit", "open"))
-        self.label_3.setText(_translate("Dialog_convert8bit", "Strench type"))
-        self.comboBox_scale.setCurrentText(_translate("Dialog_convert8bit", "Percent clip"))
-        self.comboBox_scale.setItemText(0, _translate("Dialog_convert8bit", "Percent clip"))
-        self.comboBox_scale.setItemText(1, _translate("Dialog_convert8bit", "Min Maxinum"))
-        self.comboBox_scale.setItemText(2, _translate("Dialog_convert8bit", "Hist specification"))
-        self.comboBox_scale.setItemText(3, _translate("Dialog_convert8bit", "Stand deviation"))
-        self.label_4.setText(_translate("Dialog_convert8bit", "Nodata"))
+        Dialog_band_combine.setWindowTitle(_translate("Dialog_band_combine", "Dialog"))
+        self.label.setText(_translate("Dialog_band_combine", "inputpath"))
+        self.pushButton_imagepath.setText(_translate("Dialog_band_combine", "open"))
+        self.label_2.setText(_translate("Dialog_band_combine", "outputpath"))
+        self.pushButton_outputpath.setText(_translate("Dialog_band_combine", "open"))
+        self.label_4.setText(_translate("Dialog_band_combine", "Nodata"))

@@ -16,11 +16,15 @@ from ui.preProcess.label_check import Ui_Dialog_label_check
 from ui.preProcess.ImageClip import Ui_Dialog_image_clip
 from ui.preProcess.convert_8bit import Ui_Dialog_convert8bit
 from ui.preProcess.samplecrop import Ui_Dialog_samplecrop
+from ui.preProcess.index_calc import Ui_Dialog_index_calc
+from ui.preProcess.band_combine import Ui_Dialog_band_combine
 from ulitities.xml_prec import generate_xml_from_dict, parse_xml_to_dict
 from ulitities.base_functions import get_file, load_img_by_gdal,base_message
 from .preprocess_backend import image_normalize, image_clip
 from data_prepare.convert_to_8bits import batch_convert_8bit,batch_convert_8bit_minmax
 from data_prepare.crop_samples import Simple_Crop
+from data_prepare.index_calc import batch_calc_index
+from data_prepare.band_combine import batch_band_combine
 
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -31,6 +35,72 @@ imgStretch_dict = {'input_dir': '', 'output_dir': '', 'NoData': '65535', 'OutBit
                        'StretchRange': '1024','CutValue': '100'}
 imgClip_dict = {'input_file':'', 'output_file':'', 'x':'0', 'y':'0', 'row':'1', 'column':'1'}
 
+
+class child_band_combine(QDialog,Ui_Dialog_band_combine,base_message):
+    def __init__(self):
+        super(child_band_combine,self).__init__()
+        # self.setWindowTitle("convert 8bit")
+        self.setupUi(self)
+        self.new_translate()
+
+    def new_translate(self):
+        _translate = QtCore.QCoreApplication.translate
+        self.setWindowTitle(_translate("Dialog_band_combine", "影像波段合成"))
+        self.label.setText(_translate("inputpath", "输入路径"))
+        self.label_2.setText(_translate("outputpath", "输出路径"))
+
+    def slot_select_inputpath(self):
+        dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
+        self.lineEdit_imagpath.setText(dir_tmp)
+    def slot_select_outputpath(self):
+        dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
+        self.lineEdit_outputpath.setText(dir_tmp)
+    def slot_ok(self):
+        dir_input = self.lineEdit_imagpath.text()
+        dir_output = self.lineEdit_outputpath.text()
+        nodata = self.spinBox.value()
+        self.buttonBox.setEnabled(False)
+        ret =0
+        ret = batch_band_combine(dir_input,dir_output,nodata=nodata)
+        if ret !=0:
+            QMessageBox.information(self, '提示', "Error occurred")
+        else:
+            QMessageBox.information(self, '提示', "波段合成成功")
+        self.buttonBox.setEnabled(True)
+
+
+class child_index_calc(QDialog,Ui_Dialog_index_calc,base_message):
+    def __init__(self):
+        super(child_index_calc,self).__init__()
+        # self.setWindowTitle("convert 8bit")
+        self.setupUi(self)
+        self.new_translate()
+
+    def new_translate(self):
+        _translate = QtCore.QCoreApplication.translate
+        self.setWindowTitle(_translate("Dialog_index", "指数计算"))
+        self.label.setText(_translate("imagepath", "输入路径"))
+        self.label_2.setText(_translate("outputpath", "输出路径"))
+        self.label_3.setText(_translate("Index", "指数类型"))
+    def slot_select_inputpath(self):
+        dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
+        self.lineEdit_imagpath.setText(dir_tmp)
+    def slot_select_outputpath(self):
+        dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
+        self.lineEdit_outputpath.setText(dir_tmp)
+    def slot_ok(self):
+        dir_input = self.lineEdit_imagpath.text()
+        dir_output = self.lineEdit_outputpath.text()
+        nodata = self.spinBox.value()
+        index_tpye = self.comboBox.currentText()
+        self.buttonBox.setEnabled(False)
+        ret =0
+        ret = batch_calc_index(dir_input,dir_output,keyword=index_tpye,nulldata=nodata)
+        if ret !=0:
+            QMessageBox.information(self, '提示', "Error occurred")
+        else:
+            QMessageBox.information(self, '提示', "计算成功")
+        self.buttonBox.setEnabled(True)
 
 # HAS_INVALID_VALUE = False
 class child_convert_8bit(QDialog,Ui_Dialog_convert8bit,base_message):
@@ -534,9 +604,6 @@ class child_ImageClip(QDialog, Ui_Dialog_image_clip,base_message):
         # instance.image_clip_from_dict()
         # QMessageBox.information(self, 'Prompt', self.tr("Images clipped !"))
         # self.setWindowModality(Qt.NonModal)
-
-
-
 
 class ImageClip():
     def __init__(self,input_dict={}, xmlfile=''):

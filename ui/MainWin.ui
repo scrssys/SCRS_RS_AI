@@ -97,6 +97,8 @@
     <addaction name="separator"/>
     <addaction name="actionconvert_8bit"/>
     <addaction name="actionlabel_crop"/>
+    <addaction name="actionincdex_calc"/>
+    <addaction name="actionband_combine"/>
    </widget>
    <widget class="QMenu" name="menuTrain">
     <property name="title">
@@ -335,6 +337,16 @@
   <action name="actionconvert_sample_to_h5">
    <property name="text">
     <string>convert_sample_to_h5</string>
+   </property>
+  </action>
+  <action name="actionincdex_calc">
+   <property name="text">
+    <string>incdex_calc</string>
+   </property>
+  </action>
+  <action name="actionband_combine">
+   <property name="text">
+    <string>band_combine</string>
    </property>
   </action>
  </widget>
@@ -676,6 +688,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionincdex_calc</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slot_incex_calc()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>265</x>
+     <y>204</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionband_combine</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slot_band_combine()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>265</x>
+     <y>204</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>for_action_label_check()</slot>
@@ -704,5 +748,7 @@
   <slot>slot_action_openvector()</slot>
   <slot>slot_train_h5()</slot>
   <slot>slot_convert_samples_to_h5()</slot>
+  <slot>slot_incex_calc()</slot>
+  <slot>slot_band_combine()</slot>
  </slots>
 </ui>

@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog_convert8bit</class>
- <widget class="QDialog" name="Dialog_convert8bit">
+ <class>Dialog_band_combine</class>
+ <widget class="QDialog" name="Dialog_band_combine">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>512</width>
-    <height>226</height>
+    <width>502</width>
+    <height>263</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>conver8bits</string>
+   <string>Dialog_band_combine</string>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>330</x>
-     <y>180</y>
+     <x>321</x>
+     <y>200</y>
      <width>156</width>
      <height>31</height>
     </rect>
@@ -32,8 +32,8 @@
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>29</x>
-     <y>10</y>
+     <x>20</x>
+     <y>30</y>
      <width>461</width>
      <height>151</height>
     </rect>
@@ -46,7 +46,7 @@
         <item>
          <widget class="QLabel" name="label">
           <property name="text">
-           <string>imagepath</string>
+           <string>inputpath</string>
           </property>
          </widget>
         </item>
@@ -114,48 +114,7 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_5">
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <item>
-         <widget class="QLabel" name="label_3">
-          <property name="text">
-           <string>Strench type</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="comboBox_scale">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>22</height>
-           </size>
-          </property>
-          <property name="currentText">
-           <string>Percent clip</string>
-          </property>
-          <item>
-           <property name="text">
-            <string>Percent clip</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Min Maxinum</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Hist specification</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Stand deviation</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-       </layout>
+       <layout class="QHBoxLayout" name="horizontalLayout_3"/>
       </item>
       <item>
        <spacer name="horizontalSpacer">
@@ -207,71 +166,71 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>Dialog_convert8bit</receiver>
+   <receiver>Dialog_band_combine</receiver>
    <slot>slot_ok()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>348</x>
-     <y>204</y>
+     <x>361</x>
+     <y>223</y>
     </hint>
     <hint type="destinationlabel">
-     <x>157</x>
-     <y>240</y>
+     <x>270</x>
+     <y>227</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>Dialog_convert8bit</receiver>
+   <receiver>Dialog_band_combine</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>416</x>
-     <y>210</y>
+     <x>422</x>
+     <y>216</y>
     </hint>
     <hint type="destinationlabel">
-     <x>286</x>
-     <y>240</y>
+     <x>460</x>
+     <y>235</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>pushButton_imagepath</sender>
    <signal>clicked()</signal>
-   <receiver>Dialog_convert8bit</receiver>
-   <slot>slot_select_samplepath()</slot>
+   <receiver>Dialog_band_combine</receiver>
+   <slot>slot_select_inputpath()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>423</x>
-     <y>68</y>
+     <x>444</x>
+     <y>46</y>
     </hint>
     <hint type="destinationlabel">
-     <x>511</x>
-     <y>48</y>
+     <x>466</x>
+     <y>62</y>
     </hint>
    </hints>
   </connection>
   <connection>
    <sender>pushButton_outputpath</sender>
    <signal>clicked()</signal>
-   <receiver>Dialog_convert8bit</receiver>
+   <receiver>Dialog_band_combine</receiver>
    <slot>slot_select_outputpath()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>465</x>
-     <y>125</y>
+     <x>456</x>
+     <y>99</y>
     </hint>
     <hint type="destinationlabel">
-     <x>511</x>
-     <y>95</y>
+     <x>288</x>
+     <y>147</y>
     </hint>
    </hints>
   </connection>
  </connections>
  <slots>
-  <slot>slot_select_samplepath()</slot>
-  <slot>slot_select_outputpath()</slot>
   <slot>slot_ok()</slot>
+  <slot>slot_select_inputpath()</slot>
+  <slot>slot_select_outputpath()</slot>
  </slots>
 </ui>
