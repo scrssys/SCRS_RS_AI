@@ -128,10 +128,10 @@ def Calc_Normalized_Difference_Index(imagery,output="",index_type = "NDVI" ,noda
 
     if index_type == "NDVI":
         # output_filename = output_dir + "\\" + output_basename + "_ndvi.tif"
-        tmp = (band_img[1]-band_img[3])/(band_img[1]+band_img[3]+0.00000001)
+        tmp = (band_img[3]-band_img[1])/(band_img[3]+band_img[2]+0.00000001)
     elif index_type == "NDWI":
         # output_filename = output_dir + "\\" + output_basename + "_ndwi.tif"
-        tmp = (band_img[3]-band_img[2])/(band_img[3]+band_img[2]+0.00000001)
+        tmp = (band_img[1]-band_img[3])/(band_img[1]+band_img[3]+0.00000001)
     else:
         print("Error: please check index type")
         return -4

@@ -55,7 +55,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-170</y>
         <width>511</width>
         <height>61</height>
        </rect>
@@ -91,6 +91,13 @@
     <property name="title">
      <string>PreProcess</string>
     </property>
+    <widget class="QMenu" name="menusample_process">
+     <property name="title">
+      <string>sample process</string>
+     </property>
+     <addaction name="action_crop_by_extent"/>
+     <addaction name="action_rasterizeLayer"/>
+    </widget>
     <addaction name="actionLabel_check"/>
     <addaction name="actionImage_strech"/>
     <addaction name="actionImage_Clip"/>
@@ -99,6 +106,7 @@
     <addaction name="actionlabel_crop"/>
     <addaction name="actionincdex_calc"/>
     <addaction name="actionband_combine"/>
+    <addaction name="menusample_process"/>
    </widget>
    <widget class="QMenu" name="menuTrain">
     <property name="title">
@@ -347,6 +355,21 @@
   <action name="actionband_combine">
    <property name="text">
     <string>band_combine</string>
+   </property>
+  </action>
+  <action name="actionrasterizeLayer">
+   <property name="text">
+    <string>rasterizeLayer</string>
+   </property>
+  </action>
+  <action name="action_crop_by_extent">
+   <property name="text">
+    <string>crop_by_extent</string>
+   </property>
+  </action>
+  <action name="action_rasterizeLayer">
+   <property name="text">
+    <string>rasterizeLayer</string>
    </property>
   </action>
  </widget>
@@ -720,6 +743,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>action_crop_by_extent</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slot_crop_by_extent()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>265</x>
+     <y>204</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>action_rasterizeLayer</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slot_rasterizeLayer()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>265</x>
+     <y>204</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>for_action_label_check()</slot>
@@ -750,5 +805,7 @@
   <slot>slot_convert_samples_to_h5()</slot>
   <slot>slot_incex_calc()</slot>
   <slot>slot_band_combine()</slot>
+  <slot>slot_crop_by_extent()</slot>
+  <slot>slot_rasterizeLayer()</slot>
  </slots>
 </ui>

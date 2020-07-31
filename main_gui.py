@@ -160,7 +160,14 @@ class mywindow(QMainWindow, Ui_MainWindow):
                 self.doc.addWidget(self.F, 0, 1)
             except:
                 self.OutputWritten("Fialed on open:")
-
+    def slot_rasterizeLayer(self):
+        child = child_rasterizeLayer()
+        child.show()
+        child.exec()
+    def slot_crop_by_extent(self):
+        child = child_crop_by_extent()
+        child.show()
+        child.exec()
     def slot_band_combine(self):
         child = child_band_combine()
         child.show()

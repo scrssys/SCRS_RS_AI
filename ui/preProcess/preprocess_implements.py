@@ -18,6 +18,8 @@ from ui.preProcess.convert_8bit import Ui_Dialog_convert8bit
 from ui.preProcess.samplecrop import Ui_Dialog_samplecrop
 from ui.preProcess.index_calc import Ui_Dialog_index_calc
 from ui.preProcess.band_combine import Ui_Dialog_band_combine
+from ui.preProcess.crop_by_extent import Ui_Dialog_crop_by_extent
+from ui.preProcess.rasterizeLayer import Ui_Dialog_rasterizeLayer
 from ulitities.xml_prec import generate_xml_from_dict, parse_xml_to_dict
 from ulitities.base_functions import get_file, load_img_by_gdal,base_message
 from .preprocess_backend import image_normalize, image_clip
@@ -25,6 +27,7 @@ from data_prepare.convert_to_8bits import batch_convert_8bit,batch_convert_8bit_
 from data_prepare.crop_samples import Simple_Crop
 from data_prepare.index_calc import batch_calc_index
 from data_prepare.band_combine import batch_band_combine
+from data_prepare.rasterizeLayer import crop_by_extent,rasterize_layer
 
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -34,12 +37,73 @@ from  PyQt5.QtGui import *
 imgStretch_dict = {'input_dir': '', 'output_dir': '', 'NoData': '65535', 'OutBits': '16bits',
                        'StretchRange': '1024','CutValue': '100'}
 imgClip_dict = {'input_file':'', 'output_file':'', 'x':'0', 'y':'0', 'row':'1', 'column':'1'}
+class child_rasterizeLayer(QDialog,Ui_Dialog_rasterizeLayer,base_message):
+    def __init__(self):
+        super(child_rasterizeLayer, self).__init__()
+        self.setupUi(self)
+        self.new_translate()
+    def new_translate(self):
+        pass
+    def slot_select_imgpath(self):
+        dir_tmp ,_= QFileDialog.getOpenFileName(self, "select a existing directory", '../../data/')
+        self.lineEdit_imgpath.setText(dir_tmp)
+    def slot_select_shpfilepath(self):
+        dir_tmp ,_= QFileDialog.getOpenFileName(self, "select a existing directory", '../../data/')
+        self.lineEdit_shpfilepath.setText(dir_tmp)
+    def slot_select_outputpath(self):
+        dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
+        self.lineEdit_outputpath.setText(dir_tmp)
+    def slot_ok(self):
+        imgfile = self.lineEdit_imgpath.text()
+        shpfile = self.lineEdit_shpfilepath.text()
+        outputpath = self.lineEdit_outputpath.text()
+        attributeFiled = self.lineEdit_attributeFiledName.text()
+        self.buttonBox.setEnabled(False)
+        ret = 0
+        try:
+            rasterize_layer(imgfile,shpfile,outputpath,attributeFiled)
+        except:
+            QMessageBox.information(self, '提示', "Error occurred")
+        if ret != 0:
+            QMessageBox.information(self, '提示', "Error occurred")
+        else:
+            QMessageBox.information(self, '提示', "此操作成功")
+        self.buttonBox.setEnabled(True)
+        pass
+class child_crop_by_extent(QDialog,Ui_Dialog_crop_by_extent,base_message):
+    def __init__(self):
+        super(child_crop_by_extent,self).__init__()
+        self.setupUi(self)
+        self.new_translate()
+    def new_translate(self):
+        pass
+    def slot_select_imgfile(self):
+        dir_tmp ,_= QFileDialog.getOpenFileName(self, "select a existing directory", '../../data/')
+        self.lineEdit_imgpath.setText(dir_tmp)
+    def slot_select_shpfile(self):
+        dir_tmp ,_= QFileDialog.getOpenFileName(self, "select a existing directory", '../../data/')
+        self.lineEdit_shpfilepath.setText(dir_tmp)
+    def slot_select_outputpath(self):
+        dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
+        self.lineEdit_outputpath.setText(dir_tmp)
+    def slot_ok(self):
+        imgfile = self.lineEdit_imgpath.text()
+        shpfile = self.lineEdit_shpfilepath.text()
+        outputpath = self.lineEdit_outputpath.text()
+        self.buttonBox.setEnabled(False)
+        ret = 0
+        ret = crop_by_extent(imgfile, shpfile, outputpath)
+        if ret != 0:
+            QMessageBox.information(self, '提示', "Error occurred")
+        else:
+            QMessageBox.information(self, '提示', "此操作成功")
+        self.buttonBox.setEnabled(True)
+
 
 
 class child_band_combine(QDialog,Ui_Dialog_band_combine,base_message):
     def __init__(self):
         super(child_band_combine,self).__init__()
-        # self.setWindowTitle("convert 8bit")
         self.setupUi(self)
         self.new_translate()
 
@@ -72,7 +136,6 @@ class child_band_combine(QDialog,Ui_Dialog_band_combine,base_message):
 class child_index_calc(QDialog,Ui_Dialog_index_calc,base_message):
     def __init__(self):
         super(child_index_calc,self).__init__()
-        # self.setWindowTitle("convert 8bit")
         self.setupUi(self)
         self.new_translate()
 

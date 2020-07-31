@@ -8,33 +8,32 @@ try:
 except:
     sys.exit('ERROR: cannot find GDAL/OGR modules')
 def band_combine(file_list,outputfile):
-    dataset = []
     result = []
-    band_n=0
-    for i in band_list:
-        for j in i:
-            band_n= band_n+1
-    for i,file in enumerate(file_list):
-        dataset = gdal.Open(file)
-        for j in band_list[i]:
-            try:
-                band = dataset.GetRasterBand(j+1)
-            except:
-                print(file +": get band index out of range")
-                return 0
-            band_array = band.ReadAsArray()
-            result.append(band_array)
-    X = dataset.RasterXSize
-    Y = dataset.RasterYSize
-    del band_array
+    dataset_a = gdal.Open(file_list[0])
+    dataset_b = gdal.Open(file_list[1])
+    band_n_a = dataset_a.RasterCount
+    band_n_b = dataset_b.RasterCount
+    band_n = band_n_a + band_n_b
+
+    result.append(dataset_a.ReadAsArray())
+    result.append(dataset_b.ReadAsArray())
+
+    X = dataset_a.RasterXSize
+    Y = dataset_a.RasterYSize
+
     driver = gdal.GetDriverByName('GTiff')
-    output_basename = os.path.basename(file).split(".")[0]
-    # output_filename = outputpath+ \
-    #                   output_basename + ".tif"
+
     outdataset = driver.Create(outputfile, X,
                               Y, band_n, gdal.GDT_Byte)
-    for i in range(band_n):
-        outdataset.GetRasterBand(i + 1).WriteArray(result[i])
+    count = 0
+    cc = result[0]
+    bb=cc[1]
+    for i in range(band_n_a):
+        count = count + 1
+        outdataset.GetRasterBand(count + 1).WriteArray(result[0][i])
+    for j in range(band_n_b):
+        outdataset.GetRasterBand(count + 1).WriteArray(result[1])
+        count = count + 1
     outdataset.FlushCache()
     # del outdataset
 
@@ -71,7 +70,7 @@ def batch_band_combine(indir,outdir,nodata=65535):
 
     return 0
 
-
+# batch_band_combine(r"C:\Users\scrs\Desktop\8bit",r"C:\Users\scrs\Desktop\8",255)
 
 # indir = "D:\\water\\src\\8bitOrigin"
 # # list = os.listdir(indir)
