@@ -179,6 +179,8 @@ class child_convert_8bit(QDialog,Ui_Dialog_convert8bit,base_message):
         self.label.setText(_translate("imagepath", "输入路径"))
         self.label_2.setText(_translate("outputpath", "输出路径"))
         self.label_3.setText(_translate("Strench type", "拉伸方式"))
+        self.label_5.setText(_translate("block", "分块行"))
+
     def slot_select_samplepath(self):
         dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
         self.lineEdit_imagpath.setText(dir_tmp)
@@ -189,18 +191,8 @@ class child_convert_8bit(QDialog,Ui_Dialog_convert8bit,base_message):
         dir_input = self.lineEdit_imagpath.text()
         dir_output = self.lineEdit_outputpath.text()
         nodata = self.spinBox.value()
+        height = self.spinBox_2.value()
 
-        # QMessageBox.information(self, '提示',
-        #                         "input:{}\n output :{}".format(dir_sample, dir_output)
-        #                         , QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
-        #excute pragram
-        # cmd = ['python', '../data_prepare/convert_to_8bits.py',"batch_convert_8bit" ,dir_sample,dir_output]
-        # try:
-        #     subprocess.call(cmd)
-        # except:
-        #     QMessageBox.information(self, '提示', "Error occurred")
-        # QMessageBox.information(self, '提示', "Finished")
-        # print("dir_input is " + dir_output+ "\n")
         convert_func = self.comboBox_scale.currentText()
         self.buttonBox.setEnabled(False)
         try:
@@ -209,7 +201,7 @@ class child_convert_8bit(QDialog,Ui_Dialog_convert8bit,base_message):
                 batch_convert_8bit(self.send,dir_input, dir_output, nodata)
             else:
                 self.send("Using Max Min Streth")
-                batch_convert_8bit_minmax(self.send, dir_input, dir_output, nodata)
+                batch_convert_8bit_minmax(self.send, dir_input, dir_output, nodata,bk_h=height)
 
             QMessageBox.information(self, '提示', "Finished")
         except:

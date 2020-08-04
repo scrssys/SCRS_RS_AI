@@ -1,6 +1,6 @@
 #coding:utf-8
 import os,sys,fire
-from ulitities.base_functions import get_file,find_file
+from ulitities.base_functions import get_file,find_file,geotrans_match
 from tqdm import tqdm
 try:
     from osgeo import ogr, osr, gdal
@@ -35,7 +35,7 @@ def band_combine(file_list,outputfile):
         outdataset.GetRasterBand(count + 1).WriteArray(result[1])
         count = count + 1
     outdataset.FlushCache()
-    # del outdataset
+    geotrans_match(file_list[0],outputfile)
 
 
 def batch_band_combine(indir,outdir,nodata=65535):

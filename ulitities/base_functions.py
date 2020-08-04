@@ -43,7 +43,15 @@ class Base_ulitities:
             img = cv2.imread(path)
         return 0, img
 
-
+def geotrans_match(infile,outfile):
+    indataset = gdal.Open(infile)
+    geotransform = indataset.GetGeoTransform()
+    prj = indataset.GetProjectionRef()
+    outdataset = gdal.Open(outfile)
+    outdataset.SetGeoTransform(geotransform)
+    outdataset.SetProjection(prj)
+    del indataset
+    del outdataset
 
 def echoRuntime(func):
     def wrapper(*args, **kwargs):

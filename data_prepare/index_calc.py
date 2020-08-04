@@ -1,7 +1,7 @@
 import os,fire
 from osgeo import gdal
 import numpy as np
-from ulitities.base_functions import get_file
+from ulitities.base_functions import get_file,geotrans_match
 def progress(percent, msg, tag):
     print(percent, msg, tag)
 def compress(path, target_path):
@@ -100,8 +100,6 @@ def Calc_Normalized_Difference_Index(imagery,output="",index_type = "NDVI" ,noda
     if n_bands != 4:
         print("please use BGRN satellite imagery")
         return -2
-    Prj = dataset.GetProjection()
-    Trans = dataset.GetGeoTransform()
     image_datatype = dataset.GetRasterBand(1).DataType
 
     band_img = []
@@ -143,9 +141,9 @@ def Calc_Normalized_Difference_Index(imagery,output="",index_type = "NDVI" ,noda
     driver = gdal.GetDriverByName('GTiff')
     output_ds = driver.Create(output_filename, X,
                               Y, 1, gdal.GDT_Byte)
-    output_ds.SetGeoTransform(Trans)
-    output_ds.SetProjection(Prj)
+
     output_ds.GetRasterBand(1).WriteArray(result)
+    geotrans_match(imagery,output_filename)
     return 0
 
 
