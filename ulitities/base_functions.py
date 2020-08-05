@@ -47,7 +47,7 @@ def geotrans_match(infile,outfile):
     indataset = gdal.Open(infile)
     geotransform = indataset.GetGeoTransform()
     prj = indataset.GetProjectionRef()
-    outdataset = gdal.Open(outfile)
+    outdataset = gdal.Open(outfile,gdal.GA_Update)
     outdataset.SetGeoTransform(geotransform)
     outdataset.SetProjection(prj)
     del indataset

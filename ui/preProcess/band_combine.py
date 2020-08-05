@@ -70,8 +70,8 @@ class Ui_Dialog_band_combine(object):
         self.horizontalLayout_4.addWidget(self.label_4)
         self.spinBox = QtWidgets.QSpinBox(self.layoutWidget)
         self.spinBox.setMinimumSize(QtCore.QSize(0, 22))
-        self.spinBox.setMaximum(1000000000)
-        self.spinBox.setProperty("value", 65535)
+        self.spinBox.setMaximum(1000000)
+        self.spinBox.setProperty("value", 255)
         self.spinBox.setObjectName("spinBox")
         self.horizontalLayout_4.addWidget(self.spinBox)
         self.horizontalLayout_5.addLayout(self.horizontalLayout_4)
@@ -86,7 +86,7 @@ class Ui_Dialog_band_combine(object):
 
     def retranslateUi(self, Dialog_band_combine):
         _translate = QtCore.QCoreApplication.translate
-        Dialog_band_combine.setWindowTitle(_translate("Dialog_band_combine", "Dialog"))
+        Dialog_band_combine.setWindowTitle(_translate("Dialog_band_combine", "Dialog_band_combine"))
         self.label.setText(_translate("Dialog_band_combine", "inputpath"))
         self.pushButton_imagepath.setText(_translate("Dialog_band_combine", "open"))
         self.label_2.setText(_translate("Dialog_band_combine", "outputpath"))

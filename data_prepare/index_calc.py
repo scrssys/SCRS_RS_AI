@@ -135,7 +135,9 @@ def Calc_Normalized_Difference_Index(imagery,output="",index_type = "NDVI" ,noda
         return -4
     del band_img,band
     result = np.zeros((Y,X),np.uint8)
-    result[:,:]= (tmp[:,:]+1.0)*255.0/2.0
+    result[:,:]= (tmp[:,:]+1.0)*254.0/2.0
+    result[result<0.0001]=0
+    result[result > 254.000] = 254
 
     result[index] = 255
     driver = gdal.GetDriverByName('GTiff')
@@ -143,6 +145,7 @@ def Calc_Normalized_Difference_Index(imagery,output="",index_type = "NDVI" ,noda
                               Y, 1, gdal.GDT_Byte)
 
     output_ds.GetRasterBand(1).WriteArray(result)
+    del output_ds
     geotrans_match(imagery,output_filename)
     return 0
 

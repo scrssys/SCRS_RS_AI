@@ -198,7 +198,7 @@ class child_convert_8bit(QDialog,Ui_Dialog_convert8bit,base_message):
         try:
             if convert_func in "Percent clip":
                 self.send("Using Percent Clip Streth")
-                batch_convert_8bit(self.send,dir_input, dir_output, nodata)
+                batch_convert_8bit(self.send,dir_input, dir_output, nodata,bk_h=height)
             else:
                 self.send("Using Max Min Streth")
                 batch_convert_8bit_minmax(self.send, dir_input, dir_output, nodata,bk_h=height)

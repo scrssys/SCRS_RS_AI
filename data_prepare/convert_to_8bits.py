@@ -12,7 +12,7 @@ def convert_to_8Bit_percentclip(inputRaster, outputRaster,
                     outputFormat='GTiff',
                     stretch_type='rescale',
                      nodata=65535,
-                    percentiles=[0.5, 99.75]):
+                    percentiles=[0.5, 99.75], block_h=10000):
     '''
     Convert 16bit image to 8bit
     rescale_type = [clip, rescale]
@@ -28,56 +28,94 @@ def convert_to_8Bit_percentclip(inputRaster, outputRaster,
         return
     # iterate through bands
     height = srcRaster.RasterYSize
+    bk_h=block_h
+    if block_h > height:
+        print("Warnin:block height is gt image height")
+        bk_h=height
     width = srcRaster.RasterXSize
     im_bands = srcRaster.RasterCount
 
-    geotransform = srcRaster.GetGeoTransform()
-    projinf = srcRaster.GetProjectionRef()
+    # geotransform = srcRaster.GetGeoTransform()
+    # projinf = srcRaster.GetProjectionRef()
     # del srcRaster
-    result = []
-    for bandId in range(srcRaster.RasterCount):
-        bandId = bandId + 1
-        band = srcRaster.GetRasterBand(bandId)
+    all_mins = np.zeros(im_bands, np.float32)
+    all_maxs = np.zeros(im_bands, np.float32)
+    # result = []
+    for i in range(srcRaster.RasterCount):
+        # bandId = i + 1
+        band = srcRaster.GetRasterBand(i+1)
         # band.SetNoDataValue ( -333 )
         if stretch_type == 'rescale':
             band.SetNoDataValue(nodata)
-
             bmin = band.GetMinimum()
             bmax = band.GetMaximum()
             # if not exist minimum and maximum values
             if bmin is None or bmax is None:
-                (bmin, bmax) = band.ComputeRasterMinMax(1)
+                (bmin, bmax) = band.ComputeRasterMinMax(1)  ###will not be used
             band_arr_tmp = band.ReadAsArray()
 
             index = np.where(band_arr_tmp==nodata)
-            new_data = np.asarray(band_arr_tmp, dtype=np.float32)
-            new_data[index]=np.nan
-            bmin = np.nanpercentile(new_data.flatten(),
+            band_arr_tmp = np.asarray(band_arr_tmp, dtype=np.float16)
+            band_arr_tmp[index]=np.nan
+            bmin = np.nanpercentile(band_arr_tmp.flatten(),
                                  percentiles[0])
-            bmax = np.nanpercentile(new_data.flatten(),
+            bmax = np.nanpercentile(band_arr_tmp.flatten(),
                                  percentiles[1])
         elif isinstance(stretch_type, dict):
-            bmin, bmax = stretch_type[bandId]
+            bmin, bmax = stretch_type[i]
         else:
             bmin, bmax = 0, 65535
 
-        temp = 255.0*(new_data-bmin)/(bmax-bmin+0.000001)
-        temp[temp<0.00001]=0
-        temp[temp>253.99999]=254
-        temp[index]=255
-        temp=np.asarray(temp,np.uint8)
-        result.append(temp)
+        all_mins[i] = bmin
+        all_maxs[i] = bmax
+
+        # temp = 255.0*(new_data-bmin)/(bmax-bmin+0.000001)
+        # temp[temp<0.00001]=0
+        # temp[temp>253.99999]=254
+        # temp[index]=255
+        # temp=np.asarray(temp,np.uint8)
+        # result.append(temp)
         # plt.imshow(temp, cmap='gray')
         # plt.show()
 
     driver = gdal.GetDriverByName("GTiff")
     outdataset = driver.Create(outputRaster, width, height, im_bands, gdal.GDT_Byte)
-    outdataset.SetGeoTransform(geotransform)
-    outdataset.SetProjection(projinf)
-    for i in range(im_bands):
-        outdataset.GetRasterBand(i + 1).WriteArray(result[i])
+    # outdataset.SetGeoTransform(geotransform)
+    # outdataset.SetProjection(projinf)
 
+    n_blocks = 1
+    if height % bk_h == 0:
+        n_blocks = int(height / bk_h)
+    else:
+        n_blocks = int(height / bk_h) + 1
+
+    # real_b = min(im_bands, bands)
+    for index_block in range(n_blocks):
+        start_y = index_block * bk_h
+        y_block_height = bk_h
+        if index_block == n_blocks - 1:
+            y_block_height = height - start_y
+        img = srcRaster.ReadAsArray(0, start_y, width, y_block_height)
+        img = np.transpose(img, (1, 2, 0))
+
+        for i in range(im_bands):
+            index = np.where(img[:, :, i] == nodata)
+            t_img = np.asarray(img[:, :, i], dtype=np.float32)
+            temp = np.zeros(t_img.shape, np.float32)
+            temp[:, :] = 254.0 * (t_img[:, :] - all_mins[i]) / (all_maxs[i] - all_mins[i] + 0.000001)
+            temp[temp < 0.00001] = 0
+            temp[temp > 253.99999] = 254
+            temp[index] = 255
+            temp = np.asarray(temp, np.uint8)
+            outdataset.GetRasterBand(i + 1).WriteArray(temp, xoff=0, yoff=start_y)
+
+    # for i in range(im_bands):
+    #     outdataset.GetRasterBand(i + 1).WriteArray(result[i])
+
+    del srcRaster
     del outdataset
+    geotrans_match(inputRaster, outputRaster)
+    return 0
 
 def convert_8bit_minMaxium(inputRaster, outputRaster, nodata=65535):
     # from osgeo import gdal
@@ -90,8 +128,8 @@ def convert_8bit_minMaxium(inputRaster, outputRaster, nodata=65535):
     height = srcRaster.RasterYSize
     width = srcRaster.RasterXSize
     im_bands = srcRaster.RasterCount
-    geotransform = srcRaster.GetGeoTransform()
-    projinf = srcRaster.GetProjectionRef()
+    # geotransform = srcRaster.GetGeoTransform()
+    # projinf = srcRaster.GetProjectionRef()
     result = []
     for bandId in range(srcRaster.RasterCount):
         bandId = bandId + 1
@@ -136,11 +174,13 @@ def convert_8bit_minMaxium(inputRaster, outputRaster, nodata=65535):
 
     driver = gdal.GetDriverByName("GTiff")
     outdataset = driver.Create(outputRaster, width, height, im_bands, gdal.GDT_Byte)
-    outdataset.SetGeoTransform(geotransform)
-    outdataset.SetProjection(projinf)
+    # outdataset.SetGeoTransform(geotransform)
+    # outdataset.SetProjection(projinf)
     for i in range(im_bands):
         outdataset.GetRasterBand(i + 1).WriteArray(result[i])
     del outdataset
+    geotrans_match(inputRaster, outputRaster)
+    return 0
 
 ####分块转换
 def convert_8bit_minMaxium_blocks(inputRaster, outputRaster, nodata=65535,block_h=10000):
@@ -152,14 +192,15 @@ def convert_8bit_minMaxium_blocks(inputRaster, outputRaster, nodata=65535,block_
         return -1
     # iterate through bands
     height = srcRaster.RasterYSize
+    bk_h=block_h
     if block_h > height:
         print("Warnin:block height is gt image height")
         bk_h=height
         # return -2
     width = srcRaster.RasterXSize
     im_bands = srcRaster.RasterCount
-    geotransform = srcRaster.GetGeoTransform()
-    projinf = srcRaster.GetProjectionRef()
+    # geotransform = srcRaster.GetGeoTransform()
+    # projinf = srcRaster.GetProjectionRef()
     # result = []
     all_mins=np.zeros(im_bands,np.float32)
     all_maxs = np.zeros(im_bands, np.float32)
@@ -170,8 +211,8 @@ def convert_8bit_minMaxium_blocks(inputRaster, outputRaster, nodata=65535,block_
     except:
         print("Error: output raster is existed or can not be opened:\n {}".format(outputRaster))
         return -3
-    outdataset.SetGeoTransform(geotransform)
-    outdataset.SetProjection(projinf)
+    # outdataset.SetGeoTransform(geotransform)
+    # outdataset.SetProjection(projinf)
 
     for i in range(im_bands):
         bandId = i + 1
@@ -180,7 +221,28 @@ def convert_8bit_minMaxium_blocks(inputRaster, outputRaster, nodata=65535,block_
         bmax = band.GetMaximum()
         # if not exist minimum and maximum values
         if bmin is None or bmax is None:
-            (bmin, bmax) = band.ComputeRasterMinMax(1)
+            (bmin, bmax) = band.ComputeRasterMinMax(1) # will not be used
+
+        band_arr_tmp = band.ReadAsArray()
+        if band_arr_tmp is None:
+            print("Warning: reading image failed for \n {}".format(inputRaster))
+            return -3
+        index = np.where(band_arr_tmp == nodata)
+        band_arr_tmp = np.asarray(band_arr_tmp, dtype=np.float16)
+        if len(index) < 2:
+            print("no nodata")
+            bmin = band_arr_tmp.min()
+            bmax = band_arr_tmp.max()
+            # continue
+        else:
+            # mmmm =np.min(new_data)
+            band_arr_tmp[index] = np.nan
+            t_min = np.nanargmin(band_arr_tmp)
+            t_max = np.nanargmax(band_arr_tmp)
+            bmin = (band_arr_tmp.flatten())[t_min]
+            bmax = (band_arr_tmp.flatten())[t_max]
+            # bmin2 = min(band_arr_tmp[t_min])
+            # bmax2 = max(band_arr_tmp[t_max])
         all_mins[i] = bmin
         all_maxs[i] = bmax
     n_blocks = 1
@@ -196,9 +258,10 @@ def convert_8bit_minMaxium_blocks(inputRaster, outputRaster, nodata=65535,block_
         if index_block == n_blocks - 1:
             y_block_height = height - start_y
         img = srcRaster.ReadAsArray(0, start_y, width, y_block_height)
+        if img is None:
+            print("Warning: reading image failed for \n {}".format(inputRaster))
+            return -4
         img = np.transpose(img, (1, 2, 0))
-
-        # for index_band in range(im_bands):
 
         for i in range(im_bands):
             index = np.where(img[:,:,i] == nodata)
@@ -213,6 +276,8 @@ def convert_8bit_minMaxium_blocks(inputRaster, outputRaster, nodata=65535,block_
 
     del srcRaster
     del outdataset
+    geotrans_match(inputRaster, outputRaster)
+    return 0
 
 
 
@@ -223,7 +288,7 @@ def convert_8bit_histspecification():
     pass
 
 
-def batch_convert_8bit(send_massage_callback=send_message_callback,inputdir="",outputdir="", nodata=65535):
+def batch_convert_8bit(send_massage_callback=send_message_callback,inputdir="",outputdir="", nodata=65535,bk_h=10000):
     if not os.path.isdir(inputdir):
         send_massage_callback("Please check input directory:{}".format(inputdir))
 
@@ -243,7 +308,7 @@ def batch_convert_8bit(send_massage_callback=send_message_callback,inputdir="",o
         if os.path.isfile(outputfile):
             print("This image has been converted:{}".format(outputfile))
             continue
-        convert_to_8Bit_percentclip(file,outputfile, nodata)
+        convert_to_8Bit_percentclip(file,outputfile, nodata, block_h=bk_h)
         # convert_to_8Bit_percentclip(file, outputfile,
         #                  outputDataType='Byte',
         #                  stretch_type='rescale',
@@ -271,10 +336,12 @@ def batch_convert_8bit_minmax(send_massage_callback=send_message_callback,inputd
         convert_8bit_minMaxium_blocks(file,outputfile,nd,block_h=bk_h)
 
 if __name__=='__main__':
-    # convert_8bit_minMaxium(r"D:\\222222\\GF1102160794620200630F.pix",
-    #                        r"D:\\222222\\GF1F.pix",0)
-    # convert_8bit_minMaxium_blocks(r"D:\data\original\16\16b.tif",
-    # r"D:\data\original\4\16b4.tif", block_h=20000)
+
+    # convert_8bit_minMaxium_blocks(r"D:\data\bieshu\Level18\sc001_0_0.tif",
+    # r"D:\data\original\4\sc001_0_02.tif", block_h=20000)
     # convert_8bit_minMaxium(r"D:\data\original\16\16b.tif",
     #                               r"D:\data\original\4\16b5.tif")
+
+    # convert_to_8Bit_percentclip(r"D:\data\original\16\16b.tif",
+    # r"D:\data\original\4\16b7.tif", block_h=20000)
     fire.Fire()

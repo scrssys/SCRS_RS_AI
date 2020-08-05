@@ -2,6 +2,7 @@
 import os,sys,fire
 from ulitities.base_functions import get_file,find_file,geotrans_match
 from tqdm import tqdm
+import numpy as np
 try:
     from osgeo import ogr, osr, gdal
     gdal.UseExceptions()
@@ -9,33 +10,51 @@ except:
     sys.exit('ERROR: cannot find GDAL/OGR modules')
 def band_combine(file_list,outputfile):
     result = []
-    dataset_a = gdal.Open(file_list[0])
-    dataset_b = gdal.Open(file_list[1])
-    band_n_a = dataset_a.RasterCount
-    band_n_b = dataset_b.RasterCount
-    band_n = band_n_a + band_n_b
+    try:
+        dataset_a = gdal.Open(file_list[0])
+    except:
+        print("Warning: file opening failed :\n {}".format(file_list[0]))
+        return -1
+    try:
+        dataset_b = gdal.Open(file_list[1])
+    except:
+        print("Warning: file opening failed :\n {}".format(file_list[1]))
+        return -2
+    # band_n_a = dataset_a.RasterCount
+    # band_n_b = dataset_b.RasterCount
+    band_n = dataset_a.RasterCount + dataset_b.RasterCount
 
-    result.append(dataset_a.ReadAsArray())
-    result.append(dataset_b.ReadAsArray())
+
+    # result.append(dataset_a.ReadAsArray())
+    # result.append(dataset_b.ReadAsArray())
 
     X = dataset_a.RasterXSize
     Y = dataset_a.RasterYSize
+    if X!=dataset_b.RasterXSize or Y!=dataset_b.RasterYSize:
+        print("Warning:input images must have the same width and height \n {}".format(os.path.split(file_list[0])[1]))
+        return -3
+
+    result = np.zeros((Y,X,band_n),np.uint16)
+
+    for i in range(dataset_a.RasterCount):
+        tmp_band = dataset_a.GetRasterBand(i+1)
+        result[:,:,i] = tmp_band.ReadAsArray()
+
+    for i in range(dataset_b.RasterCount):
+        tmp_band = dataset_b.GetRasterBand(i + 1)
+        result[:, :, dataset_a.RasterCount+i] = tmp_band.ReadAsArray()
 
     driver = gdal.GetDriverByName('GTiff')
 
     outdataset = driver.Create(outputfile, X,
                               Y, band_n, gdal.GDT_Byte)
-    count = 0
-    cc = result[0]
-    bb=cc[1]
-    for i in range(band_n_a):
-        count = count + 1
-        outdataset.GetRasterBand(count + 1).WriteArray(result[0][i])
-    for j in range(band_n_b):
-        outdataset.GetRasterBand(count + 1).WriteArray(result[1])
-        count = count + 1
+    for i in range(band_n):
+        outdataset.GetRasterBand(i+1).WriteArray(result[:,:,i])
+
     outdataset.FlushCache()
+    del dataset_b,dataset_a, outdataset
     geotrans_match(file_list[0],outputfile)
+    return 0
 
 
 def batch_band_combine(indir,outdir,nodata=65535):
@@ -57,6 +76,9 @@ def batch_band_combine(indir,outdir,nodata=65535):
     for fileA in tqdm(filelist_a):
         basename=os.path.basename(fileA).split(".")[0]
         fileB = find_file(indir+'/b/',basename)
+        if len(fileB)==0:
+            print("Warning: corresponding index file is not exist \n {}".format(os.path.split(fileA)[1]))
+            continue
         print(fileB)
         flist=[]
         flist.append(fileA)
