@@ -86,7 +86,6 @@ def Calc_Normalized_Difference_index_block(imagery):
             output_ds.GetRasterBand(band + 1).WriteArray(data,block[0],block[1])
     output_ds.FlushCache()
 
-# Calc_Normalized_Difference_index_block('D:\\data_file\\2_8b_ndvi.tif')
 
 def Calc_Normalized_Difference_Index(imagery,output="",index_type = "NDVI" ,nodata=65535,):
     try:
@@ -126,7 +125,7 @@ def Calc_Normalized_Difference_Index(imagery,output="",index_type = "NDVI" ,noda
 
     if index_type == "NDVI":
         # output_filename = output_dir + "\\" + output_basename + "_ndvi.tif"
-        tmp = (band_img[3]-band_img[1])/(band_img[3]+band_img[2]+0.00000001)
+        tmp = (band_img[3]-band_img[2])/(band_img[3]+band_img[2]+0.00000001)
     elif index_type == "NDWI":
         # output_filename = output_dir + "\\" + output_basename + "_ndwi.tif"
         tmp = (band_img[1]-band_img[3])/(band_img[1]+band_img[3]+0.00000001)

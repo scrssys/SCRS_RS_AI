@@ -105,8 +105,8 @@ def convert_to_8Bit_percentclip(inputRaster, outputRaster,
             temp[:, :] = 254.0 * (t_img[:, :] - all_mins[i]) / (all_maxs[i] - all_mins[i] + 0.000001)
             temp[temp < 0.00001] = 0
             temp[temp > 253.99999] = 254
-            temp[index] = 255
             temp = np.asarray(temp, np.uint8)
+            temp[index] = 255
             outdataset.GetRasterBand(i + 1).WriteArray(temp, xoff=0, yoff=start_y)
 
     # for i in range(im_bands):
@@ -270,8 +270,8 @@ def convert_8bit_minMaxium_blocks(inputRaster, outputRaster, nodata=65535,block_
             temp[:,:] = 254.0 * (t_img[:,:] - all_mins[i]) / (all_maxs[i] - all_mins[i] + 0.000001)
             temp[temp < 0.00001] = 0
             temp[temp > 253.99999] = 254
-            temp[index] = 255
             temp = np.asarray(temp, np.uint8)
+            temp[index] = 255
             outdataset.GetRasterBand(i + 1).WriteArray(temp,xoff=0,yoff=start_y)
 
     del srcRaster
@@ -337,8 +337,8 @@ def batch_convert_8bit_minmax(send_massage_callback=send_message_callback,inputd
 
 if __name__=='__main__':
 
-    # convert_8bit_minMaxium_blocks(r"D:\data\bieshu\Level18\sc001_0_0.tif",
-    # r"D:\data\original\4\sc001_0_02.tif", block_h=20000)
+    convert_8bit_minMaxium_blocks(r"D:\data\original\bigdata\test\ZY302714902958720170508F.IMG",
+    r"D:\data\original\4\ZY302714902958720170508F.IMG", block_h=20000)
     # convert_8bit_minMaxium(r"D:\data\original\16\16b.tif",
     #                               r"D:\data\original\4\16b5.tif")
 
