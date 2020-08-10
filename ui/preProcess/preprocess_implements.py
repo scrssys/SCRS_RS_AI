@@ -27,7 +27,7 @@ from data_prepare.convert_to_8bits import batch_convert_8bit,batch_convert_8bit_
 from data_prepare.crop_samples import Simple_Crop
 from data_prepare.index_calc import batch_calc_index
 from data_prepare.band_combine import batch_band_combine
-from data_prepare.rasterizeLayer import crop_by_extent,rasterize_layer
+# from data_prepare.rasterizeLayer import crop_by_extent,rasterize_layer
 
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *

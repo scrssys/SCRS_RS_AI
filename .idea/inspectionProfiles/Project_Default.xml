@@ -4,7 +4,7 @@
     <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoredPackages">
         <value>
-          <list size="133">
+          <list size="135">
             <item index="0" class="java.lang.String" itemvalue="numba" />
             <item index="1" class="java.lang.String" itemvalue="unity-scope-colourlovers" />
             <item index="2" class="java.lang.String" itemvalue="scikit-learn" />
@@ -138,6 +138,8 @@
             <item index="130" class="java.lang.String" itemvalue="nose2" />
             <item index="131" class="java.lang.String" itemvalue="scipy" />
             <item index="132" class="java.lang.String" itemvalue="Keras-Applications" />
+            <item index="133" class="java.lang.String" itemvalue="tensorflow" />
+            <item index="134" class="java.lang.String" itemvalue="imgaug" />
           </list>
         </value>
       </option>
