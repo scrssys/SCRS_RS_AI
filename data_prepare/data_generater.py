@@ -301,6 +301,7 @@ def train_data_generator_files(config, sampth, sample_url):
             train_data = []
             train_label = []
         random.shuffle(sample_url)
+        valid_img_num=0  # 防止所有训练数据都有nodata
         for pic in sample_url:
             label_img = load_label(sampth+'/label/'+pic)
             if isinstance(label_img,int):
@@ -309,7 +310,13 @@ def train_data_generator_files(config, sampth, sample_url):
             tp = np.unique(label_img)
             if config.label_nodata in tp:
                 # print("Warning: contain nodata in label of {}".format(pic))
+                if pic is sample_url[-1] and valid_img_num==0:
+                    print("Error: all labels have nodata or there is no label useful !")
+                    raise ValueError
+                    # sys.exit(-1)
+
                 continue
+            valid_img_num +=1
             # if len(tp) < 2:
             #     # print("Only one value {} in {}".format(tp, sampth + '/label/' + pic))
             #     if tp[0]==config.label_nodata:
