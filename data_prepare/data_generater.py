@@ -311,7 +311,7 @@ def train_data_generator_files(config, sampth, sample_url):
             if config.label_nodata in tp:
                 # print("Warning: contain nodata in label of {}".format(pic))
                 if pic is sample_url[-1] and valid_img_num==0:
-                    print("Error: all labels have nodata or there is no label useful !")
+                    print("Error: all train labels have nodata or there is no label useful !")
                     raise ValueError
                     # sys.exit(-1)
 
@@ -646,23 +646,6 @@ def val_data_generator_files(config,sampth, sample_url):
         pass
     w=config.img_w
     h=config.img_h
-    label_list, img_list = [],[]
-    # for pic in sample_url:
-    #     _, t_img = load_img_normalization(1, sampth + '/label/' + pic)
-    #     tp = np.unique(t_img)
-    #     if len(tp) < 2:
-    #         print("Only one value {} in {}".format(tp, sampth + '/label/' + pic))
-    #         if tp[0] == 127:
-    #             print("Ignore:nodata value in {}".format(sampth + '/label/' + pic))
-    #             continue
-    #     ret, s_img = load_img_bybandlist((sampth + '/src/' + pic), bandlist=config.band_list)
-    #     if ret!=0:
-    #         continue
-    #     s_img = img_to_array(s_img)
-    #     img_list.append(s_img)
-    #     label_list.append(t_img)
-    #
-    # assert len(label_list) == len(img_list)
 
     train_data = []
     train_label = []
@@ -682,7 +665,7 @@ def val_data_generator_files(config,sampth, sample_url):
             if config.label_nodata in tp:
                 # print("Warning: contain nodata in label of {}".format(pic))
                 if pic is sample_url[-1] and valid_img_num==0:
-                    print("Error: all labels have nodata or there is no label useful !")
+                    print("Error: all valid labels have nodata or there is no label useful !")
                     raise ValueError
                 continue
             valid_img_num += 1
