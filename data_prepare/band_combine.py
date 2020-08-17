@@ -57,6 +57,77 @@ def band_combine(file_list,outputfile):
     return 0
 
 
+def band_combine_blocks(file_list,output,block_h=10000 ):
+    result = []
+    try:
+        dataset_a = gdal.Open(file_list[0])
+    except:
+        print("Warning: file opening failed :\n {}".format(file_list[0]))
+        return -1
+    try:
+        dataset_b = gdal.Open(file_list[1])
+    except:
+        print("Warning: file opening failed :\n {}".format(file_list[1]))
+        return -2
+    band_n_a = dataset_a.RasterCount
+    band_n_b = dataset_b.RasterCount
+    band_n = band_n_a + band_n_b
+
+
+    # result.append(dataset_a.ReadAsArray())
+    # result.append(dataset_b.ReadAsArray())
+
+    width = dataset_a.RasterXSize
+    height = dataset_a.RasterYSize
+    if width!=dataset_b.RasterXSize or height!=dataset_b.RasterYSize:
+        print("Warning:input images must have the same width and height \n {}".format(os.path.split(file_list[0])[1]))
+        return -3
+
+
+    bk_h = block_h
+    if block_h > height:
+        print("Warnin:block height is gt image height")
+        bk_h = height
+        # return -2
+
+    try:
+        driver = gdal.GetDriverByName("GTiff")
+        outdataset = driver.Create(output, width, height, band_n, gdal.GDT_Byte)
+    except:
+        print("Error: output raster is existed or can not be opened:\n {}".format(output))
+        return -3
+
+    n_blocks = 1
+    if height % bk_h == 0:
+        n_blocks = int(height / bk_h)
+    else:
+        n_blocks = int(height / bk_h) + 1
+
+    # real_b = min(im_bands, bands)
+    for index_block in range(n_blocks):
+        start_y = index_block * bk_h
+        y_block_height = bk_h
+        if index_block == n_blocks - 1:
+            y_block_height = height - start_y
+
+
+        for i in range(band_n_a):
+            tmp_band = dataset_a.GetRasterBand(i + 1)
+            tmp = tmp_band.ReadAsArray(0, start_y, width, y_block_height)
+            outdataset.GetRasterBand(i + 1).WriteArray(tmp, xoff=0, yoff=start_y)
+
+        for i in range(band_n_b):
+            tmp_band = dataset_b.GetRasterBand(i + 1)
+            tmp = tmp_band.ReadAsArray(0, start_y, width, y_block_height)
+            outdataset.GetRasterBand(band_n_a+i + 1).WriteArray(tmp, xoff=0, yoff=start_y)
+
+
+    outdataset.FlushCache()
+    del dataset_b,dataset_a, outdataset
+    geotrans_match(file_list[0],output)
+    return 0
+
+
 def batch_band_combine(indir,outdir,nodata=65535):
     if not os.path.isdir(indir):
         print("Error:input is not a directory")
@@ -84,8 +155,11 @@ def batch_band_combine(indir,outdir,nodata=65535):
         flist.append(fileA)
         flist.append(fileB)
         outfile = outdir+'/'+basename+'.tif'
+        if os.path.isfile(outfile):
+            print("Warning:result file is existed:{}\n".format(outfile))
+            continue
         ret =0
-        ret = band_combine(flist,outfile)
+        ret = band_combine_blocks(flist,outfile)
         if ret!=0:
             print("Error:combinig failed :{}".format(basename))
             continue

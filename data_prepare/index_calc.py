@@ -87,7 +87,7 @@ def Calc_Normalized_Difference_index_block(imagery):
     output_ds.FlushCache()
 
 
-def Calc_Normalized_Difference_Index(imagery,output="",index_type = "NDVI" ,nodata=65535,):
+def Calc_Normalized_Difference_Index(imagery,output="",index_type = "NDVI" ,nodata=65535):
     try:
         dataset = gdal.Open(imagery)
     except:
@@ -146,6 +146,74 @@ def Calc_Normalized_Difference_Index(imagery,output="",index_type = "NDVI" ,noda
     output_ds.GetRasterBand(1).WriteArray(result)
     del output_ds
     geotrans_match(imagery,output_filename)
+    return 0
+
+
+def Calc_Normalized_Difference_Index_blocks(imagery,output="",index_type = "NDVI" ,nodata=65535,block_h=10000):
+    try:
+        dataset = gdal.Open(imagery)
+    except:
+        print("Open file failed")
+        return -1
+    height = dataset.RasterYSize
+    bk_h = block_h
+    if block_h > height:
+        print("Warnin:block height is gt image height")
+        bk_h = height
+        # return -2
+    width = dataset.RasterXSize
+    im_bands = dataset.RasterCount
+    if im_bands != 4:
+        print("please use BGRN satellite imagery")
+        return -2
+    # image_datatype = dataset.GetRasterBand(1).DataType
+
+    ###创建输出数据
+
+    try:
+        driver = gdal.GetDriverByName("GTiff")
+        outdataset = driver.Create(output, width, height, 1, gdal.GDT_Byte)
+    except:
+        print("Error: output raster is existed or can not be opened:\n {}".format(output))
+        return -3
+
+    n_blocks = 1
+    if height % bk_h == 0:
+        n_blocks = int(height / bk_h)
+    else:
+        n_blocks = int(height / bk_h) + 1
+
+    # real_b = min(im_bands, bands)
+    for index_block in range(n_blocks):
+        start_y = index_block * bk_h
+        y_block_height = bk_h
+        if index_block == n_blocks - 1:
+            y_block_height = height - start_y
+        img = dataset.ReadAsArray(0, start_y, width, y_block_height)
+        if img is None:
+            print("Warning: reading image failed for \n {}".format(imagery))
+            return -4
+        img = np.transpose(img, (1, 2, 0))
+        index = np.where(img[:,:,0]==nodata)
+        tmp = np.zeros((img.shape[0],img.shape[1]), np.float32)
+
+        if index_type == "NDVI":
+            tmp[:,:] = (img[:,:,3] - img[:,:,2]) / (img[:,:,3] + img[:,:,2] + 0.00000001)
+        elif index_type == "NDWI":
+            tmp[:,:] = (img[:,:,1] - img[:,:,3]) / (img[:,:,1] + img[:,:,3] + 0.00000001)
+        else:
+            print("Error: please check index type")
+            return -4
+
+        result = (tmp + 1.0) * 254.0 / 2.0
+        result[result < 0.0001] = 0
+        result[result > 254.000] = 254
+        # result[index]=255
+        result=np.asarray(result, np.uint8)
+
+        outdataset.GetRasterBand(1).WriteArray(result, xoff=0, yoff=start_y)
+    del dataset, outdataset
+    geotrans_match(imagery,output)
     return 0
 
 
@@ -262,16 +330,16 @@ def batch_calc_index(indir,outdir="",keyword="NDWI",nulldata=65535):
     if not os.path.isdir(outdir):
         os.mkdir(outdir)
     for file in filelist:
-        # absname = os.path.split(file)[1]
-        # outfile = os.path.join(outdir,absname)
+        absname = os.path.split(file)[1]
+        outfile = os.path.join(outdir,absname)
         res=0
         if keyword == "NDWI":
             # Calc_Normalized_Difference_Index(imagery, output="", index_type="NDVI", nodata=255, ):
             print("Calculating Normalized Difference Water Index : " + file)
-            res=Calc_Normalized_Difference_Index(file, output=outdir, index_type="NDWI", nodata=nulldata)
+            res=Calc_Normalized_Difference_Index_blocks(file, output=outfile, index_type="NDWI", nodata=nulldata,block_h=20000)
         elif keyword == "NDVI":
             print("Calculating Normalized Difference Vegetation Index : " + file)
-            res=Calc_Normalized_Difference_Index(file, output=outdir, index_type="NDVI", nodata=nulldata)
+            res=Calc_Normalized_Difference_Index_blocks(file, output=outfile, index_type="NDVI", nodata=nulldata,block_h=20000)
         else:
             print("Error:please check index type")
             return -2
