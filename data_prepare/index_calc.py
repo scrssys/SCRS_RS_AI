@@ -194,6 +194,7 @@ def Calc_Normalized_Difference_Index_blocks(imagery,output="",index_type = "NDVI
             print("Warning: reading image failed for \n {}".format(imagery))
             return -4
         img = np.transpose(img, (1, 2, 0))
+        img = np.asarray(img,np.float32)
         index = np.where(img[:,:,0]==nodata)
         tmp = np.zeros((img.shape[0],img.shape[1]), np.float32)
 
@@ -204,11 +205,13 @@ def Calc_Normalized_Difference_Index_blocks(imagery,output="",index_type = "NDVI
         else:
             print("Error: please check index type")
             return -4
+        # print(min(min(row) for row in tmp))
+        # print(max(max(row) for row in tmp))
 
         result = (tmp + 1.0) * 254.0 / 2.0
         result[result < 0.0001] = 0
         result[result > 254.000] = 254
-        # result[index]=255
+        result[index]=255
         result=np.asarray(result, np.uint8)
 
         outdataset.GetRasterBand(1).WriteArray(result, xoff=0, yoff=start_y)
@@ -340,6 +343,7 @@ def batch_calc_index(indir,outdir="",keyword="NDWI",nulldata=65535,bk_h=2000):
         elif keyword == "NDVI":
             print("Calculating Normalized Difference Vegetation Index : " + file)
             res=Calc_Normalized_Difference_Index_blocks(file, output=outfile, index_type="NDVI", nodata=nulldata,block_h=bk_h)
+            # res = Calc_Normalized_Difference_Index_blocks(file, output=outfile, index_type="NDVI", nodata=nulldata)
         else:
             print("Error:please check index type")
             return -2
