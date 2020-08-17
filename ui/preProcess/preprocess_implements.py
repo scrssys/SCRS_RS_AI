@@ -112,6 +112,7 @@ class child_band_combine(QDialog,Ui_Dialog_band_combine,base_message):
         self.setWindowTitle(_translate("Dialog_band_combine", "影像波段合成"))
         self.label.setText(_translate("inputpath", "输入路径"))
         self.label_2.setText(_translate("outputpath", "输出路径"))
+        self.label_5.setText(_translate("block", "分块行"))
 
     def slot_select_inputpath(self):
         dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
@@ -123,9 +124,11 @@ class child_band_combine(QDialog,Ui_Dialog_band_combine,base_message):
         dir_input = self.lineEdit_imagpath.text()
         dir_output = self.lineEdit_outputpath.text()
         nodata = self.spinBox.value()
+        height = self.spinBox_2.value()
         self.buttonBox.setEnabled(False)
+
         ret =0
-        ret = batch_band_combine(dir_input,dir_output,nodata=nodata)
+        ret = batch_band_combine(dir_input,dir_output,nodata=nodata,bk_h=height)
         if ret !=0:
             QMessageBox.information(self, '提示', "Error occurred")
         else:
@@ -145,6 +148,8 @@ class child_index_calc(QDialog,Ui_Dialog_index_calc,base_message):
         self.label.setText(_translate("imagepath", "输入路径"))
         self.label_2.setText(_translate("outputpath", "输出路径"))
         self.label_3.setText(_translate("Index", "指数类型"))
+        self.label_5.setText(_translate("block", "分块行"))
+
     def slot_select_inputpath(self):
         dir_tmp = QFileDialog.getExistingDirectory(self, "select a existing directory", '../../data/')
         self.lineEdit_imagpath.setText(dir_tmp)
@@ -156,9 +161,10 @@ class child_index_calc(QDialog,Ui_Dialog_index_calc,base_message):
         dir_output = self.lineEdit_outputpath.text()
         nodata = self.spinBox.value()
         index_tpye = self.comboBox.currentText()
+        height = self.spinBox_2.value()
         self.buttonBox.setEnabled(False)
         ret =0
-        ret = batch_calc_index(dir_input,dir_output,keyword=index_tpye,nulldata=nodata)
+        ret = batch_calc_index(dir_input,dir_output,keyword=index_tpye,nulldata=nodata,bk_h=height)
         if ret !=0:
             QMessageBox.information(self, '提示', "Error occurred")
         else:

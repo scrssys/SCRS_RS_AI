@@ -2,13 +2,11 @@
 
 # Form implementation generated from reading ui file 'index_calc.ui'
 #
-# Created by: PyQt5 UI code generator 5.13.0
+# Created by: PyQt5 UI code generator 5.5.1
 #
 # WARNING! All changes made in this file will be lost!
 
-
 from PyQt5 import QtCore, QtGui, QtWidgets
-
 
 class Ui_Dialog_index_calc(object):
     def setupUi(self, Dialog_index_calc):
@@ -18,7 +16,6 @@ class Ui_Dialog_index_calc(object):
         self.layoutWidget.setGeometry(QtCore.QRect(9, 20, 461, 151))
         self.layoutWidget.setObjectName("layoutWidget")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.layoutWidget)
-        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
@@ -68,17 +65,31 @@ class Ui_Dialog_index_calc(object):
         self.horizontalLayout_5.addLayout(self.horizontalLayout_3)
         spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_5.addItem(spacerItem2)
-        self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
         self.label_4 = QtWidgets.QLabel(self.layoutWidget)
         self.label_4.setObjectName("label_4")
-        self.horizontalLayout_4.addWidget(self.label_4)
+        self.horizontalLayout_5.addWidget(self.label_4)
         self.spinBox = QtWidgets.QSpinBox(self.layoutWidget)
         self.spinBox.setMinimumSize(QtCore.QSize(0, 22))
         self.spinBox.setMaximum(1000000000)
         self.spinBox.setProperty("value", 65535)
         self.spinBox.setObjectName("spinBox")
-        self.horizontalLayout_4.addWidget(self.spinBox)
+        self.horizontalLayout_5.addWidget(self.spinBox)
+        self.horizontalLayout_6 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_6.setObjectName("horizontalLayout_6")
+        self.label_5 = QtWidgets.QLabel(self.layoutWidget)
+        self.label_5.setObjectName("label_5")
+        self.horizontalLayout_6.addWidget(self.label_5)
+        self.spinBox_2 = QtWidgets.QSpinBox(self.layoutWidget)
+        self.spinBox_2.setMinimumSize(QtCore.QSize(0, 22))
+        self.spinBox_2.setMinimum(1000)
+        self.spinBox_2.setMaximum(1000000)
+        self.spinBox_2.setSingleStep(100)
+        self.spinBox_2.setProperty("value", 20000)
+        self.spinBox_2.setObjectName("spinBox_2")
+        self.horizontalLayout_6.addWidget(self.spinBox_2)
+        self.horizontalLayout_5.addLayout(self.horizontalLayout_6)
+        self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
         self.horizontalLayout_5.addLayout(self.horizontalLayout_4)
         self.verticalLayout_2.addLayout(self.horizontalLayout_5)
         self.buttonBox = QtWidgets.QDialogButtonBox(Dialog_index_calc)
@@ -107,3 +118,5 @@ class Ui_Dialog_index_calc(object):
         self.comboBox.setItemText(1, _translate("Dialog_index_calc", "NDWI"))
         self.comboBox.setItemText(2, _translate("Dialog_index_calc", "NDBI"))
         self.label_4.setText(_translate("Dialog_index_calc", "Nodata"))
+        self.label_5.setText(_translate("Dialog_index_calc", "block"))
+

@@ -57,7 +57,7 @@ def band_combine(file_list,outputfile):
     return 0
 
 
-def band_combine_blocks(file_list,output,block_h=10000 ):
+def band_combine_blocks(file_list,output,block_h=10000):
     result = []
     try:
         dataset_a = gdal.Open(file_list[0])
@@ -86,7 +86,7 @@ def band_combine_blocks(file_list,output,block_h=10000 ):
 
     bk_h = block_h
     if block_h > height:
-        print("Warnin:block height is gt image height")
+        print("block height is gt image height")
         bk_h = height
         # return -2
 
@@ -128,7 +128,7 @@ def band_combine_blocks(file_list,output,block_h=10000 ):
     return 0
 
 
-def batch_band_combine(indir,outdir,nodata=65535):
+def batch_band_combine(indir,outdir,nodata=65535,bk_h=20000):
     if not os.path.isdir(indir):
         print("Error:input is not a directory")
         return -1
@@ -159,7 +159,7 @@ def batch_band_combine(indir,outdir,nodata=65535):
             print("Warning:result file is existed:{}\n".format(outfile))
             continue
         ret =0
-        ret = band_combine_blocks(flist,outfile)
+        ret = band_combine_blocks(flist,outfile,block_h=bk_h)
         if ret!=0:
             print("Error:combinig failed :{}".format(basename))
             continue

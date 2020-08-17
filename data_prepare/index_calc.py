@@ -158,7 +158,7 @@ def Calc_Normalized_Difference_Index_blocks(imagery,output="",index_type = "NDVI
     height = dataset.RasterYSize
     bk_h = block_h
     if block_h > height:
-        print("Warnin:block height is gt image height")
+        print("block height is gt image height")
         bk_h = height
         # return -2
     width = dataset.RasterXSize
@@ -313,7 +313,7 @@ def convert_8bit_minMaxium(inputRaster, outputRaster,nodata=65535):
 # out = "D:\\data_file\\2_8b_ndvi.tif"
 # Calc_Normalized_Difference_Index("C:\\data\\8bits\\GF2331678620180712F_45985.img")
 # convert_8bit_minMaxium("C:\\data\\8bits\\GF2331678620180712F_45985_ndvi.tif",out,255)
-def batch_calc_index(indir,outdir="",keyword="NDWI",nulldata=65535):
+def batch_calc_index(indir,outdir="",keyword="NDWI",nulldata=65535,bk_h=2000):
     filelist=[]
     if os.path.isdir(indir):
         filelist,nb=get_file(indir)
@@ -336,10 +336,10 @@ def batch_calc_index(indir,outdir="",keyword="NDWI",nulldata=65535):
         if keyword == "NDWI":
             # Calc_Normalized_Difference_Index(imagery, output="", index_type="NDVI", nodata=255, ):
             print("Calculating Normalized Difference Water Index : " + file)
-            res=Calc_Normalized_Difference_Index_blocks(file, output=outfile, index_type="NDWI", nodata=nulldata,block_h=20000)
+            res=Calc_Normalized_Difference_Index_blocks(file, output=outfile, index_type="NDWI", nodata=nulldata,block_h=bk_h)
         elif keyword == "NDVI":
             print("Calculating Normalized Difference Vegetation Index : " + file)
-            res=Calc_Normalized_Difference_Index_blocks(file, output=outfile, index_type="NDVI", nodata=nulldata,block_h=20000)
+            res=Calc_Normalized_Difference_Index_blocks(file, output=outfile, index_type="NDVI", nodata=nulldata,block_h=bk_h)
         else:
             print("Error:please check index type")
             return -2
