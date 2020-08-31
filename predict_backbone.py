@@ -546,6 +546,7 @@ def core_smooth_predict_binary(small_img_patches, model, real_classes,QuanScale=
                 pred[pred<0.5]=0
                 pred[pred>=0.5]=1
                 pred = pred.reshape((row,column))
+                #print(np.unique(pred))  #提示程序是否运行
 
             # 将预测结果2D expand to 3D
             res_pred = np.expand_dims(pred, axis=-1)

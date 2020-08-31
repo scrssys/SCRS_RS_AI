@@ -316,7 +316,7 @@ def convert_8bit_minMaxium(inputRaster, outputRaster,nodata=65535):
 # out = "D:\\data_file\\2_8b_ndvi.tif"
 # Calc_Normalized_Difference_Index("C:\\data\\8bits\\GF2331678620180712F_45985.img")
 # convert_8bit_minMaxium("C:\\data\\8bits\\GF2331678620180712F_45985_ndvi.tif",out,255)
-def batch_calc_index(indir,outdir="",keyword="NDWI",nulldata=65535,bk_h=2000):
+def batch_calc_index(indir,outdir="",keyword="NDWI",nulldata=65535,bk_h=20000):
     filelist=[]
     if os.path.isdir(indir):
         filelist,nb=get_file(indir)
