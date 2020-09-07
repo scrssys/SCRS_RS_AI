@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../Mask_RCNN/.idea/Mask_RCNN-master.iml" filepath="$PROJECT_DIR$/../Mask_RCNN/.idea/Mask_RCNN-master.iml" />
       <module fileurl="file://$PROJECT_DIR$/../Mask_RCNN-master/.idea/Mask_RCNN-master.iml" filepath="$PROJECT_DIR$/../Mask_RCNN-master/.idea/Mask_RCNN-master.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/SCRS_RS_AI.iml" filepath="$PROJECT_DIR$/.idea/SCRS_RS_AI.iml" />
     </modules>

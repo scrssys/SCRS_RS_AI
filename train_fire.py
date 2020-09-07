@@ -115,7 +115,7 @@ def get_train_val(sample_path, val_rate):
     return train_set, val_set
 
 
-def train(send_massage_callback=send_message_callback, configs=None,gpu=0, samples='',outdir='',baseModel=''):
+def train(configs=None,gpu=0, samples='',outdir='',baseModel='',send_massage_callback=send_message_callback):
 
     send_massage_callback("training >>>")
     # return 0

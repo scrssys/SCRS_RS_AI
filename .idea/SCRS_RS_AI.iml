@@ -9,5 +9,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="semantic_segment_RSImage" />
     <orderEntry type="module" module-name="Mask_RCNN-master" />
+    <orderEntry type="module" module-name="Mask_RCNN-master" />
   </component>
 </module>

@@ -214,6 +214,7 @@ def Calc_Normalized_Difference_Index_blocks(imagery,output="",index_type = "NDVI
         result[index]=255
         result=np.asarray(result, np.uint8)
 
+
         outdataset.GetRasterBand(1).WriteArray(result, xoff=0, yoff=start_y)
     del dataset, outdataset
     geotrans_match(imagery,output)
