@@ -55,7 +55,7 @@ def convert_to_8Bit_percentclip(inputRaster, outputRaster,
             band_arr_tmp = band.ReadAsArray()
 
             index = np.where(band_arr_tmp==nodata)
-            band_arr_tmp = np.asarray(band_arr_tmp, dtype=np.float16)
+            band_arr_tmp = np.asarray(band_arr_tmp, dtype=np.float32)
             band_arr_tmp[index]=np.nan
             bmin = np.nanpercentile(band_arr_tmp.flatten(),
                                  percentiles[0])
@@ -228,7 +228,7 @@ def convert_8bit_minMaxium_blocks(inputRaster, outputRaster, nodata=65535,block_
             print("Warning: reading image failed for \n {}".format(inputRaster))
             return -3
         index = np.where(band_arr_tmp == nodata)
-        band_arr_tmp = np.asarray(band_arr_tmp, dtype=np.float16)
+        band_arr_tmp = np.asarray(band_arr_tmp, dtype=np.float32)
         if len(index) < 2:
             print("no nodata")
             bmin = band_arr_tmp.min()
@@ -245,6 +245,7 @@ def convert_8bit_minMaxium_blocks(inputRaster, outputRaster, nodata=65535,block_
             # bmax2 = max(band_arr_tmp[t_max])
         all_mins[i] = bmin
         all_maxs[i] = bmax
+        print("band {}: [{}, {}]".format(i,bmin,bmax))
     n_blocks = 1
     if height % bk_h == 0:
         n_blocks = int(height / bk_h)
@@ -331,14 +332,14 @@ def batch_convert_8bit_minmax(send_massage_callback=send_message_callback,inputd
         absname = os.path.split(file)[1]
         outputfile = os.path.join(outputdir,absname)
         if os.path.isfile(outputfile):
-            print("This image has been converted:{}".format(outputfile))
+            print("Warining: This image has been converted:{}".format(outputfile))
             continue
         convert_8bit_minMaxium_blocks(file,outputfile,nd,block_h=bk_h)
 
 if __name__=='__main__':
 
-    convert_8bit_minMaxium_blocks(r"D:\data\original\bigdata\test\ZY302714902958720170508F.IMG",
-    r"D:\data\original\4\ZY302714902958720170508F.IMG", block_h=20000)
+    # convert_8bit_minMaxium_blocks(r"D:\data\original\bigdata\test\ZY302714902958720170508F.IMG",
+    # r"D:\data\original\4\ZY302714902958720170508F.IMG", block_h=20000)
     # convert_8bit_minMaxium(r"D:\data\original\16\16b.tif",
     #                               r"D:\data\original\4\16b5.tif")
 
