@@ -46,7 +46,7 @@ class child_train(QDialog,Ui_Dialog_train,base_message):
         # excute program
         # os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
         # cmd =['python','../train_yp.py','--gpu',gpu_id, '--sample', sample,"--model",model, '--config',  config]
-        train(self.send, config, gpu_id, sample, model)
+        train(config, gpu_id, sample, model, send_massage_callback=self.send)
         try:
             # train(self.send,config,gpu_id,sample,model)
             pass
@@ -98,7 +98,7 @@ class child_train_h5(QDialog,Ui_Dialog_train_h5,base_message):
         # excute program
         # os.environ["CUDA_VISIBLE_DEVICES"] = str(gpu_id)
         # cmd =['python','../train_yp.py','--gpu',gpu_id, '--sample', sample,"--model",model, '--config',  config]
-        train_h5(self.send, config, gpu_id, sample, model)
+        train_h5(config, gpu_id, sample, model,send_massage_callback=self.send)
         try:
             # train(self.send,config,gpu_id,sample,model)
             pass

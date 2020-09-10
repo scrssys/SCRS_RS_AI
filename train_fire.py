@@ -75,7 +75,7 @@ def check_predict_input(dict_para):
     else:
         print("warning: para model output is not a directory\n")
         return -3
-    t = config.model_path
+    # t = config.model_path
     if os.path.isfile(dict_para["baseModel"]) and ('.h5' in dict_para["baseModel"]):
         base_model=dict_para["baseModel"]
     elif os.path.isfile(config.base_model):
@@ -196,7 +196,7 @@ def train(configs=None,gpu=0, samples='',outdir='',baseModel='',send_massage_cal
     else:
         print("Error:")
 
-    print(model.summary())
+    # print(model.summary())
     # from keras.utils import plot_model
     # plot_model(model, to_file='model_fpn.png')
     # sys.exit(-99)
@@ -297,7 +297,7 @@ def train(configs=None,gpu=0, samples='',outdir='',baseModel='',send_massage_cal
     print("Training finished!")
 
 
-def train_h5(send_massage_callback=send_message_callback, configs=None, gpu=0, samples='', outdir='', baseModel=''):
+def train_h5(configs=None, gpu=0, samples='', outdir='', baseModel='', send_massage_callback=send_message_callback):
     send_massage_callback("training >>>")
     # return 0
     dict_in = {"configs": configs, "gpu": gpu, "sampleDir": samples, "outDir": outdir, "baseModel": baseModel}
@@ -377,7 +377,7 @@ def train_h5(send_massage_callback=send_message_callback, configs=None, gpu=0, s
     else:
         print("Error:")
 
-    print(model.summary())
+    # print(model.summary())
     # from keras.utils import plot_model
     # plot_model(model, to_file='model_fpn.png')
     # sys.exit(-99)
