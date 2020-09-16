@@ -197,9 +197,15 @@ def predict(send_massage_callback=send_message_callback, configs=None,gpu=0, inp
         if not os.path.isfile(img_file):
             print("Warning: file does not exist:{}".format(img_file))
             continue
+
+        abs_filename = os.path.split(img_file)[1]
+        output_file = ''.join([output_dir, '/', abs_filename])
+        if os.path.isfile(output_file):
+            print("Warning: {} has been classified".format(abs_filename))
+            continue
         send_massage_callback(" Classify : "+img_file)
         # print("\n[INFO] opening image:{}...".format(img_file))
-        abs_filename = os.path.split(img_file)[1]
+
         H, W, C, geoinf,projinf = load_img_by_gdal_info(img_file)
         if H==0:
             print("Open failed:{}".format(abs_filename))
@@ -326,7 +332,7 @@ def predict(send_massage_callback=send_message_callback, configs=None,gpu=0, inp
         print("Unique value in result mask: {}".format(np.unique(result_mask)))
         # result_mask[nodata_indx]=255
         # output_file = ''.join([output_dir, '/', abs_filename, config.suffix])
-        output_file = ''.join([output_dir, '/', abs_filename])
+        # output_file = ''.join([output_dir, '/', abs_filename])
         driver = gdal.GetDriverByName("GTiff")
         outdataset = driver.Create(output_file, W, H, 1, gdal.GDT_Byte)
         outdataset.SetGeoTransform(geoinf)

@@ -39,6 +39,7 @@ class mywindow(QMainWindow, Ui_MainWindow):
     main_message_sig = pyqtSignal(str)
     def __init__(self):
         super(mywindow,self).__init__()
+        self.Authority_Verify()
         self.move(300,300)
         self.setWindowTitle(self.tr('Image'))
         self.setWindowIcon(QIcon('else/scrslogo.png'))
@@ -184,13 +185,14 @@ class mywindow(QMainWindow, Ui_MainWindow):
         child.exec()
 
     def slot_predict(self):
-        # self.Authority_Verify()
+        self.Authority_Verify()
         child = child_predict()
         child.message_sig.connect(self.OutputWritten)
         child.show()
         child.exec()
 
     def slot_train(self):
+        self.Authority_Verify()
         child = child_train()
         child.message_sig.connect(self.OutputWritten)
         child.show()
@@ -307,9 +309,11 @@ class mywindow(QMainWindow, Ui_MainWindow):
                     print('权限验证通过\n')
                 else:
                     print('权限验证未通过\n')
+                    time.sleep(1000)
                     sys.exit()
             else:
                 print('加密锁未找到\n')
+                time.sleep(100)
                 sys.exit()
 class child_abount(QDialog, Ui_Dialog_about):
     def __init__(self):
