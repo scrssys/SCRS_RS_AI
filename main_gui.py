@@ -39,7 +39,7 @@ class mywindow(QMainWindow, Ui_MainWindow):
     main_message_sig = pyqtSignal(str)
     def __init__(self):
         super(mywindow,self).__init__()
-        self.Authority_Verify()
+        # self.Authority_Verify()
         self.move(300,300)
         self.setWindowTitle(self.tr('Image'))
         self.setWindowIcon(QIcon('else/scrslogo.png'))
@@ -71,7 +71,6 @@ class mywindow(QMainWindow, Ui_MainWindow):
         # self.textEdit.setText("Runtime message:\ne:\ne:\ne:\ne:\ne:\ne:\ne:\ne:\ne:\n")
 
         self.main_message_sig.connect(self.OutputWritten)
-        # self.Authority_Verify()
     """
     #   Redirect standard output
         sys.stdout = EmittingStream(textWritten=self.OutputWritten)
@@ -185,14 +184,14 @@ class mywindow(QMainWindow, Ui_MainWindow):
         child.exec()
 
     def slot_predict(self):
-        self.Authority_Verify()
+        # self.Authority_Verify()
         child = child_predict()
         child.message_sig.connect(self.OutputWritten)
         child.show()
         child.exec()
 
     def slot_train(self):
-        self.Authority_Verify()
+        # self.Authority_Verify()
         child = child_train()
         child.message_sig.connect(self.OutputWritten)
         child.show()
