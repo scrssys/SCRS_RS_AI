@@ -194,7 +194,7 @@ def convert_8bit_minMaxium_blocks(inputRaster, outputRaster, nodata=65535,block_
     height = srcRaster.RasterYSize
     bk_h=block_h
     if block_h > height:
-        print("Warnin:block height is gt image height")
+        # print("Warnin:block height is gt image height")
         bk_h=height
         # return -2
     width = srcRaster.RasterXSize
@@ -223,6 +223,7 @@ def convert_8bit_minMaxium_blocks(inputRaster, outputRaster, nodata=65535,block_
         if bmin is None or bmax is None:
             (bmin, bmax) = band.ComputeRasterMinMax(1) # will not be used
 
+        band_arr_tmp =None
         band_arr_tmp = band.ReadAsArray()
         if band_arr_tmp is None:
             print("Warning: reading image failed for \n {}".format(inputRaster))
@@ -246,6 +247,7 @@ def convert_8bit_minMaxium_blocks(inputRaster, outputRaster, nodata=65535,block_
         all_mins[i] = bmin
         all_maxs[i] = bmax
         print("band {}: [{}, {}]".format(i,bmin,bmax))
+
     n_blocks = 1
     if height % bk_h == 0:
         n_blocks = int(height / bk_h)

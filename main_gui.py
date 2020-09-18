@@ -202,6 +202,7 @@ class mywindow(QMainWindow, Ui_MainWindow):
         child.message_sig.connect(self.OutputWritten)
         child.show()
         child.exec()
+
     def slot_convert_samples_to_h5(self):
         child = child_sample2H5()
         child.message_sig.connect(self.OutputWritten)
