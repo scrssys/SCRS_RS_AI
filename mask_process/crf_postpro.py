@@ -1,3 +1,4 @@
+# encoding:utf-8
 import numpy as np
 import pydensecrf.densecrf as dcrf
 import fire
@@ -127,7 +128,7 @@ def CRFs(original_image_path, predicted_image_path, CRF_image_path,
     # 将predicted_image转换回相应的颜色并保存图像
     # MAP = colorize[MAP, :]
     # imwrite(CRF_image_path, MAP.reshape(img.shape))
-    print("unique value:{}".format(np.unique(MAP)))
+    print("unique value of result:{}".format(np.unique(MAP)))
     imwrite(CRF_image_path, MAP.reshape((img.shape[0],img.shape[1])))
 
     print("CRF图像saving to: ", CRF_image_path, "!")
