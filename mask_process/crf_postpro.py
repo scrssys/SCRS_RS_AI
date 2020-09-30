@@ -21,7 +21,9 @@ CRF_image_path  即将进行CRF后处理得到的结果图像保存路径
 """
 
 
-def CRFs(original_image_path, predicted_image_path, CRF_image_path):
+def CRFs(original_image_path, predicted_image_path, CRF_image_path,
+         prob=0.9,gauss_sxy=3,gauss_compat=3,
+         bilateral_sxy=20,bilateral_srgb=13,bilateral_compat=20):
     print("original_image_path: ", original_image_path)
     # img = imread(original_image_path)
     img = load_img_by_gdal(original_image_path)
@@ -72,16 +74,19 @@ def CRFs(original_image_path, predicted_image_path, CRF_image_path):
         d = dcrf.DenseCRF2D(img.shape[1], img.shape[0], n_labels)
 
         # 得到一元势（负对数概率）
-        U = unary_from_labels(labels, n_labels, gt_prob=0.9, zero_unsure=False)
+        U = unary_from_labels(labels, n_labels, gt_prob=prob, zero_unsure=False)
         # U = unary_from_labels(labels, n_labels, gt_prob=0.2, zero_unsure=HAS_UNK)## 如果有不确定区域，用这一行代码替换上一行
         d.setUnaryEnergy(U)
 
         # 增加了与颜色无关的术语，只是位置-----会惩罚空间上孤立的小块分割,即强制执行空间上更一致的分割
-        d.addPairwiseGaussian(sxy=(5, 5), compat=3, kernel=dcrf.DIAG_KERNEL,
+        d.addPairwiseGaussian(sxy=(gauss_sxy, gauss_sxy), compat=gauss_compat, kernel=dcrf.DIAG_KERNEL,
                               normalization=dcrf.NORMALIZE_SYMMETRIC)
 
         # # 增加了颜色相关术语，即特征是(x,y,r,g,b)-----使用局部颜色特征来细化它们
-        d.addPairwiseBilateral(sxy=(10, 10), srgb=(13, 13, 13), rgbim=img, compat=10,
+        d.addPairwiseBilateral(sxy=(bilateral_sxy, bilateral_sxy),
+                               srgb=(bilateral_srgb, bilateral_srgb, bilateral_srgb),
+                               rgbim=img,
+                               compat=bilateral_compat,
                                kernel=dcrf.DIAG_KERNEL,
                                normalization=dcrf.NORMALIZE_SYMMETRIC)
         '''
@@ -93,7 +98,7 @@ def CRFs(original_image_path, predicted_image_path, CRF_image_path):
         d = dcrf.DenseCRF(img.shape[1] * img.shape[0], n_labels)
 
         # 得到一元势（负对数概率）
-        U = unary_from_labels(labels, n_labels, gt_prob=0.5, zero_unsure=False)
+        U = unary_from_labels(labels, n_labels, gt_prob=prob, zero_unsure=False)
         # U = unary_from_labels(labels, n_labels, gt_prob=0.7, zero_unsure=HAS_UNK)## 如果有不确定区域，用这一行代码替换上一行
         d.setUnaryEnergy(U)
 
@@ -130,9 +135,9 @@ def CRFs(original_image_path, predicted_image_path, CRF_image_path):
 
 if __name__=="__main__":
     # original_image_path='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/test/whole_img.tif'
-    # # original_image_path='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/test/top_potsdam_7_13_RGB.tif'
+    # # original_image_path='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/test/top_potsdam_7_13.tif'
     # predicted_image_path='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/test/result/2020-07-07_14-04-35-fpn-nrg-bce-dice-smooth-8slices/whole_img.tif'
-    # CRF_image_path='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/test/result/2020-07-07_14-04-35-fpn-nrg-bce-dice-smooth-8slices/whole_img-crf1.tif'
+    # CRF_image_path='/media/omnisky/e0331d4a-a3ea-4c31-90ab-41f5b0ee2663/traindata/scrs_building/test/result/2020-07-07_14-04-35-fpn-nrg-bce-dice-smooth-8slices/whole_img-crf1223.tif'
     # CRFs(original_image_path, predicted_image_path, CRF_image_path)
 
     fire.Fire()

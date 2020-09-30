@@ -2,13 +2,11 @@
 
 # Form implementation generated from reading ui file 'MainWin.ui'
 #
-# Created by: PyQt5 UI code generator 5.13.0
+# Created by: PyQt5 UI code generator 5.5.1
 #
 # WARNING! All changes made in this file will be lost!
 
-
 from PyQt5 import QtCore, QtGui, QtWidgets
-
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -35,7 +33,7 @@ class Ui_MainWindow(object):
         self.tabWidget.addTab(self.tab, "")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 532, 23))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 532, 19))
         self.menubar.setDefaultUp(True)
         self.menubar.setNativeMenuBar(False)
         self.menubar.setObjectName("menubar")
@@ -156,6 +154,8 @@ class Ui_MainWindow(object):
         self.action_crop_by_extent.setObjectName("action_crop_by_extent")
         self.action_rasterizeLayer = QtWidgets.QAction(MainWindow)
         self.action_rasterizeLayer.setObjectName("action_rasterizeLayer")
+        self.actionCRF = QtWidgets.QAction(MainWindow)
+        self.actionCRF.setObjectName("actionCRF")
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionOpen_Vector)
         self.menuFile.addAction(self.actionExit)
@@ -182,6 +182,7 @@ class Ui_MainWindow(object):
         self.menuPostproc.addAction(self.actionBinarization)
         self.menuPostproc.addAction(self.actionRasterToPolygon)
         self.menuPostproc.addAction(self.actionremove_small_object)
+        self.menuPostproc.addAction(self.actionCRF)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuPrepocess.menuAction())
         self.menubar.addAction(self.menuSampleProduce.menuAction())
@@ -217,6 +218,7 @@ class Ui_MainWindow(object):
         self.actionband_combine.triggered.connect(MainWindow.slot_band_combine)
         self.action_crop_by_extent.triggered.connect(MainWindow.slot_crop_by_extent)
         self.action_rasterizeLayer.triggered.connect(MainWindow.slot_rasterizeLayer)
+        self.actionCRF.triggered.connect(MainWindow.slot_crf)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -267,3 +269,5 @@ class Ui_MainWindow(object):
         self.actionrasterizeLayer.setText(_translate("MainWindow", "rasterizeLayer"))
         self.action_crop_by_extent.setText(_translate("MainWindow", "crop_by_extent"))
         self.action_rasterizeLayer.setText(_translate("MainWindow", "rasterizeLayer"))
+        self.actionCRF.setText(_translate("MainWindow", "CRF"))
+

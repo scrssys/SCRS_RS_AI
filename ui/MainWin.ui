@@ -70,7 +70,7 @@
      <x>0</x>
      <y>0</y>
      <width>532</width>
-     <height>23</height>
+     <height>19</height>
     </rect>
    </property>
    <property name="defaultUp">
@@ -144,6 +144,7 @@
     <addaction name="actionBinarization"/>
     <addaction name="actionRasterToPolygon"/>
     <addaction name="actionremove_small_object"/>
+    <addaction name="actionCRF"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuPrepocess"/>
@@ -370,6 +371,11 @@
   <action name="action_rasterizeLayer">
    <property name="text">
     <string>rasterizeLayer</string>
+   </property>
+  </action>
+  <action name="actionCRF">
+   <property name="text">
+    <string>CRF</string>
    </property>
   </action>
  </widget>
@@ -775,6 +781,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionCRF</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>slot_crf()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>265</x>
+     <y>204</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>for_action_label_check()</slot>
@@ -807,5 +829,6 @@
   <slot>slot_band_combine()</slot>
   <slot>slot_crop_by_extent()</slot>
   <slot>slot_rasterizeLayer()</slot>
+  <slot>slot_crf()</slot>
  </slots>
 </ui>

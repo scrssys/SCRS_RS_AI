@@ -11,8 +11,10 @@ from ui.postProcess.Binarization import Ui_Dialog_binarization
 from ui.postProcess.PostPrecessBackend import combine_masks, vote_masks, accuracy_evalute,binarize_mask,batchbinarize_masks
 from ui.postProcess.RasterToPolygon import Ui_Dialog_raster_to_polygon
 from ui.postProcess.removeSmallPolygon import  Ui_Dialog_removeSmallPolygon
+from ui.postProcess.crfui import Ui_Dialog_crf
 from ulitities.base_functions import get_file, polygonize,base_message
 from mask_process.remove_small_object import batch_rmovesmallobj
+from mask_process.crf_postpro import  CRFs
 combinefile_dict = {'road_mask':'', 'building_mask':'', 'save_mask':'', 'foreground':127}
 vote_dict = {'input_files':'', 'save_mask':'', 'target_values':[]}
 
@@ -20,6 +22,52 @@ accEvaluate_dict = {'gt_file':'', 'mask_file':'', 'valid_values':[], 'check_rate
 
 binarization_dict = {'grayscale_mask':'', 'binary_mask':'', 'threshold':127}
 binarybatch_dict = {'inputdir':'', 'outputdir':'', 'threshold':127}
+
+
+class child_crf(QDialog, Ui_Dialog_crf,base_message):
+    def __init__(self):
+        super(child_crf,self).__init__()
+        self.setupUi(self)
+
+    def slot_input_img(self):
+        str,_=QFileDialog.getOpenFileName(self, "select a image", "../../", self.tr("img(*.png *.*)"))
+        self.lineEdit_input_img.setText(str)
+        tp_dir = QFileInfo(str).path()
+        QDir.setCurrent(tp_dir)
+
+    def slot_input_mask(self):
+        str, _ = QFileDialog.getOpenFileName(self, "select a classified mask", "../../", self.tr("img(*.png *.*)"))
+        self.lineEdit_input_mask.setText(str)
+        tp_dir = QFileInfo(str).path()
+        QDir.setCurrent(tp_dir)
+    def slot_result_save(self):
+        str, _ = QFileDialog.getSaveFileName(self, "Save file", '../../data/', self.tr("mask(*.png *.*)"))
+        self.lineEdit_result.setText(str)
+        tp_dir = QFileInfo(str).path()
+        QDir.setCurrent(tp_dir)
+
+    def slot_ok(self):
+        self.setWindowModality(Qt.ApplicationModal)
+        self.buttonBox.setEnabled(False)
+        input_img = self.lineEdit_input_img.text()
+        input_mask = self.lineEdit_input_mask.text()
+        save_path = self.lineEdit_result.text()
+        gtProb=self.doubleSpinBox_gtprob.value()
+        gauss_sxy = self.spinBox_gauss_sxy.value()
+        gauss_compat = self.spinBox_gauss_compat.value()
+        bilateral_sxy=self.spinBox_bilateral_sxy.value()
+        bilateral_srgb=self.spinBox_bilateral_srgb.value()
+        bilateral_compat = self.spinBox_bilateral_compat.value()
+
+        try:
+            CRFs(input_img,input_mask,save_path,prob=gtProb,gauss_sxy=gauss_sxy,gauss_compat=gauss_compat,
+         bilateral_sxy=bilateral_sxy,bilateral_srgb=bilateral_sxy,bilateral_compat=bilateral_sxy)
+            QMessageBox.information(self, '提示', "Finished")
+        except:
+            QMessageBox.information(self, '提示', "Error occurred")
+        finally:
+            self.buttonBox.setEnabled(True)
+
 
 
 class child_raster_to_polygon(QDialog, Ui_Dialog_raster_to_polygon,base_message):

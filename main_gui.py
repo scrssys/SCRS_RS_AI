@@ -128,6 +128,7 @@ class mywindow(QMainWindow, Ui_MainWindow):
         self.actionRasterToPolygon.setText(_translate("MainWindow","栅格转矢量"))
         self.actionincdex_calc.setText(_translate("MainWindow", "指数计算"))
         self.actionband_combine.setText(_translate("MainWindow", "影像波段合成"))
+        self.actionCRF.setText(_translate("MainWindow", "CRF"))
 
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "输出"))
         # self.actionPredictOne.setText(_translate("MainWindow", "分类"))
@@ -284,6 +285,12 @@ class mywindow(QMainWindow, Ui_MainWindow):
 
     def slot_action_removesmallobject(self):
         child = child_removesmallobject()
+        child.message_sig.connect(self.OutputWritten)
+        child.show()
+        child.exec_()
+
+    def slot_crf(self):
+        child = child_crf()
         child.message_sig.connect(self.OutputWritten)
         child.show()
         child.exec_()
