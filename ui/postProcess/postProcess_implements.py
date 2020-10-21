@@ -28,6 +28,12 @@ class child_crf(QDialog, Ui_Dialog_crf,base_message):
     def __init__(self):
         super(child_crf,self).__init__()
         self.setupUi(self)
+        self.new_translate()
+    def new_translate(self):
+        _translate = QCoreApplication.translate
+        self.setWindowTitle(_translate("Dialog", " CRF后处理"))
+        self.groupBox.setTitle(_translate("Unary potential", "一元势"))
+        self.groupBox_2.setTitle(_translate("Pairwise potentials", "二元势"))
 
     def slot_input_img(self):
         str,_=QFileDialog.getOpenFileName(self, "select a image", "../../", self.tr("img(*.png *.*)"))
