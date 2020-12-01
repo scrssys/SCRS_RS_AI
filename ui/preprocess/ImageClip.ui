@@ -102,7 +102,7 @@
    <property name="title">
     <string>Input parameters</string>
    </property>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -188,6 +188,9 @@
            <height>16777215</height>
           </size>
          </property>
+         <property name="maximum">
+          <number>1000000</number>
+         </property>
         </widget>
        </item>
        <item>
@@ -223,6 +226,9 @@
            <width>70</width>
            <height>0</height>
           </size>
+         </property>
+         <property name="maximum">
+          <number>10000000</number>
          </property>
         </widget>
        </item>

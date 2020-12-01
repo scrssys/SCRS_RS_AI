@@ -1,3 +1,4 @@
+# encoding:utf-8
 import os
 import cv2
 import sys
@@ -85,7 +86,11 @@ def batchbinarize_masks(send_message_callback,inputdict):
 
         mask_saving_path = os.path.join(outputdir, absname)
 
+
         cv2.imwrite(mask_saving_path, result)
+        if not os.path.isfile(mask_saving_path):
+            suffix = os.path.splitext(file)[1]
+            cv2.imencode(suffix, result)[1].tofile(mask_saving_path)
 
 
     return 0
